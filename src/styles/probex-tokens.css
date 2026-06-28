@@ -1,0 +1,357 @@
+/**
+ * Probex Design Token System
+ * ──────────────────────────
+ * Theme tokens are applied via [data-theme="<name>"] on <html>.
+ * Default theme: aurora
+ *
+ * Token layers:
+ *   1. Brand primitives (never used directly in components)
+ *   2. Semantic tokens (used in components)
+ *   3. Component tokens (used in specific components)
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BRAND PRIMITIVES — Never reference directly in components.
+   Use semantic tokens instead.
+───────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Cyan spectrum */
+  --brand-cyan-100: #ccf7ff;
+  --brand-cyan-300: #66e5ff;
+  --brand-cyan-500: #00D4FF;
+  --brand-cyan-700: #0099bb;
+  --brand-cyan-900: #005570;
+
+  /* Purple spectrum */
+  --brand-purple-100: #e2dffe;
+  --brand-purple-300: #a89ef9;
+  --brand-purple-500: #6D5EF7;
+  --brand-purple-700: #4636d4;
+  --brand-purple-900: #2a1f9d;
+
+  /* Blue spectrum */
+  --brand-blue-400: #60a5fa;
+  --brand-blue-500: #3B82F6;
+  --brand-blue-700: #1d4ed8;
+
+  /* Semantic status */
+  --brand-positive: #10B981;
+  --brand-negative: #EF4444;
+  --brand-warning:  #F59E0B;
+  --brand-info:     #3B82F6;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME: AURORA (DEFAULT)
+   Deep space dark — signature Probex look
+───────────────────────────────────────────────────────────────────────── */
+:root,
+[data-theme="aurora"] {
+  /* Backgrounds */
+  --probex-bg:        #050816;
+  --probex-surface:   #0B1120;
+  --probex-surface-2: #0F1A2E;
+  --probex-surface-3: #142038;
+
+  /* Borders */
+  --probex-border:         rgba(255, 255, 255, 0.07);
+  --probex-border-default: rgba(255, 255, 255, 0.09);
+  --probex-border-strong:  rgba(255, 255, 255, 0.14);
+  --probex-border-active:  rgba(0, 212, 255, 0.35);
+
+  /* Accent */
+  --probex-primary:   #00D4FF;
+  --probex-secondary: #6D5EF7;
+  --probex-primary-dim:   rgba(0, 212, 255, 0.12);
+  --probex-secondary-dim: rgba(109, 94, 247, 0.12);
+
+  /* Text */
+  --probex-text-primary:   #E8EEFF;
+  --probex-text-secondary: rgba(232, 238, 255, 0.58);
+  --probex-text-muted:     rgba(232, 238, 255, 0.32);
+  --probex-text-disabled:  rgba(232, 238, 255, 0.18);
+
+  /* Trading sides */
+  --probex-yes:          #00D4FF;
+  --probex-yes-dim:      rgba(0, 212, 255, 0.1);
+  --probex-yes-border:   rgba(0, 212, 255, 0.25);
+  --probex-no:           #8B5CF6;
+  --probex-no-dim:       rgba(139, 92, 246, 0.1);
+  --probex-no-border:    rgba(139, 92, 246, 0.25);
+
+  /* Semantic */
+  --probex-positive:  #10B981;
+  --probex-positive-dim: rgba(16, 185, 129, 0.12);
+  --probex-negative:  #EF4444;
+  --probex-negative-dim: rgba(239, 68, 68, 0.1);
+  --probex-warning:   #F59E0B;
+  --probex-warning-dim: rgba(245, 158, 11, 0.1);
+
+  /* Consensus signal colors */
+  --probex-consensus-high:    #10B981;
+  --probex-consensus-med:     #F59E0B;
+  --probex-consensus-low:     #EF4444;
+
+  /* Sidebar */
+  --probex-sidebar-bg:      #0B1120;
+  --probex-sidebar-item-active-bg: rgba(0, 212, 255, 0.1);
+  --probex-sidebar-item-active-border: rgba(0, 212, 255, 0.2);
+
+  /* Charts */
+  --probex-chart-primary:   #00D4FF;
+  --probex-chart-secondary: #6D5EF7;
+  --probex-chart-tertiary:  #10B981;
+  --probex-chart-grid:      rgba(255, 255, 255, 0.05);
+  --probex-chart-axis:      rgba(255, 255, 255, 0.2);
+
+  /* Gradient — logo and primary CTAs */
+  --probex-gradient-brand: linear-gradient(135deg, #00D4FF 0%, #6D5EF7 100%);
+  --probex-gradient-yes:   linear-gradient(135deg, #00D4FF 0%, #0099BB 100%);
+  --probex-gradient-no:    linear-gradient(135deg, #6D5EF7 0%, #4F46E5 100%);
+  --probex-gradient-surface: linear-gradient(180deg, #0B1120 0%, #050816 100%);
+
+  /* Scrollbar */
+  --probex-scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --probex-scrollbar-track: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME: MIDNIGHT
+   Maximum dark — deep navy blacks
+───────────────────────────────────────────────────────────────────────── */
+[data-theme="midnight"] {
+  --probex-bg:        #010208;
+  --probex-surface:   #04080F;
+  --probex-surface-2: #070D18;
+  --probex-surface-3: #0A1220;
+
+  --probex-border:         rgba(255, 255, 255, 0.05);
+  --probex-border-default: rgba(255, 255, 255, 0.07);
+  --probex-border-strong:  rgba(255, 255, 255, 0.12);
+  --probex-border-active:  rgba(59, 130, 246, 0.4);
+
+  --probex-primary:   #3B82F6;
+  --probex-secondary: #4F46E5;
+  --probex-primary-dim:   rgba(59, 130, 246, 0.12);
+  --probex-secondary-dim: rgba(79, 70, 229, 0.12);
+
+  --probex-text-primary:   #E2E8F0;
+  --probex-text-secondary: rgba(226, 232, 240, 0.55);
+  --probex-text-muted:     rgba(226, 232, 240, 0.3);
+  --probex-text-disabled:  rgba(226, 232, 240, 0.16);
+
+  --probex-yes:        #3B82F6;
+  --probex-yes-dim:    rgba(59, 130, 246, 0.1);
+  --probex-yes-border: rgba(59, 130, 246, 0.25);
+  --probex-no:         #4F46E5;
+  --probex-no-dim:     rgba(79, 70, 229, 0.1);
+  --probex-no-border:  rgba(79, 70, 229, 0.25);
+
+  --probex-positive:  #10B981;
+  --probex-positive-dim: rgba(16, 185, 129, 0.12);
+  --probex-negative:  #EF4444;
+  --probex-negative-dim: rgba(239, 68, 68, 0.1);
+  --probex-warning:   #F59E0B;
+  --probex-warning-dim: rgba(245, 158, 11, 0.1);
+
+  --probex-consensus-high: #10B981;
+  --probex-consensus-med:  #F59E0B;
+  --probex-consensus-low:  #EF4444;
+
+  --probex-sidebar-bg: #04080F;
+  --probex-sidebar-item-active-bg: rgba(59, 130, 246, 0.1);
+  --probex-sidebar-item-active-border: rgba(59, 130, 246, 0.2);
+
+  --probex-chart-primary:   #3B82F6;
+  --probex-chart-secondary: #4F46E5;
+  --probex-chart-tertiary:  #10B981;
+  --probex-chart-grid:      rgba(255, 255, 255, 0.04);
+  --probex-chart-axis:      rgba(255, 255, 255, 0.18);
+
+  --probex-gradient-brand:   linear-gradient(135deg, #3B82F6 0%, #4F46E5 100%);
+  --probex-gradient-yes:     linear-gradient(135deg, #3B82F6 0%, #1d4ed8 100%);
+  --probex-gradient-no:      linear-gradient(135deg, #4F46E5 0%, #3730a3 100%);
+  --probex-gradient-surface: linear-gradient(180deg, #04080F 0%, #010208 100%);
+
+  --probex-scrollbar-thumb: rgba(255, 255, 255, 0.08);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME: QUANTUM
+   Neon green intelligence — quantitative
+───────────────────────────────────────────────────────────────────────── */
+[data-theme="quantum"] {
+  --probex-bg:        #020A06;
+  --probex-surface:   #061410;
+  --probex-surface-2: #081C16;
+  --probex-surface-3: #0C2420;
+
+  --probex-border:         rgba(255, 255, 255, 0.06);
+  --probex-border-default: rgba(255, 255, 255, 0.08);
+  --probex-border-strong:  rgba(255, 255, 255, 0.13);
+  --probex-border-active:  rgba(0, 255, 136, 0.35);
+
+  --probex-primary:   #00FF88;
+  --probex-secondary: #0D9488;
+  --probex-primary-dim:   rgba(0, 255, 136, 0.1);
+  --probex-secondary-dim: rgba(13, 148, 136, 0.1);
+
+  --probex-text-primary:   #E0FFF0;
+  --probex-text-secondary: rgba(224, 255, 240, 0.55);
+  --probex-text-muted:     rgba(224, 255, 240, 0.3);
+  --probex-text-disabled:  rgba(224, 255, 240, 0.16);
+
+  --probex-yes:        #00FF88;
+  --probex-yes-dim:    rgba(0, 255, 136, 0.1);
+  --probex-yes-border: rgba(0, 255, 136, 0.25);
+  --probex-no:         #0D9488;
+  --probex-no-dim:     rgba(13, 148, 136, 0.1);
+  --probex-no-border:  rgba(13, 148, 136, 0.25);
+
+  --probex-positive:  #00FF88;
+  --probex-positive-dim: rgba(0, 255, 136, 0.12);
+  --probex-negative:  #FF4466;
+  --probex-negative-dim: rgba(255, 68, 102, 0.1);
+  --probex-warning:   #FFBB00;
+  --probex-warning-dim: rgba(255, 187, 0, 0.1);
+
+  --probex-consensus-high: #00FF88;
+  --probex-consensus-med:  #FFBB00;
+  --probex-consensus-low:  #FF4466;
+
+  --probex-sidebar-bg: #061410;
+  --probex-sidebar-item-active-bg: rgba(0, 255, 136, 0.08);
+  --probex-sidebar-item-active-border: rgba(0, 255, 136, 0.2);
+
+  --probex-chart-primary:   #00FF88;
+  --probex-chart-secondary: #0D9488;
+  --probex-chart-tertiary:  #84CC16;
+  --probex-chart-grid:      rgba(255, 255, 255, 0.04);
+  --probex-chart-axis:      rgba(255, 255, 255, 0.18);
+
+  --probex-gradient-brand:   linear-gradient(135deg, #00FF88 0%, #0D9488 100%);
+  --probex-gradient-yes:     linear-gradient(135deg, #00FF88 0%, #00bb63 100%);
+  --probex-gradient-no:      linear-gradient(135deg, #0D9488 0%, #065F46 100%);
+  --probex-gradient-surface: linear-gradient(180deg, #061410 0%, #020A06 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME: EMERALD
+   Premium dark green — wealth management aesthetic
+───────────────────────────────────────────────────────────────────────── */
+[data-theme="emerald"] {
+  --probex-bg:        #031A10;
+  --probex-surface:   #062318;
+  --probex-surface-2: #092D20;
+  --probex-surface-3: #0E3828;
+
+  --probex-border:         rgba(255, 255, 255, 0.06);
+  --probex-border-default: rgba(255, 255, 255, 0.09);
+  --probex-border-strong:  rgba(255, 255, 255, 0.14);
+  --probex-border-active:  rgba(16, 185, 129, 0.4);
+
+  --probex-primary:   #10B981;
+  --probex-secondary: #065F46;
+  --probex-primary-dim:   rgba(16, 185, 129, 0.12);
+  --probex-secondary-dim: rgba(6, 95, 70, 0.15);
+
+  --probex-text-primary:   #ECFDF5;
+  --probex-text-secondary: rgba(236, 253, 245, 0.58);
+  --probex-text-muted:     rgba(236, 253, 245, 0.32);
+  --probex-text-disabled:  rgba(236, 253, 245, 0.18);
+
+  --probex-yes:        #10B981;
+  --probex-yes-dim:    rgba(16, 185, 129, 0.1);
+  --probex-yes-border: rgba(16, 185, 129, 0.28);
+  --probex-no:         #84CC16;
+  --probex-no-dim:     rgba(132, 204, 22, 0.1);
+  --probex-no-border:  rgba(132, 204, 22, 0.25);
+
+  --probex-positive:  #10B981;
+  --probex-positive-dim: rgba(16, 185, 129, 0.12);
+  --probex-negative:  #EF4444;
+  --probex-negative-dim: rgba(239, 68, 68, 0.1);
+  --probex-warning:   #F59E0B;
+  --probex-warning-dim: rgba(245, 158, 11, 0.1);
+
+  --probex-consensus-high: #10B981;
+  --probex-consensus-med:  #F59E0B;
+  --probex-consensus-low:  #EF4444;
+
+  --probex-sidebar-bg: #062318;
+  --probex-sidebar-item-active-bg: rgba(16, 185, 129, 0.1);
+  --probex-sidebar-item-active-border: rgba(16, 185, 129, 0.22);
+
+  --probex-chart-primary:   #10B981;
+  --probex-chart-secondary: #84CC16;
+  --probex-chart-tertiary:  #06B6D4;
+  --probex-chart-grid:      rgba(255, 255, 255, 0.04);
+  --probex-chart-axis:      rgba(255, 255, 255, 0.18);
+
+  --probex-gradient-brand:   linear-gradient(135deg, #10B981 0%, #065F46 100%);
+  --probex-gradient-yes:     linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --probex-gradient-no:      linear-gradient(135deg, #84CC16 0%, #4D7C0F 100%);
+  --probex-gradient-surface: linear-gradient(180deg, #062318 0%, #031A10 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME: INSTITUTIONAL
+   Light mode — TradFi credibility
+───────────────────────────────────────────────────────────────────────── */
+[data-theme="institutional"] {
+  --probex-bg:        #F1F5F9;
+  --probex-surface:   #FFFFFF;
+  --probex-surface-2: #F8FAFC;
+  --probex-surface-3: #F1F5F9;
+
+  --probex-border:         rgba(15, 23, 42, 0.08);
+  --probex-border-default: rgba(15, 23, 42, 0.12);
+  --probex-border-strong:  rgba(15, 23, 42, 0.2);
+  --probex-border-active:  rgba(37, 99, 235, 0.4);
+
+  --probex-primary:   #2563EB;
+  --probex-secondary: #4F46E5;
+  --probex-primary-dim:   rgba(37, 99, 235, 0.08);
+  --probex-secondary-dim: rgba(79, 70, 229, 0.08);
+
+  --probex-text-primary:   #0F172A;
+  --probex-text-secondary: rgba(15, 23, 42, 0.62);
+  --probex-text-muted:     rgba(15, 23, 42, 0.38);
+  --probex-text-disabled:  rgba(15, 23, 42, 0.22);
+
+  --probex-yes:        #2563EB;
+  --probex-yes-dim:    rgba(37, 99, 235, 0.08);
+  --probex-yes-border: rgba(37, 99, 235, 0.22);
+  --probex-no:         #4F46E5;
+  --probex-no-dim:     rgba(79, 70, 229, 0.08);
+  --probex-no-border:  rgba(79, 70, 229, 0.22);
+
+  --probex-positive:  #059669;
+  --probex-positive-dim: rgba(5, 150, 105, 0.1);
+  --probex-negative:  #DC2626;
+  --probex-negative-dim: rgba(220, 38, 38, 0.08);
+  --probex-warning:   #D97706;
+  --probex-warning-dim: rgba(217, 119, 6, 0.08);
+
+  --probex-consensus-high: #059669;
+  --probex-consensus-med:  #D97706;
+  --probex-consensus-low:  #DC2626;
+
+  --probex-sidebar-bg: #FFFFFF;
+  --probex-sidebar-item-active-bg: rgba(37, 99, 235, 0.07);
+  --probex-sidebar-item-active-border: rgba(37, 99, 235, 0.18);
+
+  --probex-chart-primary:   #2563EB;
+  --probex-chart-secondary: #4F46E5;
+  --probex-chart-tertiary:  #059669;
+  --probex-chart-grid:      rgba(15, 23, 42, 0.05);
+  --probex-chart-axis:      rgba(15, 23, 42, 0.3);
+
+  --probex-gradient-brand:   linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+  --probex-gradient-yes:     linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
+  --probex-gradient-no:      linear-gradient(135deg, #4F46E5 0%, #3730a3 100%);
+  --probex-gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+
+  --probex-scrollbar-thumb: rgba(15, 23, 42, 0.15);
+  --probex-scrollbar-track: transparent;
+}
