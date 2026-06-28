@@ -174,24 +174,6 @@ All variables are optional in mock mode. They are read where the app integrates 
 
 ---
 
-## Screenshots
-
-> Replace the placeholders below with real captures (suggested location: `docs/screenshots/`).
-
-| Dashboard | Market Detail |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Market detail](docs/screenshots/market-detail.png) |
-
-| Consensus Engine | Research Terminal |
-|---|---|
-| ![Consensus](docs/screenshots/consensus.png) | ![Research](docs/screenshots/research.png) |
-
-| Analytics | Theme Gallery |
-|---|---|
-| ![Analytics](docs/screenshots/analytics.png) | ![Themes](docs/screenshots/themes.png) |
-
----
-
 ## Roadmap
 
 The mock-first architecture defines the integration path. Indicative milestones (derived from in-code service interfaces and TODO markers):
