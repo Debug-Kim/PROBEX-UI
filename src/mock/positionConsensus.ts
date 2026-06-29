@@ -1,12 +1,8 @@
-/**
- * Position Consensus Alignment
- * ──────────────────────────────
- * Computes whether a position's side (YES/NO) aligns with the
- * Probex Consensus Engine's institutional bias for that market.
- *
- * This is the bridge between mock/positions.ts and mock/consensus.ts.
- * replace with IConsensusService cross-reference at the API layer.
- */
+// Computes whether a position's side (YES/NO) aligns with the
+// Probex Consensus Engine's institutional bias for that market.
+//
+// This is the bridge between mock/positions.ts and mock/consensus.ts.
+// replace with IConsensusService cross-reference at the API layer.
 
 import type { Position } from '@/types/wallet'
 import type { ConsensusState } from '@/types/consensus'

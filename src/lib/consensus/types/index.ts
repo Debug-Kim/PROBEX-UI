@@ -1,15 +1,5 @@
-/**
- * Consensus Module Internal Types
- * ─────────────────────────────────
- * These types are internal to the consensus module.
- * External consumers use the types from src/types/consensus.ts.
- *
- * The consensus module has three layers:
- *
- *   1. Adapters     — translate raw engine output to module types
- *   2. Transformers — enrich/normalize adapter output
- *   3. Scoring      — compute derived scores and classifications
- */
+// Internal types for the consensus module (adapters → transformers → scoring).
+// External consumers use src/types/consensus.ts instead.
 
 import type { ConsensusState, ConsensusUpdate } from '@/types/consensus'
 

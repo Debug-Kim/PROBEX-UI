@@ -1,19 +1,15 @@
 'use client'
 
-/**
- * DashboardOverview
- * ─────────────────
- * Main landing screen for authenticated users.
- *.5: Hero Carousel added as primary visual centerpiece.
- *
- * Layout (top → bottom):
- *   1. Global Consensus Bar    — compact 5-stat strip
- *   2. Hero Market Carousel    — rotating featured market intelligence
- *   3. Featured Markets Grid   — 6 consensus-driven cards
- *   4. Trending Markets Table  — sortable, compact
- *   5. Recent Activity Feed    — sidebar (right on xl+)
- *   6. Footer
- */
+// Main landing screen for authenticated users.
+// .5: Hero Carousel added as primary visual centerpiece.
+//
+// Layout (top → bottom):
+//   1. Global Consensus Bar    — compact 5-stat strip
+//   2. Hero Market Carousel    — rotating featured market intelligence
+//   3. Featured Markets Grid   — 6 consensus-driven cards
+//   4. Trending Markets Table  — sortable, compact
+//   5. Recent Activity Feed    — sidebar (right on xl+)
+//   6. Footer
 
 import { useMemo }                                      from 'react'
 import { useRouter }                                    from 'next/navigation'

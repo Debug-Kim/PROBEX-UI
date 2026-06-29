@@ -1,21 +1,13 @@
-/**
- * Backend DTOs + normalization adapters — the canonical data contract
- * ───────────────────────────────────────────────────────────────────
- * The frontend domain types (Market, ConsensusState, …) carry historical
- * inconsistencies (aliased volume fields, 0–1 vs 0–100 scores, level-vs-numeric
- * confidence, ISO-vs-epoch dates). Rather than churn the UI, we pin a single
- * NORMALIZED wire contract here and adapt DTO → domain in one place. A live
- * service receives DTOs and calls these adapters; the mock skips them (its data
- * is already in domain shape). UI is untouched.
- *
- * Canonical rules:
- *   • Scores / percentages on the wire are 0–100 ints  (suffix `Pct`)
- *   • Internal probability/score ratios stay 0–1
- *   • Confidence ships BOTH a level and a 0–1 score
- *   • Money fields are explicit USD              (suffix `Usd`)
- *   • Cent prices are explicit                   (suffix `Cents`)
- *   • Entity timestamps are ISO 8601 strings; time-series points use epoch ms
- */
+// Backend DTOs + normalization adapters — the canonical wire contract. Domain
+// types carry historical inconsistencies, so we pin one normalized shape here and
+// adapt DTO → domain in a single place. Live services receive DTOs and call these
+// adapters; the mock skips them (already in domain shape).
+//
+// Wire conventions:
+//   • Scores / percentages are 0–100 ints (suffix `Pct`); internal ratios stay 0–1
+//   • Confidence ships BOTH a level and a 0–1 score
+//   • Money is explicit USD (`Usd`); cent prices are explicit (`Cents`)
+//   • Entity timestamps are ISO 8601 strings; time-series points use epoch ms
 
 import type {
   Market, AssetClass, BitcoinSegment, MarketStatus, SentimentBias,

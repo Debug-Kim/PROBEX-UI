@@ -5,46 +5,20 @@ import { useUserRole } from '@/store/authStore'
 import { hasPermission } from '@/types/user'
 import type { UserRole } from '@/types/user'
 
-/**
- * useFeatureFlag
- * ──────────────
- * Single hook for all feature flag checks. Components never import FEATURES
- * directly — always go through this hook. This allows:
- *   - Server-side overrides (A/B testing)
- *   - Role-based flag overrides
- *   - Remote flag fetching in future (swap implementation, not callsites)
- *
- * Usage:
- *   const hasConsensus = useFeatureFlag('CONSENSUS_ENGINE')
- *   if (!hasConsensus) return null
- */
+// The single entry point for flag checks — components go through this hook
+// instead of importing FEATURES, so the source (remote flags, A/B, role
+// overrides) can change without touching callsites.
 export function useFeatureFlag(flag: FeatureKey): boolean {
   return FEATURES[flag]
 }
 
-/**
- * usePermission
- * ─────────────
- * Checks whether the current user meets a minimum role requirement.
- *
- * Usage:
- *   const canViewAnalytics = usePermission('professional')
- */
+/** True if the current user meets the minimum role requirement. */
 export function usePermission(requiredRole: UserRole): boolean {
   const userRole = useUserRole()
   return hasPermission(userRole, requiredRole)
 }
 
-/**
- * useFeatureAccess
- * ────────────────
- * Combined flag + role check. Returns true only if:
- *   1. The feature flag is enabled, AND
- *   2. The user's role meets the minimum requirement.
- *
- * Usage:
- *   const canAccess = useFeatureAccess('ANALYTICS', 'professional')
- */
+/** Combined check — flag enabled AND user role sufficient. */
 export function useFeatureAccess(
   flag:         FeatureKey,
   requiredRole: UserRole = 'retail',
@@ -54,12 +28,7 @@ export function useFeatureAccess(
   return flagEnabled && hasRole
 }
 
-/**
- * useDerivedPermissions
- * ─────────────────────
- * Returns a stable object of all derived permissions for the current user.
- * Prefer this over multiple individual calls in the same component.
- */
+/** All derived permissions for the current user — prefer over many individual calls. */
 export function useDerivedPermissions() {
   const role = useUserRole()
   const isPro   = hasPermission(role, 'professional')

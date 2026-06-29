@@ -1,10 +1,6 @@
-/**
- * Position Mock Data
- * ───────────────────
- * All positions reference real market IDs from mock/markets.ts.
- * Consensus alignment is computed from MOCK_CONSENSUS_MAP at read time.
- * replace with IPortfolioService.getPositions.
- */
+// All positions reference real market IDs from mock/markets.ts.
+// Consensus alignment is computed from MOCK_CONSENSUS_MAP at read time.
+// replace with IPortfolioService.getPositions.
 
 import type { Position, PositionSide, PositionStatus } from '@/types/wallet'
 import {

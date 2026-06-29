@@ -1,19 +1,5 @@
-/**
- * Research Terminal Mock Data
- * ────────────────────────────
- * Six Bitcoin intelligence reports spanning all ResearchCategoryId values.
- * Each report is fully typed against ResearchReport interface.
- *
- * Coverage:
- *   1. BTC Outlook          — Q3 2026 price target thesis
- *   2. Consensus Report     — June 2026 engine performance
- *   3. ETF Monitor          — Q2 2026 inflow analysis
- *   4. Institutional        — Corporate treasury accumulation wave
- *   5. Macro Signals        — Fed policy + BTC correlation
- *   6. Market Structure     — Dominance breakout thesis
- *
- * replace with IResearchService.getReports backed by CMS or DB.
- */
+// Six fully-typed Bitcoin intelligence reports spanning every ResearchCategoryId.
+// Replace with IResearchService.getReports backed by a CMS or DB.
 
 import type {
   ResearchReport,

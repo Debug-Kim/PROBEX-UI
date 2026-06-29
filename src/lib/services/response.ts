@@ -1,13 +1,9 @@
-/**
- * Standard service response models
- * ────────────────────────────────
- * Every Probex service speaks the same envelope, so swapping mock → live is
- * mechanical. The four UI states (loading / success / empty / error) are
- * expressed through ServiceState; the wire payload through ApiResult.
- *
- * Pagination reuses the existing PaginatedResponse<T> (types/market) — not
- * redefined here.
- */
+// Every Probex service speaks the same envelope, so swapping mock → live is
+// mechanical. The four UI states (loading / success / empty / error) are
+// expressed through ServiceState; the wire payload through ApiResult.
+//
+// Pagination reuses the existing PaginatedResponse<T> (types/market) — not
+// redefined here.
 
 import type { PaginatedResponse } from '@/types/market'
 

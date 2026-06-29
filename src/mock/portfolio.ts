@@ -1,9 +1,5 @@
-/**
- * Portfolio Mock Data
- * ────────────────────
- * Aggregate portfolio metrics derived from position data.
- * replace with IPortfolioService.getPortfolioSummary.
- */
+// Aggregate portfolio metrics derived from position data.
+// replace with IPortfolioService.getPortfolioSummary.
 
 import type { BitcoinSegment } from '@/types/market'
 import { MOCK_OPEN_POSITIONS, MOCK_SETTLED_POSITIONS } from './positions'

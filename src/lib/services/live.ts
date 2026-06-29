@@ -1,11 +1,7 @@
-/**
- * Live service reference (Markets)
- * ────────────────────────────────
- * Template for the backend integration: fetch JSON DTOs from the Probex API,
- * normalize via the dto.ts adapters, and return the standard ApiResult. The
- * other seven services follow this exact shape. Not wired into the registry
- * yet — flip NEXT_PUBLIC_API_MODE=live and register these once endpoints exist.
- */
+// Template for the backend integration: fetch JSON DTOs from the Probex API,
+// normalize via the dto.ts adapters, and return the standard ApiResult. The
+// other seven services follow this exact shape. Not wired into the registry
+// yet — flip NEXT_PUBLIC_API_MODE=live and register these once endpoints exist.
 
 import { env } from '@/config/env'
 import { ok, ServiceException, type ApiResult, type PaginatedResponse } from './response'

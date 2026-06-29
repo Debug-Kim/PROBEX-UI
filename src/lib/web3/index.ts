@@ -1,20 +1,16 @@
-/**
- * Web3 Module
- * ────────────
- * Architecture is established. Implementation activates.
- *
- * Exports available now:
- *   - Type definitions (types/)
- *   - Chain configuration (utils/chainConfig)
- *   - Address formatting utilities (utils/formatAddress, utils/formatBalance)
- *   - Contract address registry (contracts/addresses)
- *
- * Not yet implemented:
- *   - WagmiProvider
- *   - useWalletConnection hook
- *   - useMarketContract hook
- *   - useVaultContract hook
- */
+// Architecture is established. Implementation activates.
+//
+// Exports available now:
+//   - Type definitions (types/)
+//   - Chain configuration (utils/chainConfig)
+//   - Address formatting utilities (utils/formatAddress, utils/formatBalance)
+//   - Contract address registry (contracts/addresses)
+//
+// Not yet implemented:
+//   - WagmiProvider
+//   - useWalletConnection hook
+//   - useMarketContract hook
+//   - useVaultContract hook
 
 // Types
 export type {

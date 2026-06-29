@@ -1,15 +1,11 @@
 'use client'
 
-/**
- * SettingsView
- * ────────────
- * Account-management platform shell: a grouped, keyboard-accessible section
- * nav (vertical on desktop, horizontally scrollable on mobile) beside the
- * active section panel. Section is deep-linkable via the URL hash.
- *
- * Sections compose the reusable settings controls; Appearance reuses the
- * existing AppearanceSettings (theme architecture preserved).
- */
+// Account-management platform shell: a grouped, keyboard-accessible section
+// nav (vertical on desktop, horizontally scrollable on mobile) beside the
+// active section panel. Section is deep-linkable via the URL hash.
+//
+// Sections compose the reusable settings controls; Appearance reuses the
+// existing AppearanceSettings (theme architecture preserved).
 
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'

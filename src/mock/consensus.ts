@@ -1,11 +1,7 @@
-/**
- * Consensus Engine Mock Data
- * ───────────────────────────
- * Deterministic consensus states for all mock markets.
- * The consensus score is the primary data — probability is secondary.
- *
- * Replace: swap the IConsensusService implementation in lib/consensus/index.ts.
- */
+// Deterministic consensus states for all mock markets.
+// The consensus score is the primary data — probability is secondary.
+//
+// Replace: swap the IConsensusService implementation in lib/consensus/index.ts.
 
 import type {
   ConsensusState,

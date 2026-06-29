@@ -1,15 +1,6 @@
-/**
- * Environment variable configuration
- * ────────────────────────────────────
- * ALL environment variable access goes through this file.
- * Never use process.env.* directly in application code.
- *
- * Rules:
- *   - NEXT_PUBLIC_* vars are safe for client-side use.
- *   - Non-prefixed vars are server-only. Accessing them client-side
- *     returns undefined — never `throw`, just `null`.
- *   - Call validateEnv() at app startup to catch missing required vars.
- */
+// Central env access — application code reads from here, never process.env
+// directly. NEXT_PUBLIC_* is client-safe; non-prefixed vars are server-only
+// (see getServerEnv). Call validateEnv() at startup to catch missing vars.
 
 // ─── Public (client-safe) ────────────────────────────────────────────────
 
@@ -46,9 +37,7 @@ export const env = {
 } as const
 
 // ─── Server-only (never expose to client) ───────────────────────────────
-// These are accessed server-side only (API routes, RSC, middleware).
-// The function wrapper prevents accidental client-side import.
-
+// Function wrapper throws if imported client-side, preventing secret leakage.
 export function getServerEnv() {
   if (typeof window !== 'undefined') {
     throw new Error(
@@ -127,12 +116,7 @@ const ENV_REQUIREMENTS: EnvRequirement[] = [
   },
 ]
 
-/**
- * Validates required environment variables.
- * Call this in next.config.ts or a startup script.
- * Throws in production if required vars are missing.
- * Warns in development.
- */
+/** Validate required env vars at startup — throws in production, warns in dev. */
 export function validateEnv(): void {
   const missing: string[] = []
 

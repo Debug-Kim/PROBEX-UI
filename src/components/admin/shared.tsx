@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * Admin shared primitives
- * ───────────────────────
- * Building blocks shared across the six admin panels so they stay visually
- * consistent and DRY. All colors are CSS variables (theme-safe). No external
- * chart dep here — panels that chart import Recharts directly.
- */
+// Building blocks shared across the six admin panels so they stay visually
+// consistent and DRY. All colors are CSS variables (theme-safe). No external
+// chart dep here — panels that chart import Recharts directly.
 
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'

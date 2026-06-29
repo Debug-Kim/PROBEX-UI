@@ -1,9 +1,5 @@
-/**
- * Wallet Balance Mock Data
- * ─────────────────────────
- * Mock balances for the connected wallet experience.
- * replace with IWalletService.getBalance backed by Polygon RPC.
- */
+// Mock balances for the connected wallet experience.
+// replace with IWalletService.getBalance backed by Polygon RPC.
 
 import type { WalletBalance, WalletConnection } from '@/types/wallet'
 import { asWalletAddress } from '@/types/branded'

@@ -1,22 +1,9 @@
 'use client'
 
-/**
- * WatchlistView
- * ─────────────
- * Professional watchlist dashboard.
- *
- * Architecture:
- *   - Persistence: useWatchlist() over the existing sessionStorage contract
- *     ('probex_watchlist') — the same store WatchlistButton writes to. Removing
- *     here updates that store and is immediately reactive.
- *   - Market/consensus data is resolved from the existing mock sources
- *     (MOCK_MARKETS, MOCK_CONSENSUS_MAP) — no new mock data required.
- *   - View / sort / filter state is LOCAL to this page (useState). It is
- *     deliberately NOT routed through marketStore, so the Watchlist stays fully
- *     decoupled from the Markets page.
- *
- * Sections: performance metrics → controls → grid|table → empty states.
- */
+// Watchlist dashboard. Persists via useWatchlist() (sessionStorage, shared with
+// WatchlistButton) and resolves data from MOCK_MARKETS / MOCK_CONSENSUS_MAP.
+// View/sort/filter state is local (useState) — deliberately not in marketStore, so
+// the page stays decoupled from Markets.
 
 import Link                       from 'next/link'
 import { useMemo, useState }      from 'react'

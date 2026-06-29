@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * MarketThesisPanel —.1
- * ───────────────────────────────
- * Thesis + key metrics for the market detail terminal.
- * Sits in the center column beneath the charts.
- */
+// Thesis + key metrics for the market detail terminal.
+// Sits in the center column beneath the charts.
 
 import { formatCompact, probabilityColorVar } from '@/lib/utils'
 import type { Market }         from '@/types/market'

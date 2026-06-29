@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * useAccount
- * ──────────
- * Single source of account-derivation logic shared by the navbar profile menu
- * and the sidebar user card. Always returns a renderable shape — including a
- * graceful Guest state when signed out — so no account surface ever collapses.
- */
+// Single source of account-derivation logic shared by the navbar profile menu
+// and the sidebar user card. Always returns a renderable shape — including a
+// graceful Guest state when signed out — so no account surface ever collapses.
 
 import { useCurrentUser, useAuthStore } from '@/store/authStore'
 import type { UserRole } from '@/types/user'

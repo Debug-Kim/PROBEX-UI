@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * ConsensusResearch
- * ─────────────────
- * Research-layer integration: surfaces intelligence reports relevant to the
- * selected market/segment, reusing the existing ResearchReportCard. Opening a
- * report routes into the Research terminal (no reader logic duplicated).
- */
+// Research-layer integration: surfaces intelligence reports relevant to the
+// selected market/segment, reusing the existing ResearchReportCard. Opening a
+// report routes into the Research terminal (no reader logic duplicated).
 
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'

@@ -1,10 +1,5 @@
-/**
- * src/lib/realtime/types/index.ts
- *
- * Complete realtime type definitions for.
- * Discriminated union over StreamEvent.type — no `any`.
- * Branded MarketId is preserved across the wire boundary via as*() factories.
- */
+// Realtime type definitions — a discriminated union over StreamEvent.type.
+// Branded MarketId is preserved across the wire boundary via the as*() factories.
 
 import type { MarketId } from '@/types/branded'
 import type { MarketStatus } from '@/types/market'

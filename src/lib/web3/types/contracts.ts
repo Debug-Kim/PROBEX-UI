@@ -1,17 +1,13 @@
-/**
- * Probex Smart Contract Type Definitions
- * ───────────────────────────────────────
- * Type-safe representations of Probex on-chain contract interfaces.
- * These types mirror the Solidity function signatures and event definitions.
- *
- * Contracts:
- *   ProbexMarket  — prediction market order placement and settlement
- *   ProbexVault   — collateral (USDC) management and withdrawal
- *   ProbexToken   — ERC-20 position token for YES/NO shares
- *
- * No ABIs are defined here — they live in /contracts/abis/*.json.
- * TypeScript types are kept separate from ABI JSON for cleaner imports.
- */
+// Type-safe representations of Probex on-chain contract interfaces.
+// These types mirror the Solidity function signatures and event definitions.
+//
+// Contracts:
+//   ProbexMarket  — prediction market order placement and settlement
+//   ProbexVault   — collateral (USDC) management and withdrawal
+//   ProbexToken   — ERC-20 position token for YES/NO shares
+//
+// No ABIs are defined here — they live in /contracts/abis/*.json.
+// TypeScript types are kept separate from ABI JSON for cleaner imports.
 
 import type { WalletAddress, TxHash, MarketId } from '@/types/branded'
 import type { TransactionReceipt, ContractCallOptions } from './wallet'

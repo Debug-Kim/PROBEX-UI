@@ -1,21 +1,9 @@
 'use client'
 
-/**
- * MarketCharts
- *
- * Receives `liveView` from MarketDetailPage (which holds the single
- * useSingleMarketStream subscription). On each new tick, appends a
- * live data point to the probability, consensus, and volume chart series
- * so the rightmost edge of each chart advances in real time.
- *
- * Integration strategy:
- *   - Charts keep their full historical series from mock/marketHistory.ts
- *   - A separate `livePoints` array (bounded at MAX_LIVE_POINTS) accumulates
- *     real-time ticks via useEffect watching liveView changes
- *   - Recharts receives [...historicalSeries, ...livePoints] as data
- * - When liveView is null (flag off), charts render identically to
- *
- */
+// Probability/consensus/volume charts. Keeps the full historical series from
+// mock/marketHistory.ts and appends bounded live points (MAX_LIVE_POINTS) from the
+// `liveView` prop so the right edge advances in real time. With liveView null
+// (flag off) it renders identically to the static charts.
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import {

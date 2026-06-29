@@ -1,21 +1,8 @@
 'use client'
 
-/**
- * Analytics shared primitives
- * ───────────────────────────
- * Cross-cutting building blocks for the Analytics module. Centralising these
- * keeps every domain panel visually consistent and DRY:
- *
- *   - AnalyticsCard   : titled surface card that wraps each chart / table
- *   - SectionHeader   : per-tab heading with timeframe label
- *   - SeriesTooltip   : reusable Recharts tooltip (CSS-var styled)
- *   - Th / Td         : table cell primitives
- *   - sliceByTimeframe: windows a daily time-series by the active timeframe so
- *                       the AnalyticsFilters timeframe control is functional
- *   - CHART / AXIS_TICK: shared chart color + axis tick tokens
- *
- * All colors are CSS variables — no hardcoded hex (preserves theming).
- */
+// Shared building blocks for the Analytics module (cards, headers, tooltip, table
+// cells, timeframe slicing, chart tokens) — keeps every domain panel consistent.
+// All colors are CSS variables, never hardcoded hex, to preserve theming.
 
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'

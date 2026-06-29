@@ -1,12 +1,6 @@
-/**
- * Bitcoin Market Mock Data
- * ─────────────────────────
- * All 40 mock markets cover the 8 Bitcoin segments.
- * Data is deterministic — same values every render.
- * Time-based drift functions simulate live feel without randomness.
- *
- * Replace by swapping the service implementation in lib/api/marketService.ts.
- */
+// Deterministic mock markets across the 8 Bitcoin segments; time-based drift
+// simulates a live feel without randomness. Replace by swapping the service
+// implementation in lib/api/marketService.ts.
 
 import type { Market, MarketStatus, SentimentBias, BitcoinSegment } from '@/types/market'
 import { asMarketId } from '@/types/branded'

@@ -1,22 +1,5 @@
-/**
- * Feature Flag System
- * ───────────────────
- * Single source of truth for all feature flags.
- *
- * Rules:
- *   1. Never import this file directly in components.
- *      Use the `useFeatureFlag(flag)` hook instead.
- *   2. Never add flags without a comment explaining what they gate.
- *   3. Flags default to `false` — opt-in, not opt-out.
- *
- * ENABLE_REALTIME_MARKETS —
- *   true:  Live stream active; MarketCard/Table/Charts/ConsensusBadge show
- *          live ticks; /dashboard/live page is live.
- * false: Existing static mock behavior; all earlier builds surfaces unchanged.
- *
- * Set to true to enable the live layer.
- * Controlled by NEXT_PUBLIC_ENABLE_REALTIME env var when present.
- */
+// Single source of truth for feature flags. Consume via useFeatureFlag(), not by
+// importing this directly. Each flag carries a one-line note on what it gates.
 
 const env = (key: string): boolean =>
   typeof process !== 'undefined' &&

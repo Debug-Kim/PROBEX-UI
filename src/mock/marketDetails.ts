@@ -1,9 +1,5 @@
-/**
- * Market Detail Mock Data
- * ────────────────────────
- * Extended research content and key drivers for market detail pages.
- * replace with IMarketService.getMarketDetail API call.
- */
+// Extended research content and key drivers for market detail pages.
+// replace with IMarketService.getMarketDetail API call.
 
 import type { MarketId } from '@/types/branded'
 

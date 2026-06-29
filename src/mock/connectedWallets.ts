@@ -1,9 +1,5 @@
-/**
- * Connected Wallets Mock Data
- * ─────────────────────────────
- * Mock wallet connector metadata for the ConnectWalletModal.
- * wagmi connector registry (see lib/web3/providers).
- */
+// Mock wallet connector metadata for the ConnectWalletModal.
+// wagmi connector registry (see lib/web3/providers).
 
 import type { WalletProvider, NetworkId } from '@/types/wallet'
 import { asWalletAddress } from '@/types/branded'

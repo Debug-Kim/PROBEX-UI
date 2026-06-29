@@ -1,9 +1,5 @@
-/**
- * Per-Market Activity Stream Mock Data
- * ──────────────────────────────────────
- * Generates activity events specific to a single market.
- * replace with live WebSocket subscription.
- */
+// Generates activity events specific to a single market.
+// replace with live WebSocket subscription.
 
 import type { MarketId } from '@/types/branded'
 import { asMarketId }    from '@/types/branded'

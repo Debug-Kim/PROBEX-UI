@@ -1,12 +1,5 @@
-/**
- * Probex Contract Address Registry
- * ──────────────────────────────────
- * All contract addresses are loaded from environment variables.
- * Never hardcode addresses in application code.
- *
- * Addresses are populated at deployment time by the DevOps/contracts team.
- * During (pre-deployment), all addresses are empty strings.
- */
+// Contract addresses, loaded from env (never hardcoded). Populated at deployment;
+// empty strings before deployment.
 
 import type { ContractAddresses } from '../types'
 import type { WalletAddress } from '@/types/branded'

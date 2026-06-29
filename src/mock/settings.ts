@@ -1,10 +1,6 @@
-/**
- * Settings Mock Data
- * ──────────────────
- * Demo data + default preference shapes for the Settings platform.
- * Backend wiring (persistence, auth, KYC, API keys) lands in later sprints —
- * these defaults drive the UI locally in the meantime.
- */
+// Demo data + default preference shapes for the Settings platform.
+// Backend wiring (persistence, auth, KYC, API keys) lands in later sprints —
+// these defaults drive the UI locally in the meantime.
 
 // ─── Sessions & devices ─────────────────────────────────────────────────────
 

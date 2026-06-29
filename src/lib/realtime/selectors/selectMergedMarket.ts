@@ -1,29 +1,13 @@
-/**
- * selectMergedMarket
- *
- * Merges static mock market data with live stream deltas from liveStore.
- * Recomputes Edge and Recommendation on every relevant tick.
- *
- * This is the single canonical merge point — every surface that shows live
- * market data (MarketCard, MarketTable, ConsensusBadge, MarketDetailPage,
- * LiveMarketsView) must use this selector so Edge/Recommendation stay
- * consistent across the entire UI.
- *
- * Memoised per-market so one market's tick does not re-render sibling cards.
- */
+// Canonical merge point for static market data + live stream deltas. Every
+// surface showing live market data uses this so edge/recommendation stay
+// consistent. Recomputes edge and recommendation on every relevant tick.
 
 import type { Market, ConsensusState } from '@/types'
 import type { LiveMarketDelta, MergedMarketView, RecommendationLevel, RecommendationOutput } from '@/lib/realtime/types'
 
-// ─── Edge calculation ────────────────────────────────────────────────────────
-// Edge = (consensusScore − marketProbability) expressed in PERCENTAGE POINTS.
-// Both inputs are 0–1 fractions, so we scale the difference by 100 to match the
-// recommendation thresholds (8 / 15 pp) and the "pp" edge displays. Without the
-// ×100, edge stayed in 0–1 range (≈ ±0.13) and never crossed the thresholds, so
-// every market defaulted to "Hold".
-// Positive edge  → consensus is more bullish than the market price implies
-// Negative edge  → consensus is more bearish than market price implies
-
+// Edge = consensusScore − probability, in percentage points. Inputs are 0–1
+// fractions; the ×100 is required so edge crosses the 8/15 pp thresholds below
+// (without it edge stays ≈ ±0.13 and every market defaults to "Hold").
 function computeEdge(
   consensusScore: number,
   probability: number,
@@ -31,9 +15,7 @@ function computeEdge(
   return parseFloat(((consensusScore - probability) * 100).toFixed(2))
 }
 
-// ─── Recommendation taxonomy (5 levels) ─────────────────────────────────────
-// RecommendationLevel and RecommendationOutput are defined in @/lib/realtime/types
-// to avoid a circular dependency. Re-exported here for backwards compatibility.
+// Defined in @/lib/realtime/types to avoid a circular dependency; re-exported here.
 export type { RecommendationLevel, RecommendationOutput }
 
 function computeRecommendation(
@@ -63,35 +45,23 @@ function computeRecommendation(
   return { level, label: labels[level], edge, confidence }
 }
 
-// ─── Selector ────────────────────────────────────────────────────────────────
-
-/**
- * selectMergedMarket
- *
- * @param market   - Static market record from mock/markets.ts (never mutated)
- * @param consensus - Static consensus state from MOCK_CONSENSUS_MAP (never mutated)
- * @param delta     - Latest live delta from liveStore.liveByMarket (may be null
- *                    if the stream has not yet delivered an update for this market)
- * @returns        MergedMarketView with live-overlaid fields + computed edge/recommendation
- */
+// `market`/`consensus` are static records (never mutated); `delta` is the latest
+// live update, or null before the stream delivers one for this market.
 export function selectMergedMarket(
   market: Market,
   consensus: ConsensusState,
   delta: LiveMarketDelta | null,
 ): MergedMarketView {
-  // Live overrides: use delta values when present, fall back to static
   const probability = delta?.probability ?? market.probability
   const consensusScore = delta?.consensusScore ?? consensus.score
   const consensusConfidence = delta?.confidence ?? consensus.predictionConfidence
   const consensusBias = delta?.bias ?? consensus.bias
   const volume = delta?.volume ?? market.volume
 
-  // Derived calculations — always recomputed from merged values
   const edge = computeEdge(consensusScore, probability)
   const recommendation = computeRecommendation(edge, consensusConfidence)
 
   return {
-    // Identity (never live-updated)
     id: market.id,
     question: market.question,
     segment: market.segment,
@@ -99,31 +69,24 @@ export function selectMergedMarket(
     resolutionDate: market.resolutionDate,
     assetClass: market.assetClass,
 
-    // Live-merged market fields
     probability,
     volume,
 
-    // Live-merged consensus fields
     consensusScore,
     consensusConfidence,
     consensusBias,
 
-    // Derived
     edge,
     recommendation,
 
-    // Meta: whether this view contains any live data
     isLive: delta !== null,
     lastTickAt: delta?.ts ?? null,
     deltaBps: delta?.deltaBps ?? null,
   }
 }
 
-// ─── Memoisation cache ───────────────────────────────────────────────────────
-// One entry per marketId; invalidated when delta reference changes.
-// This avoids rebuilding the merged object every render for markets that
-// have not received a new tick.
-
+// One cache entry per marketId, invalidated when any input changes by reference —
+// avoids rebuilding the merged view every render for markets without a new tick.
 interface CacheEntry {
   market: Market
   consensus: ConsensusState
@@ -133,12 +96,7 @@ interface CacheEntry {
 
 const cache = new Map<string, CacheEntry>()
 
-/**
- * selectMergedMarketMemo
- *
- * Memoised variant. Returns the cached result if none of the three inputs
- * have changed by reference.  Safe to call on every render.
- */
+/** Memoised variant — safe to call on every render. */
 export function selectMergedMarketMemo(
   market: Market,
   consensus: ConsensusState,
@@ -161,11 +119,7 @@ export function selectMergedMarketMemo(
   return result
 }
 
-/**
- * clearMergedMarketCache
- *
- * Call during hot-reload or test teardown to prevent stale entries.
- */
+/** Clear during hot-reload or test teardown to prevent stale entries. */
 export function clearMergedMarketCache(): void {
   cache.clear()
 }

@@ -1,9 +1,5 @@
-/**
- * Footer —.1
- * ────────────────────
- * Premium institutional footer. Trust-building copy, link groups,
- * and social icons. Server component (no interactivity).
- */
+// Premium institutional footer. Trust-building copy, link groups,
+// and social icons. Server component (no interactivity).
 
 import Link             from 'next/link'
 import { ProbexMark }   from '@/components/ui/ProbexMark'

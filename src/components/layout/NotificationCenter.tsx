@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * NotificationCenter
- * ──────────────────
- * Dropdown panel rendered by NotificationBell. Presentational — state lives in
- * the bell so the unread badge stays in sync.
- */
+// Dropdown panel rendered by NotificationBell. Presentational — state lives in
+// the bell so the unread badge stays in sync.
 
 import { NOTIFICATION_META, type NotificationItem } from '@/mock/notifications'
 

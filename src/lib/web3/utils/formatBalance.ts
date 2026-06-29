@@ -1,9 +1,4 @@
-/**
- * Token balance formatting utilities
- * ────────────────────────────────────
- * Converts raw on-chain bigint balances to human-readable strings.
- * All token amounts on Polygon are stored with full precision (bigint).
- */
+// Converts raw on-chain bigint balances (full precision) to human-readable strings.
 
 /**
  * Formats a USDC balance (6 decimals) as a USD string.

@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * ActivityFeed —.1
- * ──────────────────────────
- * Improved visual hierarchy for market events.
- * Whale trades, consensus shifts, and probability spikes stand out.
- */
+// Improved visual hierarchy for market events.
+// Whale trades, consensus shifts, and probability spikes stand out.
 
 import { useMemo }                                      from 'react'
 import { cn, formatCompact }                            from '@/lib/utils'

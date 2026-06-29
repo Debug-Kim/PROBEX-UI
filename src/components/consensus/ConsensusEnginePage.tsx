@@ -1,21 +1,17 @@
 'use client'
 
-/**
- * ConsensusEnginePage — Prediction Intelligence Engine (flagship)
- * ───────────────────────────────────────────────────────────────
- * The Consensus page now explains markets rather than merely displaying a
- * probability. It composes existing consensus, analytics, market-detail, and
- * research building blocks with a new intelligence layer:
- *
- *   • Market selector            (new)        • Confidence evolution (new chart)
- *   • Live confidence indicator  (ConfidenceMeter reuse)
- *   • Intelligence summary       (new)        • Recommendation engine (reused output)
- *   • Consensus timeline         (ConsensusHistory reuse)
- *   • Institutional vs retail    (BiasBreakdown reuse)
- *   • Explainability             (new)        • Historical snapshots (new)
- *   • Related markets            (RelatedMarkets reuse)
- *   • Research integration       (ResearchReportCard reuse)
- */
+// The Consensus page now explains markets rather than merely displaying a
+// probability. It composes existing consensus, analytics, market-detail, and
+// research building blocks with a new intelligence layer:
+//
+//   • Market selector            (new)        • Confidence evolution (new chart)
+//   • Live confidence indicator  (ConfidenceMeter reuse)
+//   • Intelligence summary       (new)        • Recommendation engine (reused output)
+//   • Consensus timeline         (ConsensusHistory reuse)
+//   • Institutional vs retail    (BiasBreakdown reuse)
+//   • Explainability             (new)        • Historical snapshots (new)
+//   • Related markets            (RelatedMarkets reuse)
+//   • Research integration       (ResearchReportCard reuse)
 
 import { useMemo, useState } from 'react'
 import { services }            from '@/lib/services'

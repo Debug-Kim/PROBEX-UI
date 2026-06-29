@@ -1,14 +1,10 @@
-/**
- * Bitcoin Market Segments Configuration
- * ─────────────────────────────────────
- * Defines the full taxonomy of Bitcoin prediction markets on Probex MVP.
- *
- * Architecture note:
- *   This config drives category tabs, filter dropdowns, sidebar labels,
- *   and API query parameters. Never use raw segment ID strings in components —
- *   always reference this config. Future asset classes (ETH, SOL, etc.) will
- *   follow the same pattern with their own segment configs.
- */
+// Defines the full taxonomy of Bitcoin prediction markets on Probex MVP.
+//
+// Architecture note:
+//   This config drives category tabs, filter dropdowns, sidebar labels,
+//   and API query parameters. Never use raw segment ID strings in components —
+//   always reference this config. Future asset classes (ETH, SOL, etc.) will
+//   follow the same pattern with their own segment configs.
 
 import type { BitcoinSegment, SegmentMeta } from '@/types/market'
 

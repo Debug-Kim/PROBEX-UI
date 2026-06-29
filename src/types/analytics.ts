@@ -1,18 +1,5 @@
-/**
- * Analytics Domain Types
- * ───────────────────────
- * Type system for the Probex Analytics module.
- *
- * Architecture:
- *   Analytics are organized into domains, each with its own:
- *     - Data type (the metric shape)
- *     - Time-series point type (for charting)
- *     - Summary type (for stat cards)
- *
- * All analytics are Bitcoin-focused and Consensus-aware:
- *   - Every metric can be correlated with consensus signals
- *   - Institutional vs retail breakdown is available where applicable
- */
+// Analytics domain types. Each domain has a data type, a time-series point (for
+// charts), and a summary (for stat cards); all are Bitcoin- and consensus-aware.
 
 import type { BitcoinSegment } from './market'
 import type { Bias, SignalLevel, MarketStructure } from './consensus'

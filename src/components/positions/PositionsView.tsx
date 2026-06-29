@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * PositionsView —.2
- * ───────────────────────────
- * Dedicated /dashboard/positions page. Reuses the existing
- * OpenPositions and SettledPositions components with a
- * tab switcher driven by portfolioStore.positionsTab.
- */
+// Dedicated /dashboard/positions page. Reuses the existing
+// OpenPositions and SettledPositions components with a
+// tab switcher driven by portfolioStore.positionsTab.
 
 import { PageHeader }        from '@/components/ui/PageHeader'
 import { OpenPositions }     from './OpenPositions'

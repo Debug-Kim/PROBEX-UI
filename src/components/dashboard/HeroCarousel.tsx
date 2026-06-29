@@ -1,14 +1,10 @@
 'use client'
 
-/**
- * HeroCarousel —.1
- * ──────────────────────────
- * The primary visual focal point of the Probex dashboard.
- * Each slide is a full market intelligence brief: thesis, probability,
- * consensus breakdown, volume, resolution, mini chart, and activity pulse.
- *
- * Design: prediction market terminal, not a marketing banner.
- */
+// The primary visual focal point of the Probex dashboard.
+// Each slide is a full market intelligence brief: thesis, probability,
+// consensus breakdown, volume, resolution, mini chart, and activity pulse.
+//
+// Design: prediction market terminal, not a marketing banner.
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter }                                           from 'next/navigation'

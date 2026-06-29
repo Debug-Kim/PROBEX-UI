@@ -1,14 +1,10 @@
 'use client'
 
-/**
- * Service hooks — the React seam over the service registry
- * ────────────────────────────────────────────────────────
- * Each hook returns a ServiceState<T> ({ status, data, error }) covering all
- * four UI states. In mock mode the synchronous `peek*` snapshot seeds the very
- * first render, so there is NO loading flash and existing screens render
- * identically. When a live backend has no snapshot, the same hook surfaces
- * 'loading' → 'success' | 'empty' | 'error'.
- */
+// Each hook returns a ServiceState<T> ({ status, data, error }) covering all
+// four UI states. In mock mode the synchronous `peek*` snapshot seeds the very
+// first render, so there is NO loading flash and existing screens render
+// identically. When a live backend has no snapshot, the same hook surfaces
+// 'loading' → 'success' | 'empty' | 'error'.
 
 import { useEffect, useState, type DependencyList } from 'react'
 import { services } from '@/lib/services'

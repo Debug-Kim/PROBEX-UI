@@ -1,9 +1,5 @@
-/**
- * Activity Feed Mock Data
- * ───────────────────────
- * Platform-wide activity events for the dashboard feed.
- * Deterministic base data + time-relative display.
- */
+// Platform-wide activity events for the dashboard feed.
+// Deterministic base data + time-relative display.
 
 import type { MarketId } from '@/types/branded'
 import { asMarketId } from '@/types/branded'

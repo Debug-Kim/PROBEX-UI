@@ -218,12 +218,7 @@ export function consensusScoreColorVar(score: number): string {
   return 'var(--probex-consensus-low)'
 }
 
-/**
- * Returns the themed color var for a YES probability (0–1), using the standard
- * positive / warning / negative bands. Centralizes the green/amber/red mapping
- * that was previously hardcoded as hex across market surfaces (keeps colors
- * theme-aware). Thresholds are unchanged display bands — not trading logic.
- */
+/** Themed color var for a YES probability (0–1). Display bands, not trading logic. */
 export function probabilityColorVar(prob: number): string {
   if (prob >= 0.65) return 'var(--probex-positive)'
   if (prob >= 0.45) return 'var(--probex-warning)'
@@ -232,7 +227,7 @@ export function probabilityColorVar(prob: number): string {
 
 // ─── Async result helpers ──────────────────────────────────────────────────
 
-/** Discriminated union result type (architecture review recommendation). */
+/** Discriminated union for async state. */
 export type AsyncResult<T> =
   | { status: 'idle' }
   | { status: 'loading' }

@@ -1,17 +1,6 @@
-/**
- * StreamClient
- *
- * Transport-agnostic real-time client. Owns:
- *   - Single IMarketStreamService instance
- *   - Subscription lifecycle (subscribe on mount, unsubscribe on unmount)
- *   - Heartbeat / pong latency tracking
- *   - Sequence-gap detection → resync
- *   - Exponential backoff with jitter on disconnect
- *   - Event dispatch to registered handlers
- *
- * Does NOT know whether the underlying provider is mock or real.
- * That decision lives entirely in lib/realtime/providers/index.ts.
- */
+// Transport-agnostic real-time client: owns subscription lifecycle, heartbeat/
+// latency, sequence-gap resync, and jittered reconnect backoff. Provider choice
+// (mock vs. real) lives in lib/realtime/providers — this class is unaware of it.
 
 import type {
   IMarketStreamService,
@@ -182,18 +171,15 @@ export class StreamClient {
     this.heartbeatTimer = setInterval(() => {
       if (this.status !== 'open' || this.destroyed) return
       this.pingTs = Date.now()
-      // Emit a synthetic ping event that the provider echoes as pong
+      // Synthetic ping; real ping/pong is the provider's responsibility (the mock
+      // provider echoes internally), so this event is built but not dispatched here.
       const pingEvent: StreamEvent = {
-        type: 'pong', // mock provider immediately echoes
+        type: 'pong',
         seq: 0,
         ts: this.pingTs,
         data: { ts: this.pingTs },
       }
-      // Directly dispatch ping to provider via a convention:
-      // provider.subscribe([]) with zero channels is a no-op;
-      // providers that support ping call it via their own mechanism.
-      // For the mock provider this is handled internally.
-      void pingEvent // suppress unused-var lint; actual ping goes via provider
+      void pingEvent // suppress unused-var lint
     }, this.options.heartbeatIntervalMs)
   }
 

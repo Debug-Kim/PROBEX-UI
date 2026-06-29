@@ -1,10 +1,6 @@
-/**
- * Web3 wallet and chain type definitions
- * ─────────────────────────────────────
- * These types are used by web3 hooks, wallet service, and contract interactions.
- * Defined here to decouple from any specific wallet library (wagmi, ethers, etc.)
- * so the UI layer never needs to import from wallet SDKs directly.
- */
+// These types are used by web3 hooks, wallet service, and contract interactions.
+// Defined here to decouple from any specific wallet library (wagmi, ethers, etc.)
+// so the UI layer never needs to import from wallet SDKs directly.
 
 import type { WalletAddress, TxHash, BlockNumber } from '@/types/branded'
 

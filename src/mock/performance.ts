@@ -1,10 +1,5 @@
-/**
- * Portfolio Performance History
- * ──────────────────────────────
- * Time-series data for portfolio value and P&L charts.
- * Starts at account inception (Jan 2026) and trends to present.
- * replace with IPortfolioService.getPerformanceHistory.
- */
+// Portfolio value / P&L time-series from account inception (Jan 2026) to present.
+// Replace with IPortfolioService.getPerformanceHistory.
 
 export interface PerformancePoint {
   timestamp:      number   // Unix ms

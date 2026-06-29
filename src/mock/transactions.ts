@@ -1,12 +1,8 @@
-/**
- * Transaction History Mock Data
- * ───────────────────────────────
- * Combines funding transactions (deposit/withdrawal) with trading
- * settlements already referenced in mock/portfolioActivity.ts.
- *
- * replace with IWalletService.getTransactions backed by
- * Polygon transaction history + indexer.
- */
+// Combines funding transactions (deposit/withdrawal) with trading
+// settlements already referenced in mock/portfolioActivity.ts.
+//
+// replace with IWalletService.getTransactions backed by
+// Polygon transaction history + indexer.
 
 import type { Transaction, TransactionType, TransactionStatus } from '@/types/wallet'
 import { asTransactionId, asTxHash, asMarketId } from '@/types/branded'

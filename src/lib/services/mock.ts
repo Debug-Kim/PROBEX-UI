@@ -1,11 +1,7 @@
-/**
- * Mock service implementations
- * ────────────────────────────
- * Each class implements its interface by wrapping the EXISTING mock data — no
- * data or logic is duplicated. Async methods resolve immediately; the `peek*`
- * snapshots back the synchronous-first hooks so the UI never flashes a loading
- * state in mock mode. A live implementation swaps in behind the same registry.
- */
+// Each class implements its interface by wrapping the EXISTING mock data — no
+// data or logic is duplicated. Async methods resolve immediately; the `peek*`
+// snapshots back the synchronous-first hooks so the UI never flashes a loading
+// state in mock mode. A live implementation swaps in behind the same registry.
 
 import { ok, ServiceException, type ApiResult, type PaginatedResponse } from './response'
 import type {

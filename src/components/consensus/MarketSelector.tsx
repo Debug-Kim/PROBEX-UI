@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * MarketSelector
- * ──────────────
- * Searchable market picker for the Consensus Engine page — the entry point
- * that was previously missing. Keyboard accessible (combobox pattern).
- */
+// Searchable market picker for the Consensus Engine page — the entry point
+// that was previously missing. Keyboard accessible (combobox pattern).
 
 import { useState } from 'react'
 import { MOCK_CONSENSUS_MAP } from '@/mock/consensus'

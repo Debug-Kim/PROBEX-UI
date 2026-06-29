@@ -1,9 +1,5 @@
-/**
- * Funding Methods Mock Data
- * ──────────────────────────
- * Available deposit/withdrawal methods.
- * backed by real payment processor integrations.
- */
+// Available deposit/withdrawal methods.
+// backed by real payment processor integrations.
 
 export type FundingMethodId = 'usdc-polygon' | 'crypto-transfer' | 'paypal' | 'bank-transfer'
 

@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * ActivityDrawer
- * ──────────────
- * Global right-hand slide-over that surfaces the platform Activity Feed from
- * anywhere. Reuses the existing ActivityFeed component — no feed logic is
- * duplicated. Mounted once in DashboardLayout.
- */
+// Global right-hand slide-over that surfaces the platform Activity Feed from
+// anywhere. Reuses the existing ActivityFeed component — no feed logic is
+// duplicated. Mounted once in DashboardLayout.
 
 import { useEffect } from 'react'
 import { useUIStore } from '@/store/uiStore'

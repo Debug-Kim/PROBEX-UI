@@ -1,12 +1,8 @@
-/**
- * Portfolio Activity Mock Data
- * ──────────────────────────────
- * Account-level activity feed: position opens, closes, settlements,
- * payouts, watchlist actions, and consensus signal alerts that affected
- * the user's open positions.
- *
- * replace with IPortfolioService.getActivity.
- */
+// Account-level activity feed: position opens, closes, settlements,
+// payouts, watchlist actions, and consensus signal alerts that affected
+// the user's open positions.
+//
+// replace with IPortfolioService.getActivity.
 
 import type { MarketId, PositionId } from '@/types/branded'
 import { asMarketId, asPositionId }  from '@/types/branded'

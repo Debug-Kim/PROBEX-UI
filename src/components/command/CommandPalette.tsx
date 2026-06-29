@@ -1,17 +1,13 @@
 'use client'
 
-/**
- * CommandPalette
- * ──────────────
- * Global ⌘K command palette and unified search. One surface to:
- *   • jump to any page (Navigation)
- *   • search every market (Markets)
- *   • run quick actions (Actions)
- *
- * Mounted once globally (DashboardLayout). The top-bar SearchBar and ⌘K both
- * open it, so search is unified rather than duplicated. Fully keyboard driven:
- * ↑/↓ to move, ↵ to run, esc to close.
- */
+// Global ⌘K command palette and unified search. One surface to:
+//   • jump to any page (Navigation)
+//   • search every market (Markets)
+//   • run quick actions (Actions)
+//
+// Mounted once globally (DashboardLayout). The top-bar SearchBar and ⌘K both
+// open it, so search is unified rather than duplicated. Fully keyboard driven:
+// ↑/↓ to move, ↵ to run, esc to close.
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'

@@ -13,9 +13,7 @@ const inter = Inter({
   subsets:  ['latin'],
   variable: '--font-inter',
   display:  'swap',
-  // Preload the most common weights
   weight:   ['400', '500', '600', '700', '800'],
-  // Preload for performance
   preload:  true,
 })
 
@@ -84,15 +82,9 @@ export const viewport: Viewport = {
 
 // ─── Theme SSR resolution ─────────────────────────────────────────────────
 
-/**
- * Reads the persisted theme from the request cookie.
- * This allows the server to set the correct `data-theme` attribute
- * on `<html>` before the page is sent to the client — eliminating
- * the flash of default theme on first paint.
- *
- * Cookie format: { "state": { "theme": "midnight" } }
- * Set by Zustand persist middleware under key "probex-theme".
- */
+// Reads the persisted theme from the request cookie so the server can set
+// data-theme before first paint (no theme flash). Cookie "probex-theme" is
+// written by the Zustand persist middleware as { state: { theme } }.
 async function resolveInitialTheme(): Promise<ThemeName> {
   try {
     const cookieStore = await cookies()

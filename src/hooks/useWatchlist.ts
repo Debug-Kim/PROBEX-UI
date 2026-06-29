@@ -1,26 +1,10 @@
 'use client'
 
-/**
- * useWatchlist
- * ────────────
- * Reactive access to the user's market watchlist.
- *
- * Persistence contract (unchanged from WatchlistButton):
- *   - sessionStorage key: 'probex_watchlist'
- *   - value: JSON-encoded string[] of market IDs
- *
- * This hook is the single source of truth for the Watchlist page. It reads
- * and writes the exact same storage contract that WatchlistButton uses on
- * MarketCard / MarketHeader, so adding a star anywhere and viewing the
- * watchlist stay in sync within the session.
- *
- * SSR-safe: storage is only read after mount (isHydrated guards first paint
- * so the empty state never flashes during hydration).
- *
- * Sync: listens for the native `storage` event (cross-tab) and a lightweight
- * same-tab `probex:watchlist` event dispatched on every local mutation, so
- * multiple consumers reconcile without prop drilling.
- */
+// Single source of truth for the watchlist. Persists a JSON string[] of market IDs
+// under sessionStorage 'probex_watchlist' (same contract as WatchlistButton).
+// SSR-safe: storage is read after mount (isHydrated guards the first paint). Syncs
+// across tabs via the `storage` event and same-tab via a `probex:watchlist` event
+// dispatched on each mutation.
 
 import { useCallback, useEffect, useState } from 'react'
 

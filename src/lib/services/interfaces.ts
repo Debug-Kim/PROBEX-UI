@@ -1,12 +1,8 @@
-/**
- * Service interfaces — the integration contract
- * ─────────────────────────────────────────────
- * Eight domain services. Each method is async (the backend contract); each
- * read also exposes an optional synchronous `peek*` that returns an immediate
- * snapshot when one is available (the mock returns data; a live impl returns
- * cached-or-null, which drives the loading state). Real-time streaming is NOT
- * duplicated here — it remains in lib/realtime.
- */
+// Eight domain services. Each method is async (the backend contract); each
+// read also exposes an optional synchronous `peek*` that returns an immediate
+// snapshot when one is available (the mock returns data; a live impl returns
+// cached-or-null, which drives the loading state). Real-time streaming is NOT
+// duplicated here — it remains in lib/realtime.
 
 import type { ApiResult, PaginatedResponse } from './response'
 

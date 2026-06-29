@@ -2,25 +2,9 @@
 
 import type { ReactNode } from 'react'
 
-/**
- * MarkdownBody — dependency-free Markdown renderer for ResearchReport.body content.
- *
- * Syntax handled (exactly what appears in the 6 mock reports):
- *   ## Heading 2      → <h2>
- *   ### Heading 3     → <h3>
- *   **bold**          → <strong>
- *   *italic*          → <em>
- *   - list item       → <ul><li>
- *   | table | row |   → <table>
- *   blank line        → paragraph break
- *   plain text        → <p>
- *
- * Heading hierarchy: the report title is h1 in ResearchReader, so body headings
- * start at h2 (## → h2, ### → h3). No h1 tags are emitted here.
- *
- * Empirically verified: isolates headings that are immediately followed by list
- * items (the "## Key Holders" failure mode) via the isolateHeadings() pre-pass.
- */
+// Dependency-free Markdown renderer for ResearchReport.body. Handles only what the
+// reports use: ## → h2, ### → h3, **bold**, *italic*, - lists, | tables |, and blank
+// lines as paragraph breaks. Body headings start at h2 (the report title is the h1).
 
 interface MarkdownBodyProps {
   content: string
@@ -30,9 +14,8 @@ interface MarkdownBodyProps {
 // ─── Inline renderer ──────────────────────────────────────────────────────────
 
 function renderInline(text: string): ReactNode[] {
-  // Process **bold** and *italic* inline markers
   const parts: ReactNode[] = []
-  // Combined regex: **bold** | *italic*
+  // Combined matcher: **bold** | *italic*
   const pattern = /(\*\*(.+?)\*\*)|(\*(.+?)\*)/g
   let lastIndex = 0
   let match: RegExpExecArray | null
@@ -42,10 +25,8 @@ function renderInline(text: string): ReactNode[] {
       parts.push(text.slice(lastIndex, match.index))
     }
     if (match[1]) {
-      // **bold**
       parts.push(<strong key={match.index}>{match[2]}</strong>)
     } else if (match[3]) {
-      // *italic*
       parts.push(<em key={match.index}>{match[4]}</em>)
     }
     lastIndex = pattern.lastIndex

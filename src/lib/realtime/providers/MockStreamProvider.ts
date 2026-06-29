@@ -1,13 +1,7 @@
-/**
- * MockStreamProvider
- *
- * Implements IMarketStreamService using a deterministic tick scheduler.
- * Driven by the existing mock/marketHistory.ts generators so it never
- * invents new market math — it just advances the generators and emits deltas.
- *
- * Seed is fixed so behaviour is reproducible in QA / test mode.
- * Tick cadence: 4 Hz (250 ms) — coalesced by StreamClient / liveStore.
- */
+// IMarketStreamService backed by a deterministic tick scheduler driven by the
+// mock/marketHistory.ts generators (no new market math — it advances them and
+// emits deltas). Fixed seed for reproducible QA; 4 Hz cadence, coalesced
+// downstream by StreamClient / liveStore.
 
 import type {
   IMarketStreamService,

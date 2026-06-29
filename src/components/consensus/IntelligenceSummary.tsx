@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * IntelligenceSummary
- * ───────────────────
- * The narrative hero of the Consensus Engine page — explains what the market
- * means, not just its probability. Pairs the consensus gauge with a generated
- * plain-English reading and verdict.
- */
+// The narrative hero of the Consensus Engine page — explains what the market
+// means, not just its probability. Pairs the consensus gauge with a generated
+// plain-English reading and verdict.
 
 import { ConsensusScoreCard } from './ConsensusScoreCard'
 import type { IntelligenceSummary as Summary } from '@/mock/intelligence'

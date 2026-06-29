@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * ConfidenceEvolution
- * ───────────────────
- * How the engine's prediction confidence has evolved, with an uncertainty band.
- * Reuses the analytics card + tooltip primitives for visual consistency.
- */
+// How the engine's prediction confidence has evolved, with an uncertainty band.
+// Reuses the analytics card + tooltip primitives for visual consistency.
 
 import { useMemo } from 'react'
 import {

@@ -1,9 +1,5 @@
-/**
- * Notification Mock Data
- * ──────────────────────
- * Drives the Notification Center until a real notification service ships.
- * Shapes mirror platform events (consensus shifts, resolutions, research).
- */
+// Drives the Notification Center until a real notification service ships.
+// Shapes mirror platform events (consensus shifts, resolutions, research).
 
 import { ROUTES, MARKET_DETAIL_PATH } from '@/config/constants'
 

@@ -1,15 +1,11 @@
 'use client'
 
-/**
- * WatchlistTable
- * ──────────────
- * List/table view for the watchlist. Each row links to the market detail
- * page; the trailing remove control is wired to the watchlist hook and stops
- * propagation so it never triggers navigation.
- *
- * Static by design — the watchlist does not subscribe to live ticks (unlike
- * MarketTable), keeping the page lightweight.
- */
+// List/table view for the watchlist. Each row links to the market detail
+// page; the trailing remove control is wired to the watchlist hook and stops
+// propagation so it never triggers navigation.
+//
+// Static by design — the watchlist does not subscribe to live ticks (unlike
+// MarketTable), keeping the page lightweight.
 
 import { useRouter }            from 'next/navigation'
 import { cn, formatCompact }    from '@/lib/utils'

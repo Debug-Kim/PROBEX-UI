@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * MarketCard —.1
- * ──────────────────────────
- * Information-rich prediction market card.
- * Adds: mini sparkline, YES/NO probability bars, volume, resolution date,
- * category badge, glassmorphism surface, elevated hover.
- */
+// Information-rich prediction market card.
+// Adds: mini sparkline, YES/NO probability bars, volume, resolution date,
+// category badge, glassmorphism surface, elevated hover.
 
 import Link                                              from 'next/link'
 import { useMemo }                                       from 'react'

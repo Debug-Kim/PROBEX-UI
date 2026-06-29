@@ -1,17 +1,13 @@
 'use client'
 
-/**
- * WatchlistCard
- * ─────────────
- * Grid-view card for a single watchlisted market.
- *
- * Composes the shared display atoms (ConsensusBadge, SentimentIndicator) for
- * visual consistency with the rest of the app, and adds an explicit remove
- * control wired to the watchlist hook so removal is immediately reactive.
- *
- * The card body links to the market detail page; the remove button stops
- * propagation so it never triggers navigation.
- */
+// Grid-view card for a single watchlisted market.
+//
+// Composes the shared display atoms (ConsensusBadge, SentimentIndicator) for
+// visual consistency with the rest of the app, and adds an explicit remove
+// control wired to the watchlist hook so removal is immediately reactive.
+//
+// The card body links to the market detail page; the remove button stops
+// propagation so it never triggers navigation.
 
 import Link                       from 'next/link'
 import { cn, formatCompact }      from '@/lib/utils'

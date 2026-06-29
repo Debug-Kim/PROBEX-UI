@@ -1,11 +1,5 @@
-/**
- * Market Service
- * ──────────────
- * Service interface for all market data operations.
- * Interface definition only.
- * Mock implementation + hook integration.
- * Live implementation.
- */
+// Service interface for all market data operations (interface only; mock/live
+// implementations live elsewhere). Components access it via hooks, not directly.
 
 import type { MarketId } from '@/types/branded'
 import type {
@@ -20,41 +14,22 @@ import type {
 
 export type Unsubscribe = () => void
 
-/**
- * IMarketService
- * ──────────────
- * All market data access goes through this interface.
- * Components use hooks (useMarkets, useMarket) which call this service.
- */
+/** All market data access goes through this interface (mock or live). */
 export interface IMarketService {
-  /**
-   * Fetch a paginated list of markets with optional filters.
-   * Cursor-based pagination (architecture review recommendation).
-   */
+  /** Cursor-paginated market list with optional filters. */
   getMarkets(filters?: MarketFilters): Promise<PaginatedResponse<Market>>
 
-  /**
-   * Fetch a single market by ID.
-   */
   getMarket(id: MarketId): Promise<Market>
 
-  /**
-   * Fetch historical price/probability data for charting.
-   */
+  /** Historical price/probability series for charting. */
   getMarketHistory(
     id:    MarketId,
     range: TimeRange,
   ): Promise<PricePoint[]>
 
-  /**
-   * Fetch the current order book for a market.
-   */
   getOrderBook(id: MarketId): Promise<OrderBook>
 
-  /**
-   * Subscribe to real-time market updates.
-   * Returns an unsubscribe function.
-   */
+  /** Subscribe to live updates; call the returned unsubscribe to stop. */
   subscribeToMarket(
     id:       MarketId,
     callback: (update: MarketUpdate) => void,

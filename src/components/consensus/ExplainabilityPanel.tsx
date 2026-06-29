@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * ExplainabilityPanel
- * ───────────────────
- * Breaks the consensus score into its weighted drivers so users understand
- * *why* the engine reads the market the way it does.
- */
+// Breaks the consensus score into its weighted drivers so users understand
+// *why* the engine reads the market the way it does.
 
 import { AnalyticsCard } from '@/components/analytics/shared'
 import type { ExplainDriver } from '@/mock/intelligence'

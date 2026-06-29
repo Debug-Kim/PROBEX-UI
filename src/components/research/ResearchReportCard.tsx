@@ -1,29 +1,7 @@
 'use client'
 
-/**
- * ResearchReportCard
- * ───────────────────
- * Displays a single research report as a clickable card.
- * Used in ResearchOverview grids, ResearchSidebar lists, and ResearchBookmarks.
- *
- * Variants:
- *   'standard' — full card with title, summary excerpt, author, confidence, tags
- *   'compact'  — single-line row for sidebar and bookmarks list
- *   'featured' — wide card with full summary for hero placement
- *
- * Visual hierarchy within standard card:
- *   1. Category badge + format label
- *   2. Sentiment indicator (strongly-bullish → strongly-bearish colour band)
- *   3. Title (font-semibold, 2-line clamp)
- *   4. Summary excerpt (3-line clamp)
- *   5. Footer: author · confidence badge · read-time · save button
- *
- * Accessibility:
- *   - role="article" on the card element
- *   - aria-label describes the report title
- *   - Save button: aria-label="Save report" / "Unsave report"
- *   - Unread indicator: aria-label="Unread"
- */
+// A single research report rendered as a clickable card. Three variants:
+// 'standard' (full card), 'compact' (single-line row), and 'featured' (wide hero).
 
 import { cn, formatRelativeTime } from '@/lib/utils'
 import { useResearchStore }       from '@/store/researchStore'

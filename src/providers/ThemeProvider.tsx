@@ -6,35 +6,18 @@ import { DEFAULT_THEME } from '@/types/theme'
 
 interface ThemeProviderProps {
   children:     ReactNode
-  /**
-   * Initial theme resolved server-side from cookie.
-   * Prevents flash of default theme on first paint.
-   */
+  /** Server-resolved theme (from cookie) — prevents first-paint flash. */
   initialTheme?: string | undefined
 }
 
-/**
- * ThemeProvider
- * ─────────────
- * Applies the active Probex theme as a `data-theme` attribute on `<html>`.
- * All CSS variable overrides in probex-tokens.css are scoped to this attribute.
- *
- * Hydration safety:
- *   The server renders with `initialTheme` (from cookie) set directly on <html>
- *   in the root layout. On mount, this provider syncs the persisted Zustand store
- *   value to the DOM — avoiding a flash of incorrect theme.
- *
- * Not using `next-themes` for Probex because:
- *   - Probex themes are not just dark/light: they are full token-set swaps.
- *   - We need direct control over which CSS variables are applied.
- *   - next-themes adds a `class` attribute; Probex uses `data-theme`.
- */
+// Applies the active theme as `data-theme` on <html>; probex-tokens.css scopes all
+// CSS-variable overrides to that attribute. Not using next-themes: Probex themes are
+// full token-set swaps (not just dark/light) and need data-theme, not a class.
 export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
   const { theme, setTheme } = useThemeStore()
 
-  // On first mount: apply the persisted theme to DOM.
-  // The store's onRehydrateStorage callback also does this, but this
-  // useEffect ensures it fires even if rehydration was synchronous.
+  // Apply persisted theme on mount — covers synchronous rehydration that the
+  // store's onRehydrateStorage callback may miss.
   useEffect(() => {
     const resolvedTheme = theme ?? initialTheme ?? DEFAULT_THEME
     document.documentElement.setAttribute('data-theme', resolvedTheme)

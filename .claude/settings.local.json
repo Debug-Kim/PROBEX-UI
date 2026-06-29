@@ -17,7 +17,13 @@
       "Bash(echo \"=== responsive utility e.g. .md\\\\\\\\:grid-cols or lg: ===\")",
       "Bash(grep -coE \"lg\\\\\\\\\\\\\\\\:|md\\\\\\\\\\\\\\\\:\" /tmp/dev.css)",
       "Bash(npx next *)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(echo \"exit: $?\")",
+      "Bash(grep -rlE \"^\\\\s*\\\\*\\\\s*─{3,}\" src --include=\"*.ts\" --include=\"*.tsx\")",
+      "Bash(node \"C:/Users/raymo/AppData/Local/Temp/claude/C--Dev-QUBO-PROBEX/31e3326d-de66-43ab-8d4d-1cfc903bcb2a/scratchpad/trim-headers.mjs\")",
+      "Bash(node \"C:/Users/raymo/AppData/Local/Temp/claude/C--Dev-QUBO-PROBEX/31e3326d-de66-43ab-8d4d-1cfc903bcb2a/scratchpad/trim-headers.mjs\" --apply)",
+      "Bash(awk '{add+=$1; del+=$2} END {print \"added:\", add, \" removed:\", del, \" net:\", add-del}')",
+      "Bash(grep -vE \"^\\\\+\\\\s*\\(//|/\\\\*|\\\\*|\\\\*/|$\\)\")"
     ]
   }
 }

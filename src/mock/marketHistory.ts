@@ -1,10 +1,5 @@
-/**
- * Market Price History Mock Data
- * ───────────────────────────────
- * Generates deterministic probability and volume history for any market ID.
- * Same seed → same chart shape every render.
- * replace with IMarketService.getMarketHistory API call.
- */
+// Deterministic probability/volume history for any market ID (same seed → same
+// chart shape). Replace with IMarketService.getMarketHistory.
 
 import type { PricePoint, TimeRange } from '@/types/market'
 

@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * uiStore
- * ───────
- * Ephemeral global UI overlay state — the command palette and the global
- * activity drawer. Kept separate from feature stores (markets, theme, …) and
- * intentionally not persisted: these are transient surfaces.
- */
+// Ephemeral global UI overlay state — the command palette and the global
+// activity drawer. Kept separate from feature stores (markets, theme, …) and
+// intentionally not persisted: these are transient surfaces.
 
 import { create } from 'zustand'
 

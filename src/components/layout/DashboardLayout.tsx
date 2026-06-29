@@ -12,36 +12,9 @@ interface DashboardLayoutProps {
   children: ReactNode
 }
 
-/**
- * DashboardLayout
- * ───────────────
- * The three-region layout used by all dashboard pages.
- *
- * Regions:
- *
- *   ┌────────────────────────────────────────────┐
- *   │  TopNavigation  (height: 52px, fixed)      │
- *   ├──────────┬─────────────────────────────────┤
- *   │          │                                 │
- *   │ Sidebar  │   Main content area             │
- *   │ (200px   │   (flex-1, overflow-y: auto)    │
- *   │ or 52px  │                                 │
- *   │ collapsed│                                 │
- *   │          │                                 │
- *   └──────────┴─────────────────────────────────┘
- *
- * Layout strategy:
- *   - The outer wrapper is `h-screen flex flex-col` — full viewport height.
- *   - TopNavigation is fixed height and never scrolls.
- *   - The body row below nav is `flex-1 flex overflow-hidden`.
- *   - Sidebar is fixed width, full height, non-scrolling (inner nav scrolls).
- *   - Main content area is `flex-1 overflow-y-auto` — only the main scrolls.
- *
- * Responsive:
- *   - Desktop (lg+): sidebar always visible (collapsed or expanded).
- *   - Mobile (<lg): sidebar renders as an overlay drawer.
- *     The overlay is toggled via `isMobileOpen` in SidebarStore.
- */
+// Three-region dashboard shell: fixed TopNavigation, fixed-width Sidebar (an
+// overlay drawer on mobile via SidebarStore.isMobileOpen), and a flex-1 main
+// area — only the main content scrolls.
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const isMobileOpen = useMobileOpen()
   const closeMobile  = useSidebarStore((s) => s.closeMobile)

@@ -1,22 +1,18 @@
 'use client'
 
-/**
- * ResearchBookmarks
- * ──────────────────
- * Displays the user's saved / bookmarked research reports.
- * Used as a dedicated section on the Research Terminal or as a sidebar widget.
- *
- * Sections:
- *   1. Saved reports list  — compact ResearchReportCard rows
- *   2. Read history count  — "You've read X of Y reports" progress indicator
- *   3. Empty state         — when no reports are saved
- *
- * All state from researchStore:
- *   savedReportIds  → which reports are bookmarked
- *   readReportIds   → which reports have been opened/marked-read
- *   unsaveReport    → called by each card's save button
- *   openReport      → opens the report in ResearchReader
- */
+// Displays the user's saved / bookmarked research reports.
+// Used as a dedicated section on the Research Terminal or as a sidebar widget.
+//
+// Sections:
+//   1. Saved reports list  — compact ResearchReportCard rows
+//   2. Read history count  — "You've read X of Y reports" progress indicator
+//   3. Empty state         — when no reports are saved
+//
+// All state from researchStore:
+//   savedReportIds  → which reports are bookmarked
+//   readReportIds   → which reports have been opened/marked-read
+//   unsaveReport    → called by each card's save button
+//   openReport      → opens the report in ResearchReader
 
 import { cn }                 from '@/lib/utils'
 import { useResearchStore }   from '@/store/researchStore'

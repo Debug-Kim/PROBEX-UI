@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * RecommendationCard
- * ──────────────────
- * Surfaces the trading layer's formal recommendation — reused verbatim from the
- * recommendation engine (selectMergedMarket → MergedMarketView.recommendation).
- * No recommendation logic is re-implemented here; this is presentation only.
- */
+// Surfaces the trading layer's formal recommendation — reused verbatim from the
+// recommendation engine (selectMergedMarket → MergedMarketView.recommendation).
+// No recommendation logic is re-implemented here; this is presentation only.
 
 import { LiveIndicator } from '@/components/live/LiveIndicator'
 import type { RecommendationOutput, RecommendationLevel } from '@/lib/realtime/types'

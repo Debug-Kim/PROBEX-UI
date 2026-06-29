@@ -1,14 +1,10 @@
-/**
- * ProbexMark
- * ──────────
- * Option 2 brand mark — folded-ribbon "P" in the blue→purple gradient on a
- * dark rounded square. Inline SVG for sidebar, topnav, footer, and brand
- * contexts. Geometry mirrors public/probex-icon.svg (the favicon source),
- * scaled to a 100×100 box.
- *
- * Gradient: #3B82F6 blue → #6D5EF7 purple
- * Background: #0B1220 deep navy
- */
+// Option 2 brand mark — folded-ribbon "P" in the blue→purple gradient on a
+// dark rounded square. Inline SVG for sidebar, topnav, footer, and brand
+// contexts. Geometry mirrors public/probex-icon.svg (the favicon source),
+// scaled to a 100×100 box.
+//
+// Gradient: #3B82F6 blue → #6D5EF7 purple
+// Background: #0B1220 deep navy
 
 interface ProbexMarkProps {
   size?: number

@@ -1,21 +1,6 @@
-/**
- * Analytics Mock Data
- * ────────────────────
- * Deterministic time-series data for all analytics domains.
- * Same seed → same values every render.
- *
- * Domains covered:
- *   1. Consensus accuracy + strength + confidence
- *   2. Signal performance by type
- *   3. Institutional flow (accumulation/distribution)
- *   4. ETF inflows (modelled on 2026 data trends)
- *   5. On-chain signals (MVRV, SOPR, exchange reserves, hashrate)
- *   6. Market activity (active markets, volume, resolutions)
- *   7. Segment performance
- *   8. BTC macro context (DXY correlation, rate sensitivity)
- *
- * replace with IAnalyticsService backed by indexer + consensus engine API.
- */
+// Deterministic time-series mock data across all analytics domains (consensus,
+// signal performance, institutional flow, ETF inflows, on-chain signals, market
+// activity, segment performance, macro). Replace with IAnalyticsService.
 
 import type {
   ConsensusAccuracyPoint,

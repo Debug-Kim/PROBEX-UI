@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * HistoricalSnapshots
- * ───────────────────
- * Point-in-time consensus readings over the recent window — a "rewind" of the
- * engine's state, distinct from the continuous timeline.
- */
+// Point-in-time consensus readings over the recent window — a "rewind" of the
+// engine's state, distinct from the continuous timeline.
 
 import { useMemo } from 'react'
 import { AnalyticsCard } from '@/components/analytics/shared'

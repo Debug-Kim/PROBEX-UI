@@ -1,11 +1,7 @@
 'use client'
 
-/**
- * AppearanceSettings
- * ─────────────────
- * Theme selection panel within /dashboard/settings.
- * All 5 Probex themes available with live preview swatches.
- */
+// Theme selection panel within /dashboard/settings.
+// All 5 Probex themes available with live preview swatches.
 
 import { useThemeStore }           from '@/store/themeStore'
 import { THEME_NAMES, THEME_META } from '@/types/theme'

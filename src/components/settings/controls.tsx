@@ -1,12 +1,8 @@
 'use client'
 
-/**
- * Settings control primitives
- * ───────────────────────────
- * Reusable, keyboard-accessible building blocks for the Settings platform.
- * Styled exclusively with existing design tokens (var(--probex-*)) and the
- * shared Card component, so every section stays visually consistent.
- */
+// Reusable, keyboard-accessible building blocks for the Settings platform.
+// Styled exclusively with existing design tokens (var(--probex-*)) and the
+// shared Card component, so every section stays visually consistent.
 
 import type { ReactNode } from 'react'
 import { Card } from '@/components/ui/Card'

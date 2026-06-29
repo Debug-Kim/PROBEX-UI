@@ -1,12 +1,8 @@
-/**
- * Service registry — the single integration swap point
- * ────────────────────────────────────────────────────
- * Components and hooks import `services` and never touch mock data or fetch()
- * directly. Flipping NEXT_PUBLIC_API_MODE=live (config/env.ts) is the only
- * change required once live services are implemented behind these interfaces.
- *
- *   components / hooks → services.<domain>.<method>() → mock | live impl
- */
+// Components and hooks import `services` and never touch mock data or fetch()
+// directly. Flipping NEXT_PUBLIC_API_MODE=live (config/env.ts) is the only
+// change required once live services are implemented behind these interfaces.
+//
+//   components / hooks → services.<domain>.<method>() → mock | live impl
 
 import { env } from '@/config/env'
 import { mockServices } from './mock'

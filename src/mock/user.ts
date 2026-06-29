@@ -1,9 +1,5 @@
-/**
- * Mock User Data
- * ──────────────
- * Demo user profiles for UI development.
- * replaced by real auth service.
- */
+// Demo user profiles for UI development.
+// replaced by real auth service.
 
 import type { UserProfile } from '@/types/user'
 import { asUserId }         from '@/types/branded'

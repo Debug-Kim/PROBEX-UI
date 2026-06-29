@@ -1,12 +1,8 @@
-/**
- * Prediction Intelligence Mock Layer
- * ──────────────────────────────────
- * Derives narrative + explainability intelligence from the existing consensus
- * dataset (mock/consensus.ts). This is the only *new* mock data introduced for
- * the Consensus Engine flagship — everything else reuses existing generators.
- *
- * Deterministic: same market → same output every render.
- */
+// Derives narrative + explainability intelligence from the existing consensus
+// dataset (mock/consensus.ts). This is the only *new* mock data introduced for
+// the Consensus Engine flagship — everything else reuses existing generators.
+//
+// Deterministic: same market → same output every render.
 
 import type { ConsensusState, Bias, MarketStructure } from '@/types/consensus'
 import type { Market } from '@/types/market'

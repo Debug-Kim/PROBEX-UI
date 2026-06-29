@@ -1,15 +1,7 @@
-/**
- * liveStore
- *
- * Holds all real-time state: connection status, per-market live deltas,
- * global consensus delta, and the bounded live activity ring buffer.
- *
- * NOT persisted — volatile tick cache must never survive a page reload.
- * Only user prefs (autoConnect, tickerEnabled) are persisted.
- *
- * Coalesced flush: updates batch via a 100 ms interval before committing
- * to Zustand so a burst of ticks produces one render pass, not N.
- */
+// Real-time state: connection status, per-market deltas, global consensus delta,
+// and a bounded activity ring buffer. Volatile — the tick cache is never persisted
+// (only user prefs are). Ticks coalesce on a 100ms flush so a burst yields one
+// render pass, not N.
 
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'

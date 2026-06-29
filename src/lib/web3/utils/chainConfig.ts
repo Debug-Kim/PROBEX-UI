@@ -1,14 +1,10 @@
-/**
- * Polygon chain configurations
- * ─────────────────────────────
- * Centralised network config for all Polygon interactions.
- * Never hardcode RPC URLs or chain IDs in components.
- *
- * Supported networks:
- *   - Polygon Mainnet (chainId: 137)
- *   - Polygon Amoy Testnet (chainId: 80002)
- *     Note: Amoy replaced the deprecated Mumbai testnet.
- */
+// Centralised network config for all Polygon interactions.
+// Never hardcode RPC URLs or chain IDs in components.
+//
+// Supported networks:
+//   - Polygon Mainnet (chainId: 137)
+//   - Polygon Amoy Testnet (chainId: 80002)
+//     Note: Amoy replaced the deprecated Mumbai testnet.
 
 import type { ChainConfig, SupportedChainId } from '../types'
 import {

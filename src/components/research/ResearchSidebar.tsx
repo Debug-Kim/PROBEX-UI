@@ -1,23 +1,7 @@
 'use client'
 
-/**
- * ResearchSidebar
- * ────────────────
- * Left-column navigation panel for the Research Terminal.
- *
- * Sections:
- *   1. Category list — all ResearchCategoryId values with report counts
- *   2. Latest Reports — compact list of 5 most recent reports
- *   3. Saved Reports  — compact list of bookmarked reports (from researchStore)
- *   4. Signal Alerts  — count of active bullish/bearish signals across all reports
- *
- * Width: 240px on desktop · collapses to off-canvas on mobile ( drawer)
- *
- * Interactions:
- *   - Clicking a category sets researchStore.activeCategory
- *   - Clicking a report calls researchStore.openReport(id)
- *   - Badge counts are derived from MOCK_RESEARCH_REPORTS
- */
+// Research Terminal left-nav: category list, latest/saved reports, and signal-alert
+// counts. Selection drives researchStore (activeCategory / openReport).
 
 import { cn }                 from '@/lib/utils'
 import { useResearchStore }   from '@/store/researchStore'
