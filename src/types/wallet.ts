@@ -7,11 +7,12 @@ export type WalletProvider = 'metamask' | 'walletconnect' | 'coinbase'
 export type NetworkId = 137 | 80002  // Polygon mainnet | Amoy testnet
 
 export interface WalletConnection {
-  address:    WalletAddress
-  provider:   WalletProvider
-  networkId:  NetworkId
-  isConnected: boolean
-  connectedAt: string
+  address:      WalletAddress
+  provider:     WalletProvider
+  networkId:    NetworkId
+  isConnected:  boolean
+  connectedAt:  string
+  lastActiveAt: string
 }
 
 export interface WalletBalance {
@@ -87,6 +88,17 @@ export interface Position {
   closedAt:      string | null
   orderId:       OrderId
 }
+
+// ─── Pending funds ────────────────────────────────────────────────────────
+
+export interface PendingFunds {
+  pendingDeposits:    number  // USD
+  pendingWithdrawals: number  // USD
+  depositCount:       number
+  withdrawalCount:    number
+}
+
+export type FundingStatus = 'active' | 'pending-verification' | 'restricted'
 
 // ─── Wallet store state ───────────────────────────────────────────────────
 

@@ -2,13 +2,12 @@
 
 import { useMemo, useState }     from 'react'
 import { cn }                    from '@/lib/utils'
-import { MOCK_OPEN_POSITIONS }   from '@/mock/positions'
-import { getPositionConsensus }  from '@/mock/positionConsensus'
+import { usePositions, usePositionConsensus } from '@/hooks/useServices'
 import { usePortfolioStore }     from '@/store/portfolioStore'
 import { PositionFilters, type PnlState } from './PositionFilters'
 import { PositionTable }         from './PositionTable'
 import { PositionDetails }       from './PositionDetails'
-import type { AlignmentType }    from '@/mock/positionConsensus'
+import type { AlignmentType }    from '@/lib/positions/alignment'
 
 interface OpenPositionsProps {
   className?: string
@@ -35,8 +34,11 @@ export function OpenPositions({ className }: OpenPositionsProps) {
 
   const { sideFilter, segmentFilter, positionSearch, sortBy, sortDir, isDetailPanelOpen, selectedPositionId } = usePortfolioStore()
 
+  const openPositions     = usePositions('open').data ?? []
+  const positionConsensus = usePositionConsensus()
+
   const filtered = useMemo(() => {
-    let result = [...MOCK_OPEN_POSITIONS]
+    let result = [...openPositions]
 
     if (sideFilter)    result = result.filter((p) => p.side === sideFilter)
     if (segmentFilter) result = result.filter((p) => p.segment === segmentFilter)
@@ -51,7 +53,7 @@ export function OpenPositions({ className }: OpenPositionsProps) {
     }
 
     if (alignmentState) {
-      result = result.filter((p) => getPositionConsensus(p).alignment === alignmentState)
+      result = result.filter((p) => positionConsensus(p).alignment === alignmentState)
     }
 
     result.sort((a, b) => {
@@ -74,7 +76,7 @@ export function OpenPositions({ className }: OpenPositionsProps) {
     })
 
     return result
-  }, [sideFilter, segmentFilter, positionSearch, pnlState, alignmentState, sortBy, sortDir])
+  }, [openPositions, positionConsensus, sideFilter, segmentFilter, positionSearch, pnlState, alignmentState, sortBy, sortDir])
 
   return (
     <div className={cn('flex flex-col gap-3', className)}>
@@ -87,7 +89,7 @@ export function OpenPositions({ className }: OpenPositionsProps) {
           className="text-xs px-2.5 py-1 rounded-md font-medium"
           style={{ background: 'var(--probex-primary-dim)', color: 'var(--probex-primary)', border: '1px solid var(--probex-yes-border)' }}
         >
-          {filtered.length} of {MOCK_OPEN_POSITIONS.length}
+          {filtered.length} of {openPositions.length}
         </span>
       </div>
 

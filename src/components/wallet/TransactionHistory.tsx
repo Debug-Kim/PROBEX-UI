@@ -2,17 +2,51 @@
 
 import { useMemo, useState }     from 'react'
 import { cn, formatCurrency, formatRelativeTime } from '@/lib/utils'
-import {
-  getTransactions,
-  TRANSACTION_TYPE_LABELS, TRANSACTION_TYPE_COLORS,
-  TRANSACTION_STATUS_LABELS, TRANSACTION_STATUS_COLORS,
-} from '@/mock/transactions'
+import { useTransactions }        from '@/hooks/useServices'
 import { explorerTxUrl }          from '@/lib/web3/utils/formatAddress'
 import { getActiveChainConfig }   from '@/lib/web3/utils/chainConfig'
 import { useWalletStore }         from '@/store/walletStore'
 import { TableRowSkeleton }       from '@/components/ui/LoadingState'
 import type { Transaction, TransactionType, TransactionStatus } from '@/types/wallet'
 import type { ReactNode } from 'react'
+
+const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
+  deposit:           'Deposit',
+  withdrawal:        'Withdrawal',
+  'buy-yes':         'Buy YES',
+  'buy-no':          'Buy NO',
+  'sell-yes':        'Sell YES',
+  'sell-no':         'Sell NO',
+  'settlement-win':  'Settlement (Win)',
+  'settlement-loss': 'Settlement (Loss)',
+  fee:               'Fee',
+}
+
+const TRANSACTION_TYPE_COLORS: Record<TransactionType, string> = {
+  deposit:           'var(--probex-positive)',
+  withdrawal:        'var(--probex-warning)',
+  'buy-yes':         'var(--probex-yes)',
+  'buy-no':          'var(--probex-no)',
+  'sell-yes':        'var(--probex-yes)',
+  'sell-no':         'var(--probex-no)',
+  'settlement-win':  'var(--probex-positive)',
+  'settlement-loss': 'var(--probex-negative)',
+  fee:               'var(--probex-text-muted)',
+}
+
+const TRANSACTION_STATUS_LABELS: Record<TransactionStatus, string> = {
+  pending:    'Pending',
+  confirming: 'Confirming',
+  confirmed:  'Confirmed',
+  failed:     'Failed',
+}
+
+const TRANSACTION_STATUS_COLORS: Record<TransactionStatus, string> = {
+  pending:    'var(--probex-warning)',
+  confirming: 'var(--probex-primary)',
+  confirmed:  'var(--probex-positive)',
+  failed:     'var(--probex-negative)',
+}
 
 type SortField = 'createdAt' | 'amount'
 
@@ -31,10 +65,11 @@ export function TransactionHistory({ className, isLoading }: { className?: strin
   const [sortField, setSortField] = useState<SortField>('createdAt')
   const [sortDir, setSortDir]     = useState<'asc' | 'desc'>('desc')
 
+  const allTransactions = useTransactions().data ?? []
   const chain = getActiveChainConfig()
 
   const filtered = useMemo(() => {
-    let result = getTransactions()
+    let result = allTransactions
 
     if (txTypeFilter)   result = result.filter((t) => t.type === txTypeFilter)
     if (txStatusFilter) result = result.filter((t) => t.status === txStatusFilter)
@@ -55,7 +90,7 @@ export function TransactionHistory({ className, isLoading }: { className?: strin
     })
 
     return result
-  }, [txTypeFilter, txStatusFilter, txSearch, sortField, sortDir])
+  }, [allTransactions, txTypeFilter, txStatusFilter, txSearch, sortField, sortDir])
 
   const hasActiveFilter = !!(txTypeFilter || txStatusFilter || txSearch)
 
@@ -77,7 +112,7 @@ export function TransactionHistory({ className, isLoading }: { className?: strin
             Transaction History
           </h2>
           <span className="text-2xs" style={{ color: 'var(--probex-text-muted)' }}>
-            {filtered.length} of {getTransactions().length}
+            {filtered.length} of {allTransactions.length}
           </span>
         </div>
 

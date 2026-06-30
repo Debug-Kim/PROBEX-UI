@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useCurrentUser } from '@/store/authStore'
-import { COUNTRY_OPTIONS, TIMEZONE_OPTIONS } from '@/mock/settings'
+import { COUNTRY_OPTIONS, TIMEZONE_OPTIONS } from '@/lib/settings/options'
 import { SettingsSection, SettingRow, TextField, SelectField, SaveBar } from './controls'
 
 export function ProfileSettings() {

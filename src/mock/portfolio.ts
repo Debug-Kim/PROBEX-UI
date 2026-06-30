@@ -4,36 +4,8 @@
 import type { BitcoinSegment } from '@/types/market'
 import { MOCK_OPEN_POSITIONS, MOCK_SETTLED_POSITIONS } from './positions'
 
-// ─── Types ────────────────────────────────────────────────────────────────
-
-export interface PortfolioSummary {
-  totalValue:          number   // USD — cost basis of open positions
-  currentValue:        number   // USD — current mark-to-market
-  unrealizedPnl:       number   // USD
-  unrealizedPnlPct:    number   // -1 to 1
-  realizedPnl:         number   // USD — from settled positions
-  totalDeployed:       number   // USD — all-time amount placed
-  openPositionCount:   number
-  settledPositionCount:number
-  winCount:            number
-  lossCount:           number
-  winRate:             number   // 0–1
-  avgWinReturn:        number   // USD average win profit
-  avgLossReturn:       number   // USD average loss
-  largestWin:          number   // USD
-  largestLoss:         number   // USD
-  avgConsensusScore:   number   // 0–1 — mean consensus on open positions
-}
-
-export interface AllocationSlice {
-  segment:     BitcoinSegment
-  label:       string
-  value:       number    // USD current value
-  pct:         number    // 0–1
-  count:       number    // number of positions
-  pnl:         number    // unrealized PnL for segment
-  colorVar:    string    // CSS var for chart
-}
+export type { PortfolioSummary, AllocationSlice } from '@/types/portfolio'
+import type { PortfolioSummary, AllocationSlice } from '@/types/portfolio'
 
 // ─── Computed summary ─────────────────────────────────────────────────────
 

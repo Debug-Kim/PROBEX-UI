@@ -2,7 +2,7 @@
 
 import { useMemo }               from 'react'
 import { cn, consensusScoreColorVar } from '@/lib/utils'
-import { getMockConsensusHistory }    from '@/mock/consensus'
+import { useConsensusHistory }         from '@/hooks/useServices'
 import { ConsensusChart }             from '@/components/charts/ConsensusChart'
 import { ConsensusBadge }             from '@/components/markets/ConsensusBadge'
 
@@ -26,10 +26,7 @@ interface ConsensusHistoryProps {
  * replace getMockConsensusHistory with IConsensusService.getHistory.
  */
 export function ConsensusHistory({ marketId, baseScore, className }: ConsensusHistoryProps) {
-  const history = useMemo(
-    () => getMockConsensusHistory(marketId, 30),
-    [marketId],
-  )
+  const history = useConsensusHistory(marketId, 30).data ?? []
 
   // Identify inflection points (score change > 5pp)
   const inflections = useMemo(() => {
@@ -113,7 +110,6 @@ export function ConsensusHistory({ marketId, baseScore, className }: ConsensusHi
           </span>
           <ConsensusChart
             marketId={marketId}
-            baseScore={baseScore}
             height={160}
             showBreakdown={true}
           />

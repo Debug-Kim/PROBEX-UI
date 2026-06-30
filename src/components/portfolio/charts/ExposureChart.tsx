@@ -1,11 +1,10 @@
 'use client'
 
-import { useMemo }            from 'react'
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
 } from 'recharts'
 import { cn, formatCurrency } from '@/lib/utils'
-import { computeAllocationBySegment } from '@/mock/portfolio'
+import { usePortfolioAllocation } from '@/hooks/useServices'
 
 interface ExposureChartProps {
   className?: string
@@ -20,7 +19,7 @@ interface ExposureChartProps {
  * (consensus-aware palette — green = institutional-favored segments).
  */
 export function ExposureChart({ className, height = 220 }: ExposureChartProps) {
-  const data = useMemo(() => computeAllocationBySegment(), [])
+  const data  = usePortfolioAllocation().data ?? []
   const total = data.reduce((s, d) => s + d.value, 0)
 
   if (data.length === 0) {

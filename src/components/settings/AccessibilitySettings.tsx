@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DEFAULT_ACCESSIBILITY_PREFS, type AccessibilityPrefs } from '@/mock/settings'
+import { DEFAULT_ACCESSIBILITY_PREFS } from '@/lib/settings/defaults'
+import type { AccessibilityPrefs } from '@/types/settings'
 import { SettingsSection, SettingRow, Toggle, SegmentedControl, SaveBar } from './controls'
 
 const TEXT_SIZE_OPTIONS = [

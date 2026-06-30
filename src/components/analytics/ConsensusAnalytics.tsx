@@ -11,12 +11,9 @@ import { cn, formatPercent, formatCurrency } from '@/lib/utils'
 import { StatCard } from '@/components/ui/StatCard'
 import { useAnalyticsTimeframe } from '@/store/analyticsStore'
 import {
-  getConsensusAccuracyHistory,
-  getConsensusStrengthHistory,
-  getConfidenceTrendHistory,
-  SIGNAL_PERFORMANCE,
-  CONSENSUS_ANALYTICS_SUMMARY,
-} from '@/mock/analytics'
+  useConsensusAccuracyHistory, useConsensusStrengthHistory, useConfidenceTrendHistory,
+  useConsensusSummary, useSignalPerformance,
+} from '@/hooks/useServices'
 import {
   AnalyticsCard, SectionHeader, SeriesTooltip, Th, Td,
   sliceByTimeframe, axisDateLabel, CHART, AXIS_TICK,
@@ -30,14 +27,19 @@ interface ConsensusAnalyticsProps {
 }
 
 export function ConsensusAnalytics({ summary, className }: ConsensusAnalyticsProps) {
-  const timeframe = useAnalyticsTimeframe()
-  const data      = summary ?? CONSENSUS_ANALYTICS_SUMMARY
+  const timeframe       = useAnalyticsTimeframe()
+  const summaryData     = useConsensusSummary().data
+  const data            = summary ?? summaryData
+  const accuracyPts     = useConsensusAccuracyHistory().data ?? []
+  const signalPerf      = useSignalPerformance().data ?? []
 
-  const strongWinRate = SIGNAL_PERFORMANCE.find((s) => s.signal === 'strong')?.winRate ?? 0
+  const strongWinRate = signalPerf.find((s) => s.signal === 'strong')?.winRate ?? 0
   const premium = useMemo(() => {
-    const last = getConsensusAccuracyHistory().at(-1)
+    const last = accuracyPts.at(-1)
     return last ? last.instAccuracy - last.retailAccuracy : 0
-  }, [])
+  }, [accuracyPts])
+
+  if (!data) return null
 
   return (
     <section className={cn('flex flex-col gap-4', className)} aria-label="Consensus Engine analytics">
@@ -74,15 +76,16 @@ export function ConsensusAnalytics({ summary, className }: ConsensusAnalyticsPro
 // ─── Accuracy chart (reused on the Overview tab) ────────────────────────────
 
 export function ConsensusAccuracyChart({ height = 240 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useConsensusAccuracyHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getConsensusAccuracyHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label:   axisDateLabel(p.timestamp),
       overall: Math.round(p.overallAccuracy * 100),
       inst:    Math.round(p.instAccuracy * 100),
       retail:  Math.round(p.retailAccuracy * 100),
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (
@@ -103,12 +106,13 @@ export function ConsensusAccuracyChart({ height = 240 }: { height?: number }) {
 // ─── Signal strength distribution ───────────────────────────────────────────
 
 function SignalStrengthDistribution({ height = 200 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useConsensusStrengthHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getConsensusStrengthHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), strong: p.strongCount, neutral: p.neutralCount, weak: p.weakCount,
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (
@@ -129,12 +133,13 @@ function SignalStrengthDistribution({ height = 200 }: { height?: number }) {
 // ─── Confidence trend ───────────────────────────────────────────────────────
 
 function ConfidenceTrendChart({ height = 200 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useConfidenceTrendHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getConfidenceTrendHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), high: p.high, medium: p.medium, low: p.low,
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (
@@ -161,6 +166,7 @@ const SIGNAL_COLOR: Record<SignalLevel, string> = {
 }
 
 export function SignalPerformanceTable() {
+  const rows = useSignalPerformance().data ?? []
   return (
     <div className="overflow-x-auto">
       <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 460 }}>
@@ -174,7 +180,7 @@ export function SignalPerformanceTable() {
           </tr>
         </thead>
         <tbody>
-          {SIGNAL_PERFORMANCE.map((r) => (
+          {rows.map((r) => (
             <tr key={r.signal} style={{ borderBottom: '1px solid var(--probex-border)' }}>
               <td style={{ padding: '10px 12px' }}>
                 <span

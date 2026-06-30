@@ -1,20 +1,8 @@
 // Portfolio value / P&L time-series from account inception (Jan 2026) to present.
 // Replace with IPortfolioService.getPerformanceHistory.
 
-export interface PerformancePoint {
-  timestamp:      number   // Unix ms
-  portfolioValue: number   // USD total portfolio value
-  cashBalance:    number   // USD available USDC
-  deployedValue:  number   // USD in open positions
-  cumulativePnl:  number   // USD realized + unrealized
-  dailyPnl:       number   // USD change on this day
-}
-
-export interface WinRatePoint {
-  timestamp:  number
-  winRate:    number   // 0–1 rolling 30d win rate
-  totalBets:  number   // cumulative position count
-}
+export type { PerformancePoint, WinRatePoint } from '@/types/portfolio'
+import type { PerformancePoint, WinRatePoint } from '@/types/portfolio'
 
 // ─── Generator ────────────────────────────────────────────────────────────
 

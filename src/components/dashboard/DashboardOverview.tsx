@@ -13,9 +13,9 @@
 
 import { useMemo }                                      from 'react'
 import { useRouter }                                    from 'next/navigation'
-import { getFeaturedMarkets, getTrendingMarkets }       from '@/mock/markets'
-import { MOCK_CONSENSUS_MAP }                           from '@/mock/consensus'
+import { useMarkets, useConsensusMap }                  from '@/hooks/useServices'
 import type { Market }                                  from '@/types/market'
+import type { ConsensusState }                          from '@/types/consensus'
 import { GlobalConsensusBar }                           from './GlobalConsensusBar'
 import { ActivityFeed }                                 from './ActivityFeed'
 import { HeroCarousel }                                 from './HeroCarousel'
@@ -25,9 +25,11 @@ import { Footer }                                       from '@/components/layou
 import { ROUTES }                                       from '@/config/constants'
 
 export function DashboardOverview() {
-  const router   = useRouter()
-  const featured = useMemo(() => getFeaturedMarkets(6), [])
-  const trending = useMemo(() => getTrendingMarkets(8), [])
+  const router       = useRouter()
+  const allMarkets   = useMarkets().data?.data ?? []
+  const consensusMap = useConsensusMap().data ?? {}
+  const featured     = useMemo(() => [...allMarkets].sort((a, b) => b.liquidity - a.liquidity).slice(0, 6), [allMarkets])
+  const trending     = useMemo(() => [...allMarkets].sort((a, b) => b.volume24h - a.volume24h).slice(0, 8), [allMarkets])
 
   const handleMarketClick = (m: Market) => {
     router.push(`${ROUTES.MARKETS}/${m.id as string}`)
@@ -62,7 +64,7 @@ export function DashboardOverview() {
                 subtitle="Highest consensus confidence"
                 action={{ label: 'All markets →', href: ROUTES.MARKETS }}
               />
-              <FeaturedGrid markets={featured} onMarketClick={handleMarketClick} />
+              <FeaturedGrid markets={featured} consensusMap={consensusMap} onMarketClick={handleMarketClick} />
             </section>
 
             {/* 4. Trending Markets */}
@@ -74,7 +76,7 @@ export function DashboardOverview() {
               />
               <MarketTable
                 markets={trending}
-                consensusMap={MOCK_CONSENSUS_MAP}
+                consensusMap={consensusMap}
                 onMarketClick={handleMarketClick}
               />
             </section>
@@ -97,22 +99,28 @@ export function DashboardOverview() {
 
 function FeaturedGrid({
   markets,
+  consensusMap,
   onMarketClick,
 }: {
   markets:       Market[]
+  consensusMap:  Record<string, ConsensusState>
   onMarketClick: (m: Market) => void
 }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      {markets.map((market) => (
-        <MarketCard
-          key={market.id as string}
-          market={market}
-          consensus={MOCK_CONSENSUS_MAP[market.id as string]!}
-          variant="featured"
-          onClick={onMarketClick}
-        />
-      ))}
+      {markets.flatMap((market) => {
+        const consensus = consensusMap[market.id as string]
+        if (!consensus) return []
+        return [(
+          <MarketCard
+            key={market.id as string}
+            market={market}
+            consensus={consensus}
+            variant="featured"
+            onClick={onMarketClick}
+          />
+        )]
+      })}
     </div>
   )
 }

@@ -3,7 +3,8 @@
 import { useMemo, useState } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { formatCentPrice, formatCompact, formatCurrency } from '@/lib/utils'
-import { ADMIN_MARKETS, type AdminMarket, type AdminMarketStatus } from '@/mock/admin'
+import { useAdminMarkets } from '@/hooks/useServices'
+import type { AdminMarket, AdminMarketStatus } from '@/types/admin'
 import { AdminCard, StatusPill, TableWrap, SearchField, FilterPills, MiniButton, type Tone } from './shared'
 
 const STATUS_TONE: Record<AdminMarketStatus, Tone> = {
@@ -16,16 +17,18 @@ export function MarketManagement() {
   const [query, setQuery]   = useState('')
   const [status, setStatus] = useState<StatusFilter>('all')
 
+  const allMarkets = useAdminMarkets().data ?? []
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return ADMIN_MARKETS.filter((m) => {
+    return allMarkets.filter((m) => {
       if (status !== 'all' && m.status !== status) return false
       if (!q) return true
       return m.question.toLowerCase().includes(q) || m.category.toLowerCase().includes(q) || m.id.includes(q)
     })
-  }, [query, status])
+  }, [allMarkets, query, status])
 
-  const flaggedCount = ADMIN_MARKETS.filter((m) => m.status === 'flagged').length
+  const flaggedCount = allMarkets.filter((m) => m.status === 'flagged').length
 
   return (
     <div className="flex flex-col gap-4">
@@ -46,7 +49,7 @@ export function MarketManagement() {
 
       <AdminCard
         title="Market Management"
-        subtitle={`${ADMIN_MARKETS.length} markets across ${new Set(ADMIN_MARKETS.map((m) => m.category)).size} categories`}
+        subtitle={`${allMarkets.length} markets across ${new Set(allMarkets.map((m) => m.category)).size} categories`}
         right={
           <div className="flex items-center gap-2">
             <SearchField value={query} onChange={setQuery} placeholder="Search markets…" />

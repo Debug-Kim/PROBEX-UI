@@ -6,8 +6,8 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
 import { cn, formatCurrency, formatCompact } from '@/lib/utils'
-import { getRecentPerformance }    from '@/mock/performance'
-import { useChartTimeframe }       from '@/store/portfolioStore'
+import { usePortfolioPerformance }           from '@/hooks/useServices'
+import { useChartTimeframe }                 from '@/store/portfolioStore'
 
 interface PnLChartProps {
   className?: string
@@ -27,9 +27,9 @@ const DAYS_MAP: Record<string, number> = {
 export function PnLChart({ className, height = 180 }: PnLChartProps) {
   const timeframe = useChartTimeframe()
   const days      = DAYS_MAP[timeframe] ?? 30
+  const pts       = usePortfolioPerformance(days).data ?? []
 
   const data = useMemo(() => {
-    const pts  = getRecentPerformance(days)
     const step = Math.max(1, Math.floor(pts.length / 50))
     return pts.filter((_, i) => i % step === 0).map((p) => ({
       ts:      p.timestamp,
@@ -37,7 +37,7 @@ export function PnLChart({ className, height = 180 }: PnLChartProps) {
       cumPnl:  Math.round(p.cumulativePnl),
       label:   new Date(p.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     }))
-  }, [days])
+  }, [pts])
 
   const cumFinal = data.at(-1)?.cumPnl ?? 0
   const cumColor = cumFinal >= 0 ? 'var(--probex-positive)' : 'var(--probex-negative)'

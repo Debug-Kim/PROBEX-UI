@@ -3,9 +3,8 @@
 import { useMemo }              from 'react'
 import { useRouter }            from 'next/navigation'
 import { cn, formatCurrency }   from '@/lib/utils'
-import { MOCK_OPEN_POSITIONS }  from '@/mock/positions'
-import { computeAllocationBySegment } from '@/mock/portfolio'
-import { getPositionConsensus, ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/mock/positionConsensus'
+import { usePositions, usePortfolioAllocation, usePositionConsensus } from '@/hooks/useServices'
+import { ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/lib/positions/alignment'
 import { ROUTES }               from '@/config/constants'
 import type { MouseEvent } from 'react'
 
@@ -13,22 +12,11 @@ interface PortfolioInsightsProps {
   className?: string
 }
 
-/**
- * PortfolioInsights
- * ──────────────────
- * Institutional-style "at a glance" summary panel.
- *
- * Surfaces:
- *   - Largest position by value
- *   - Best performing position (highest unrealized P&L%)
- *   - Worst performing position (lowest unrealized P&L%)
- *   - Highest consensus alignment position
- *   - Lowest consensus alignment (most contrarian) position
- *   - Current risk concentration (top segment %)
- */
 export function PortfolioInsights({ className }: PortfolioInsightsProps) {
-  const router = useRouter()
-  const positions = MOCK_OPEN_POSITIONS
+  const router      = useRouter()
+  const positions   = usePositions('open').data ?? []
+  const allocation  = usePortfolioAllocation().data ?? []
+  const getConsensus = usePositionConsensus()
 
   const insights = useMemo(() => {
     if (positions.length === 0) return null
@@ -38,18 +26,17 @@ export function PortfolioInsights({ className }: PortfolioInsightsProps) {
     const worst   = [...positions].sort((a, b) => a.unrealizedPnlPct - b.unrealizedPnlPct)[0]!
 
     const withConsensus = positions
-      .map((p) => ({ pos: p, ...getPositionConsensus(p) }))
+      .map((p) => ({ pos: p, ...getConsensus(p) }))
       .filter((x) => x.consensus !== undefined)
 
     const highestAligned = [...withConsensus].sort((a, b) => (b.consensus?.score ?? 0) - (a.consensus?.score ?? 0))[0]
     const mostContrarian = withConsensus.find((x) => x.alignment === 'divergent')
       ?? [...withConsensus].sort((a, b) => (a.consensus?.score ?? 1) - (b.consensus?.score ?? 1))[0]
 
-    const allocation = computeAllocationBySegment()
     const topSegment = allocation[0]
 
     return { largest, best, worst, highestAligned, mostContrarian, topSegment }
-  }, [positions])
+  }, [positions, allocation, getConsensus])
 
   if (!insights) {
     return (

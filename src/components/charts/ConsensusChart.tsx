@@ -6,15 +6,14 @@ import {
   Tooltip, ResponsiveContainer, Legend,
 } from 'recharts'
 import { cn }                    from '@/lib/utils'
-import { generateConsensusHistory } from '@/mock/marketHistory'
-import { useActiveTimeframe }       from '@/store/marketStore'
-import type { TimeRange }           from '@/types/market'
+import { useConsensusBreakdownHistory } from '@/hooks/useServices'
+import { useActiveTimeframe }           from '@/store/marketStore'
+import type { TimeRange }               from '@/types/market'
 
 interface ConsensusChartProps {
-  marketId:      string
-  baseScore:     number
-  className?:    string
-  height?:       number
+  marketId:       string
+  className?:     string
+  height?:        number
   showBreakdown?: boolean
 }
 
@@ -32,22 +31,22 @@ interface ConsensusChartProps {
  */
 export function ConsensusChart({
   marketId,
-  baseScore,
   className,
-  height       = 200,
+  height        = 200,
   showBreakdown = true,
 }: ConsensusChartProps) {
   const timeframe = useActiveTimeframe()
+  const { data: breakdownPoints } = useConsensusBreakdownHistory(marketId, timeframe)
 
   const data = useMemo(
-    () => generateConsensusHistory(marketId, baseScore, timeframe).map((p) => ({
-      ts:      p.timestamp,
+    () => (breakdownPoints ?? []).map((p) => ({
+      ts:      p.ts,
       score:   Math.round(p.score * 100),
       inst:    Math.round(p.instScore * 100),
       retail:  Math.round(p.retailScore * 100),
-      label:   formatAxisLabel(p.timestamp, timeframe),
+      label:   formatAxisLabel(p.ts, timeframe),
     })),
-    [marketId, baseScore, timeframe],
+    [breakdownPoints, timeframe],
   )
 
   return (

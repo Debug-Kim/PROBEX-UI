@@ -1,10 +1,10 @@
 'use client'
 
-import { useState }              from 'react'
-import { cn, formatCurrency }    from '@/lib/utils'
-import { getMockWalletBalance }  from '@/mock/wallet'
-import { useWalletStore }        from '@/store/walletStore'
-import { SummaryRow, Spinner }   from './DepositPanel'
+import { useState }             from 'react'
+import { cn, formatCurrency }   from '@/lib/utils'
+import { useWalletBalance }     from '@/hooks/useServices'
+import { useWalletStore }       from '@/store/walletStore'
+import { SummaryRow, Spinner }  from './DepositPanel'
 import type { CSSProperties } from 'react'
 
 /**
@@ -24,9 +24,9 @@ export function TransferPanel({ className, hideHeader = false, style }: { classN
   const [submitted, setSubmitted]       = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const balance   = getMockWalletBalance()
+  const balance   = useWalletBalance().data
   const amount    = parseFloat(transferAmount) || 0
-  const available = balance.usdcBalance
+  const available = balance?.usdcBalance ?? 0
 
   const exceedsBalance = amount > available
   const hasDestination = transferDestination.trim().length >= 3

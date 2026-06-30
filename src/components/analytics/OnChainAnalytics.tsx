@@ -10,7 +10,10 @@ import {
 import { cn } from '@/lib/utils'
 import { StatCard } from '@/components/ui/StatCard'
 import { useAnalyticsStore, useAnalyticsTimeframe } from '@/store/analyticsStore'
-import { getOnChainHistory, getConsensusAccuracyHistory, ON_CHAIN_SUMMARY } from '@/mock/analytics'
+import {
+  useOnChainHistory, useConsensusAccuracyHistory,
+  useOnChainSnapshots, useOnChainSummary,
+} from '@/hooks/useServices'
 import {
   AnalyticsCard, SectionHeader, SeriesTooltip,
   sliceByTimeframe, axisDateLabel, CHART, AXIS_TICK,
@@ -46,9 +49,12 @@ function fmtMetric(v: number): string {
 export function OnChainAnalytics({ summary, className }: OnChainAnalyticsProps) {
   const timeframe = useAnalyticsTimeframe()
   const { selectedOnChain, setOnChain } = useAnalyticsStore()
-  const data    = summary ?? ON_CHAIN_SUMMARY
+  const summaryData = useOnChainSummary().data
+  const data        = summary ?? summaryData
   const active: OnChainMetricId = selectedOnChain ?? 'mvrv'
   const activeMeta = ON_CHAIN_METRICS.find((m) => m.id === active)
+
+  if (!data) return null
 
   return (
     <section className={cn('flex flex-col gap-4', className)} aria-label="On-chain analytics">
@@ -82,9 +88,10 @@ export function OnChainAnalytics({ summary, className }: OnChainAnalyticsProps) 
 // ─── Signal grid ────────────────────────────────────────────────────────────
 
 function OnChainSignalGrid({ selected, onSelect }: { selected: OnChainMetricId; onSelect: (id: OnChainMetricId) => void }) {
+  const snapshots = useOnChainSnapshots().data ?? {}
   const cards = useMemo(
     () => ON_CHAIN_METRICS.map((m) => {
-      const last = getOnChainHistory(m.id).at(-1)
+      const last = snapshots[m.id]
       return {
         ...m,
         value:      last?.value ?? 0,
@@ -92,7 +99,7 @@ function OnChainSignalGrid({ selected, onSelect }: { selected: OnChainMetricId; 
         signal:     last?.signal ?? 'neutral',
       }
     }),
-    [],
+    [snapshots],
   )
 
   return (
@@ -131,12 +138,13 @@ function OnChainSignalGrid({ selected, onSelect }: { selected: OnChainMetricId; 
 // ─── Metric deep-dive ───────────────────────────────────────────────────────
 
 function OnChainMetricChart({ metricId, height = 240 }: { metricId: OnChainMetricId; height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useOnChainHistory(metricId).data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getOnChainHistory(metricId), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), value: p.value,
     })),
-    [metricId, tf],
+    [pts, tf],
   )
 
   return (
@@ -161,14 +169,14 @@ function OnChainMetricChart({ metricId, height = 240 }: { metricId: OnChainMetri
 // ─── On-chain vs consensus scatter ──────────────────────────────────────────
 
 function OnChainConsensusScatter({ metricId, height = 240 }: { metricId: OnChainMetricId; height?: number }) {
+  const chain = useOnChainHistory(metricId).data ?? []
+  const acc   = useConsensusAccuracyHistory().data ?? []
   const points = useMemo(() => {
-    const chain = getOnChainHistory(metricId)
-    const acc   = getConsensusAccuracyHistory()
     return chain.map((c, i) => {
       const a = acc[i]
       return a ? { x: Math.round(c.normalized * 100), y: Math.round(a.overallAccuracy * 100) } : null
     }).filter((p): p is { x: number; y: number } => p !== null)
-  }, [metricId])
+  }, [chain, acc])
 
   return (
     <ResponsiveContainer width="100%" height={height}>

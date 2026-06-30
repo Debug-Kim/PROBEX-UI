@@ -1,43 +1,29 @@
 'use client'
 
-import {cn, formatCurrency} from '@/lib/utils'
-import {PortfolioMetrics}   from './PortfolioMetrics'
-import {computePortfolioSummary, computeAllocationBySegment} from '@/mock/portfolio'
-import {MOCK_OPEN_POSITIONS} from '@/mock/positions'
-import {getPositionConsensus} from '@/mock/positionConsensus'
-
+import { cn, formatCurrency }                          from '@/lib/utils'
+import { PortfolioMetrics }                             from './PortfolioMetrics'
+import { usePortfolioSummary, usePortfolioAllocation, usePositions, usePositionConsensus } from '@/hooks/useServices'
 
 interface PortfolioOverviewProps {
   className?: string
 }
 
-/**
- * PortfolioOverview
- * ─────────────────
- * The executive summary section — first thing users see on the
- * portfolio page. Combines:
- *
- *   1. PortfolioMetrics  — six headline stat cards
- *   2. Exposure Summary  — top 3 segments by allocation
- *   3. Consensus Alignment Summary — how the portfolio aligns with
- *      the Probex Consensus Engine across all open positions
- *   4. Performance Snapshot — quick today/week framing
- */
 export function PortfolioOverview({ className }: PortfolioOverviewProps) {
-  const summary    = computePortfolioSummary()
-  const allocation = computeAllocationBySegment()
+  const summary        = usePortfolioSummary().data
+  const allocation     = usePortfolioAllocation().data ?? []
+  const openPositions  = usePositions('open').data ?? []
+  const getConsensus   = usePositionConsensus()
 
-  // Consensus alignment breakdown across open positions
-  const alignmentCounts = MOCK_OPEN_POSITIONS.reduce(
+  const alignmentCounts = openPositions.reduce(
     (acc, pos) => {
-      const { alignment } = getPositionConsensus(pos)
+      const { alignment } = getConsensus(pos)
       acc[alignment] = (acc[alignment] ?? 0) + 1
       return acc
     },
     {} as Record<string, number>,
   )
 
-  const total      = MOCK_OPEN_POSITIONS.length
+  const total      = openPositions.length
   const alignedPct = total > 0 ? (alignmentCounts.aligned ?? 0) / total : 0
 
   return (
@@ -127,12 +113,14 @@ export function PortfolioOverview({ className }: PortfolioOverviewProps) {
           <h3 className="text-2xs font-semibold uppercase tracking-wider" style={{ color: 'var(--probex-text-muted)' }}>
             Performance Snapshot
           </h3>
-          <div className="flex flex-col gap-2">
-            <SnapshotRow label="Largest Win"  value={`+${formatCurrency(summary.largestWin)}`}  color="var(--probex-positive)" />
-            <SnapshotRow label="Largest Loss" value={`-${formatCurrency(summary.largestLoss)}`} color="var(--probex-negative)" />
-            <SnapshotRow label="Avg Win"      value={`+${formatCurrency(summary.avgWinReturn)}`} color="var(--probex-positive)" />
-            <SnapshotRow label="Avg Loss"     value={`-${formatCurrency(summary.avgLossReturn)}`} color="var(--probex-negative)" />
-          </div>
+          {summary && (
+            <div className="flex flex-col gap-2">
+              <SnapshotRow label="Largest Win"  value={`+${formatCurrency(summary.largestWin)}`}  color="var(--probex-positive)" />
+              <SnapshotRow label="Largest Loss" value={`-${formatCurrency(summary.largestLoss)}`} color="var(--probex-negative)" />
+              <SnapshotRow label="Avg Win"      value={`+${formatCurrency(summary.avgWinReturn)}`} color="var(--probex-positive)" />
+              <SnapshotRow label="Avg Loss"     value={`-${formatCurrency(summary.avgLossReturn)}`} color="var(--probex-negative)" />
+            </div>
+          )}
         </div>
 
       </div>

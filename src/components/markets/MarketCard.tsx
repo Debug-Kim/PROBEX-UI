@@ -14,7 +14,7 @@ import { ConfidenceMeter }                               from './ConfidenceMeter
 import { WatchlistButton }                               from './WatchlistButton'
 import { LiveIndicator }                                 from '@/components/live/LiveIndicator'
 import { useSingleMarketStream }                         from '@/hooks/useMarketStream'
-import { getProbabilityHistory }                         from '@/mock/marketHistory'
+import { useMarketHistory }                              from '@/hooks/useServices'
 import { formatCompact, probabilityColorVar }            from '@/lib/utils'
 import type { Market }                                   from '@/types/market'
 import type { ConsensusState }                           from '@/types/consensus'
@@ -38,7 +38,8 @@ function MiniSparkline({
   w = 72,
   h = 28,
 }: { marketId: string; color: string; w?: number; h?: number }) {
-  const data = useMemo(() => getProbabilityHistory(marketId, '7d').slice(-24), [marketId])
+  const history = useMarketHistory(marketId, '7d').data ?? []
+  const data = useMemo(() => history.slice(-24), [history])
   if (data.length < 3) return null
   const vals = data.map(d => d.probability)
   const min  = Math.min(...vals)

@@ -2,7 +2,8 @@
 
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatRelativeTime } from '@/lib/utils'
-import { EXPOSURE_SERIES, RISK_ALERTS, RISK_METRICS, type RiskAlert, type RiskMetric } from '@/mock/admin'
+import { useRiskDashboard } from '@/hooks/useServices'
+import type { RiskAlert, RiskMetric } from '@/types/admin'
 import { AdminCard, StatusPill, type Tone } from './shared'
 
 const LEVEL_TONE: Record<RiskMetric['level'], Tone> = {
@@ -14,11 +15,16 @@ const SEVERITY_TONE: Record<RiskAlert['severity'], Tone> = {
 }
 
 export function RiskDashboard() {
+  const dash           = useRiskDashboard().data
+  const riskMetrics    = dash?.metrics        ?? []
+  const riskAlerts     = dash?.alerts         ?? []
+  const exposureSeries = dash?.exposureSeries  ?? []
+
   return (
     <div className="flex flex-col gap-4">
       {/* Risk metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {RISK_METRICS.map((m) => (
+        {riskMetrics.map((m) => (
           <div
             key={m.label}
             className="rounded-xl p-4 flex flex-col gap-2"
@@ -39,7 +45,7 @@ export function RiskDashboard() {
         <AdminCard title="Platform Exposure" subtitle="Net open liability · trailing 14 days ($M)">
           <div style={{ height: 200 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={EXPOSURE_SERIES} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+              <AreaChart data={exposureSeries} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
                 <defs>
                   <linearGradient id="expGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--probex-primary)" stopOpacity={0.35} />
@@ -60,10 +66,10 @@ export function RiskDashboard() {
         </AdminCard>
 
         {/* Active alerts */}
-        <AdminCard title="Active Risk Alerts" subtitle={`${RISK_ALERTS.length} open`} noPadding>
+        <AdminCard title="Active Risk Alerts" subtitle={`${riskAlerts.length} open`} noPadding>
           <ul className="divide-y" style={{ borderColor: 'var(--probex-border)' }}>
-            {RISK_ALERTS.map((a) => (
-              <li key={a.id} className="px-4 py-3 flex items-start gap-3" style={{ borderTop: a.id === RISK_ALERTS[0]!.id ? 'none' : undefined }}>
+            {riskAlerts.map((a, idx) => (
+              <li key={a.id} className="px-4 py-3 flex items-start gap-3" style={{ borderTop: idx === 0 ? 'none' : undefined }}>
                 <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{
                   background: a.severity === 'critical' ? 'var(--probex-negative)' : 'var(--probex-warning)',
                 }} aria-hidden="true" />

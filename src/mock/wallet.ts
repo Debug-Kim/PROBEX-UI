@@ -1,18 +1,21 @@
 // Mock balances for the connected wallet experience.
 // replace with IWalletService.getBalance backed by Polygon RPC.
 
-import type { WalletBalance, WalletConnection } from '@/types/wallet'
+import type { WalletBalance, WalletConnection, PendingFunds, FundingStatus } from '@/types/wallet'
 import { asWalletAddress } from '@/types/branded'
 import { computePortfolioSummary } from './portfolio'
+
+export type { PendingFunds, FundingStatus } from '@/types/wallet'
 
 // ─── Mock connected wallet ──────────────────────────────────────────────
 
 export const MOCK_WALLET_CONNECTION: WalletConnection = {
-  address:     asWalletAddress('0x4a3f2b1c9e7d8a6f5c3b2e1d0a9c8b7e6f5d4c3b'),
-  provider:    'metamask',
-  networkId:   137,
-  isConnected: true,
-  connectedAt: '2026-01-20T09:15:00Z',
+  address:      asWalletAddress('0x4a3f2b1c9e7d8a6f5c3b2e1d0a9c8b7e6f5d4c3b'),
+  provider:     'metamask',
+  networkId:    137,
+  isConnected:  true,
+  connectedAt:  '2026-01-20T09:15:00Z',
+  lastActiveAt: new Date(Date.now() - 1_800_000).toISOString(),
 }
 
 // ─── Mock balance ─────────────────────────────────────────────────────────
@@ -39,13 +42,6 @@ export function getMockWalletBalance(): WalletBalance {
 
 // ─── Pending funds ─────────────────────────────────────────────────────────
 
-export interface PendingFunds {
-  pendingDeposits:    number  // USD
-  pendingWithdrawals: number  // USD
-  depositCount:       number
-  withdrawalCount:    number
-}
-
 export const MOCK_PENDING_FUNDS: PendingFunds = {
   pendingDeposits:    500.00,
   pendingWithdrawals: 250.00,
@@ -54,8 +50,6 @@ export const MOCK_PENDING_FUNDS: PendingFunds = {
 }
 
 // ─── Funding status ─────────────────────────────────────────────────────────
-
-export type FundingStatus = 'active' | 'pending-verification' | 'restricted'
 
 export const MOCK_FUNDING_STATUS: FundingStatus = 'active'
 

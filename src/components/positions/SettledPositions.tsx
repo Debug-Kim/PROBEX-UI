@@ -2,12 +2,11 @@
 
 import {useMemo, useState}    from 'react'
 import {cn}   from '@/lib/utils'
-import {MOCK_SETTLED_POSITIONS} from '@/mock/positions'
-import {getPositionConsensus} from '@/mock/positionConsensus'
+import { usePositions, usePositionConsensus } from '@/hooks/useServices'
 import {usePortfolioStore}    from '@/store/portfolioStore'
 import {PositionFilters, type PnlState} from './PositionFilters'
 import {PositionTable}        from './PositionTable'
-import type { AlignmentType }   from '@/mock/positionConsensus'
+import type { AlignmentType }   from '@/lib/positions/alignment'
 
 interface SettledPositionsProps {
   className?: string
@@ -28,8 +27,11 @@ export function SettledPositions({ className }: SettledPositionsProps) {
 
   const { sideFilter, segmentFilter, positionSearch, sortBy, sortDir } = usePortfolioStore()
 
+  const settledPositions  = usePositions('settled').data ?? []
+  const positionConsensus = usePositionConsensus()
+
   const filtered = useMemo(() => {
-    let result = [...MOCK_SETTLED_POSITIONS]
+    let result = [...settledPositions]
 
     if (sideFilter)    result = result.filter((p) => p.side === sideFilter)
     if (segmentFilter) result = result.filter((p) => p.segment === segmentFilter)
@@ -44,7 +46,7 @@ export function SettledPositions({ className }: SettledPositionsProps) {
     }
 
     if (alignmentState) {
-      result = result.filter((p) => getPositionConsensus(p).alignment === alignmentState)
+      result = result.filter((p) => positionConsensus(p).alignment === alignmentState)
     }
 
     result.sort((a, b) => {
@@ -65,24 +67,24 @@ export function SettledPositions({ className }: SettledPositionsProps) {
     })
 
     return result
-  }, [sideFilter, segmentFilter, positionSearch, pnlState, alignmentState, sortBy, sortDir])
+  }, [settledPositions, positionConsensus, sideFilter, segmentFilter, positionSearch, pnlState, alignmentState, sortBy, sortDir])
 
   // ── Consensus accuracy ─────────────────────────────────────────────────
   const accuracy = useMemo(() => {
     let alignedAndWon = 0
     let alignedTotal  = 0
-    for (const pos of MOCK_SETTLED_POSITIONS) {
-      const { alignment } = getPositionConsensus(pos)
+    for (const pos of settledPositions) {
+      const { alignment } = positionConsensus(pos)
       if (alignment === 'aligned') {
         alignedTotal++
         if (pos.status === 'settled-win') alignedAndWon++
       }
     }
     return alignedTotal > 0 ? alignedAndWon / alignedTotal : null
-  }, [])
+  }, [settledPositions, positionConsensus])
 
-  const wins   = MOCK_SETTLED_POSITIONS.filter((p) => p.status === 'settled-win').length
-  const losses = MOCK_SETTLED_POSITIONS.filter((p) => p.status === 'settled-loss').length
+  const wins   = settledPositions.filter((p) => p.status === 'settled-win').length
+  const losses = settledPositions.filter((p) => p.status === 'settled-loss').length
 
   return (
     <div className={cn('flex flex-col gap-3', className)}>

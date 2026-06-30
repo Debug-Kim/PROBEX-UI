@@ -5,7 +5,8 @@
 
 import { useMemo } from 'react'
 import { AnalyticsCard } from '@/components/analytics/shared'
-import { getHistoricalSnapshots } from '@/mock/intelligence'
+import { useConsensusHistory } from '@/hooks/useServices'
+import { getHistoricalSnapshotsFromHistory } from '@/lib/consensus/intelligence'
 import type { Bias } from '@/types/consensus'
 
 const BIAS_COLOR: Record<Bias, string> = {
@@ -15,7 +16,8 @@ const BIAS_COLOR: Record<Bias, string> = {
 }
 
 export function HistoricalSnapshots({ marketId }: { marketId: string }) {
-  const snapshots = useMemo(() => getHistoricalSnapshots(marketId), [marketId])
+  const history   = useConsensusHistory(marketId, 30).data ?? []
+  const snapshots = useMemo(() => getHistoricalSnapshotsFromHistory(history), [history])
 
   return (
     <AnalyticsCard title="Historical Snapshots" subtitle="Consensus state at key points in the recent window">

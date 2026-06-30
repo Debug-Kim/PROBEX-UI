@@ -3,10 +3,11 @@
 // Research Terminal left-nav: category list, latest/saved reports, and signal-alert
 // counts. Selection drives researchStore (activeCategory / openReport).
 
-import { cn }                 from '@/lib/utils'
-import { useResearchStore }   from '@/store/researchStore'
-import { MOCK_RESEARCH_REPORTS, RESEARCH_CATEGORIES } from '@/mock/research'
-import { ResearchReportCard } from './ResearchReportCard'
+import { cn }                   from '@/lib/utils'
+import { useResearchStore }     from '@/store/researchStore'
+import { useResearchReports }   from '@/hooks/useServices'
+import { RESEARCH_CATEGORIES }  from '@/lib/research/categories'
+import { ResearchReportCard }   from './ResearchReportCard'
 import type { ResearchCategoryId } from '@/types/research'
 
 interface ResearchSidebarProps {
@@ -19,24 +20,24 @@ export function ResearchSidebar({ className }: ResearchSidebarProps) {
     savedReportIds, openReport,
   } = useResearchStore()
 
-  // Derive counts from mock data
+  const reports = useResearchReports().data?.data ?? []
+
   const countsByCategory = RESEARCH_CATEGORIES.reduce<Record<ResearchCategoryId, number>>(
     (acc, cat) => {
-      acc[cat.id] = MOCK_RESEARCH_REPORTS.filter((r) => r.categoryId === cat.id).length
+      acc[cat.id] = reports.filter((r) => r.categoryId === cat.id).length
       return acc
     },
     {} as Record<ResearchCategoryId, number>,
   )
 
-  const recentReports = [...MOCK_RESEARCH_REPORTS]
+  const recentReports = [...reports]
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
     .slice(0, 4)
 
-  const savedReports = MOCK_RESEARCH_REPORTS.filter((r) => savedReportIds.includes(r.id)).slice(0, 3)
+  const savedReports = reports.filter((r) => savedReportIds.includes(r.id)).slice(0, 3)
 
-  // Active signal counts
-  const bullishSignals = MOCK_RESEARCH_REPORTS.flatMap((r) => r.signals).filter((s) => s.type === 'bullish-flag').length
-  const watchSignals   = MOCK_RESEARCH_REPORTS.flatMap((r) => r.signals).filter((s) => s.type === 'watch').length
+  const bullishSignals = reports.flatMap((r) => r.signals).filter((s) => s.type === 'bullish-flag').length
+  const watchSignals   = reports.flatMap((r) => r.signals).filter((s) => s.type === 'watch').length
 
   return (
     <aside
@@ -80,7 +81,7 @@ export function ResearchSidebar({ className }: ResearchSidebarProps) {
           <SidebarNavItem
             icon="📚"
             label="All Research"
-            count={MOCK_RESEARCH_REPORTS.length}
+            count={reports.length}
             isActive={activeCategory === null}
             onClick={() => setCategory(null)}
           />

@@ -3,13 +3,7 @@
 import { useState, useMemo }    from 'react'
 import { useRouter }             from 'next/navigation'
 import { cn }                    from '@/lib/utils'
-import { getRelatedMarkets }     from '@/mock/marketDetails'
-import {
-  MOCK_MARKETS,
-  getMarketsBySegment,
-  getTrendingMarkets,
-} from '@/mock/markets'
-import { MOCK_CONSENSUS_MAP }    from '@/mock/consensus'
+import { useRelatedMarkets, useMarkets, useConsensusMap } from '@/hooks/useServices'
 import type { Market }           from '@/types/market'
 import type { BitcoinSegment }   from '@/types/market'
 import { MarketCard }            from '@/components/markets/MarketCard'
@@ -18,7 +12,7 @@ import { ROUTES }                from '@/config/constants'
 interface RelatedMarketsProps {
   marketId:    string
   segment:     BitcoinSegment
-  consensus?:  number   // current market consensus score 0–1
+  consensus?:  number
   className?:  string
 }
 
@@ -30,19 +24,6 @@ const TABS: Array<{ id: RelatedTab; label: string }> = [
   { id: 'trending', label: 'Trending'        },
 ]
 
-/**
- * RelatedMarkets
- * ──────────────
- * Three-tab panel showing related markets on the detail page.
- * Uses compact MarketCard variant to maintain information density.
- *
- * Tabs:
- *   Similar    — curated related markets from mock marketDetails.ts
- *   Segment    — other markets in the same Bitcoin segment
- *   Trending   — highest 24h volume markets platform-wide
- *
- * replace with IMarketService.getRelatedMarkets API call.
- */
 export function RelatedMarkets({
   marketId,
   segment,
@@ -52,30 +33,34 @@ export function RelatedMarkets({
   const [activeTab, setActiveTab] = useState<RelatedTab>('similar')
   const router = useRouter()
 
-  const similarMeta = useMemo(() => getRelatedMarkets(marketId), [marketId])
+  const similarMeta  = useRelatedMarkets(marketId).data ?? []
+  const allMarkets   = useMarkets().data?.data ?? []
+  const consensusMap = useConsensusMap().data ?? {}
 
   const markets = useMemo((): Market[] => {
     switch (activeTab) {
       case 'similar': {
-        // Resolve RelatedMarket stubs to full Market objects
-        return similarMeta
-          .map((rm) => MOCK_MARKETS.find((m) => m.id === rm.id))
-          .filter((m): m is Market => m !== undefined)
-          .filter((m) => m.id !== marketId)
+        const similarIds = new Set(similarMeta.map((rm) => rm.id as string))
+        return allMarkets
+          .filter((m) => similarIds.has(m.id as string) && m.id !== marketId)
+          .filter((m) => consensusMap[m.id as string] !== undefined)
           .slice(0, 4)
       }
       case 'segment': {
-        return getMarketsBySegment(segment)
-          .filter((m) => m.id !== marketId)
+        return allMarkets
+          .filter((m) => m.segment === segment && m.id !== marketId)
+          .filter((m) => consensusMap[m.id as string] !== undefined)
           .slice(0, 4)
       }
       case 'trending': {
-        return getTrendingMarkets(5)
+        return [...allMarkets]
+          .sort((a, b) => b.volume24h - a.volume24h)
           .filter((m) => m.id !== marketId)
+          .filter((m) => consensusMap[m.id as string] !== undefined)
           .slice(0, 4)
       }
     }
-  }, [activeTab, marketId, segment, similarMeta])
+  }, [activeTab, marketId, segment, similarMeta, allMarkets, consensusMap])
 
   const handleClick = (market: Market) => {
     router.push(`${ROUTES.MARKETS}/${market.id}`)
@@ -134,7 +119,7 @@ export function RelatedMarkets({
               <MarketCard
                 key={market.id as string}
                 market={market}
-                consensus={MOCK_CONSENSUS_MAP[market.id as string]!}
+                consensus={consensusMap[market.id as string]!}
                 variant="grid"
                 onClick={handleClick}
               />

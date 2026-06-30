@@ -6,7 +6,7 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
 import { cn }                 from '@/lib/utils'
-import { generateWinRateHistory } from '@/mock/performance'
+import { useWinRateHistory }  from '@/hooks/useServices'
 
 interface WinRateChartProps {
   className?: string
@@ -20,14 +20,13 @@ interface WinRateChartProps {
  * Bars in the background show cumulative bet volume (secondary axis).
  */
 export function WinRateChart({ className, height = 180 }: WinRateChartProps) {
-  const data = useMemo(() => {
-    return generateWinRateHistory().map((p) => ({
-      ts:       p.timestamp,
-      winRate:  Math.round(p.winRate * 1000) / 10,  // percentage with 1 decimal
-      bets:     p.totalBets,
-      label:    new Date(p.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    }))
-  }, [])
+  const pts  = useWinRateHistory().data ?? []
+  const data = useMemo(() => pts.map((p) => ({
+    ts:      p.timestamp,
+    winRate: Math.round(p.winRate * 1000) / 10,
+    bets:    p.totalBets,
+    label:   new Date(p.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+  })), [pts])
 
   const latest = data.at(-1)?.winRate ?? 0
   const color  = latest >= 55 ? 'var(--probex-positive)' : latest >= 45 ? 'var(--probex-warning)' : 'var(--probex-negative)'

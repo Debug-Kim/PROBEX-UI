@@ -1,11 +1,28 @@
 'use client'
 
-import { cn } from '@/lib/utils'
-import { formatAddress, explorerAddressUrl } from '@/lib/web3/utils/formatAddress'
-import { getActiveChainConfig } from '@/lib/web3/utils/chainConfig'
-import { MOCK_CONNECTED_WALLET, NETWORK_LABELS, PROVIDER_LABELS, PROVIDER_ICONS } from '@/mock/connectedWallets'
+import { cn, formatRelativeTime }              from '@/lib/utils'
+import { formatAddress, explorerAddressUrl }    from '@/lib/web3/utils/formatAddress'
+import { getActiveChainConfig }                 from '@/lib/web3/utils/chainConfig'
+import { useWalletConnection }                  from '@/hooks/useServices'
 import { useIsWalletConnected, useWalletStore } from '@/store/walletStore'
-import { formatRelativeTime } from '@/lib/utils'
+import type { WalletProvider, NetworkId }       from '@/types/wallet'
+
+const NETWORK_LABELS: Record<NetworkId, string> = {
+  137:   'Polygon',
+  80002: 'Polygon Amoy (Testnet)',
+}
+
+const PROVIDER_LABELS: Record<WalletProvider, string> = {
+  metamask:      'MetaMask',
+  walletconnect: 'WalletConnect',
+  coinbase:      'Coinbase Wallet',
+}
+
+const PROVIDER_ICONS: Record<WalletProvider, string> = {
+  metamask:      '🦊',
+  walletconnect: '🔗',
+  coinbase:      '🔵',
+}
 
 interface ConnectedWalletsProps {
   className?: string
@@ -21,12 +38,12 @@ interface ConnectedWalletsProps {
  * ConnectWalletModal.
  */
 export function ConnectedWallets({ className }: ConnectedWalletsProps) {
-  const isConnected     = useIsWalletConnected()
+  const isConnected      = useIsWalletConnected()
   const openConnectModal = useWalletStore((s) => s.openConnectModal)
   const toggleConnection = useWalletStore((s) => s.toggleConnection)
 
-  const wallet  = MOCK_CONNECTED_WALLET
-  const chain   = getActiveChainConfig()
+  const wallet = useWalletConnection().data
+  const chain  = getActiveChainConfig()
 
   if (!isConnected) {
     return (
@@ -55,6 +72,8 @@ export function ConnectedWallets({ className }: ConnectedWalletsProps) {
       </div>
     )
   }
+
+  if (!wallet) return null
 
   return (
     <div

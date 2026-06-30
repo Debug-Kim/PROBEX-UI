@@ -23,7 +23,12 @@
       "Bash(node \"C:/Users/raymo/AppData/Local/Temp/claude/C--Dev-QUBO-PROBEX/31e3326d-de66-43ab-8d4d-1cfc903bcb2a/scratchpad/trim-headers.mjs\")",
       "Bash(node \"C:/Users/raymo/AppData/Local/Temp/claude/C--Dev-QUBO-PROBEX/31e3326d-de66-43ab-8d4d-1cfc903bcb2a/scratchpad/trim-headers.mjs\" --apply)",
       "Bash(awk '{add+=$1; del+=$2} END {print \"added:\", add, \" removed:\", del, \" net:\", add-del}')",
-      "Bash(grep -vE \"^\\\\+\\\\s*\\(//|/\\\\*|\\\\*|\\\\*/|$\\)\")"
+      "Bash(grep -vE \"^\\\\+\\\\s*\\(//|/\\\\*|\\\\*|\\\\*/|$\\)\")",
+      "Bash(grep -rn \"['\\\\\"\\\\`]/api\\\\|/v1\" src --include=\"*.ts\" --include=\"*.tsx\")",
+      "Bash(grep -rn \"http://\\\\|136\\\\.171\\\\|127\\\\.0\\\\.0\\\\.1\" src/lib --include=\"*.ts\")",
+      "Bash(node -e \"const ax=require\\('axios'\\); const c=ax.create\\({baseURL:'http://136.171.119.6:8000/api'}\\); console.log\\('execution/status =>', c.getUri\\({url:'/execution/status'}\\)\\); console.log\\('with params     =>', c.getUri\\({url:'/execution/status', params:{a:1,b:'x y'}}\\)\\);\")",
+      "Bash(grep -rnE \"\\\\bfetch\\\\\\(|axios|apiClient|apiGet|apiPost\" src/hooks)",
+      "Bash(grep -rnE \"from '@/lib/services'|from '@/store/|from '@/mock/|from '@/lib/realtime\" src/hooks)"
     ]
   }
 }

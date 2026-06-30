@@ -10,9 +10,10 @@ import {
 import { cn, formatCompact, formatPercent } from '@/lib/utils'
 import { StatCard } from '@/components/ui/StatCard'
 import { useAnalyticsTimeframe } from '@/store/analyticsStore'
-import { getInstitutionalFlowHistory, getConsensusAccuracyHistory, INSTITUTIONAL_FLOW_SUMMARY } from '@/mock/analytics'
-import { MOCK_MARKETS } from '@/mock/markets'
-import { MOCK_CONSENSUS_MAP } from '@/mock/consensus'
+import {
+  useInstitutionalFlowHistory, useConsensusAccuracyHistory,
+  useInstitutionalSummary, useMarkets, useConsensusMap,
+} from '@/hooks/useServices'
 import {
   AnalyticsCard, SectionHeader, SeriesTooltip, Th, Td,
   sliceByTimeframe, axisDateLabel, CHART, AXIS_TICK,
@@ -31,8 +32,11 @@ const BIAS_COLOR: Record<string, string> = {
 }
 
 export function InstitutionalAnalytics({ summary, className }: InstitutionalAnalyticsProps) {
-  const timeframe = useAnalyticsTimeframe()
-  const data      = summary ?? INSTITUTIONAL_FLOW_SUMMARY
+  const timeframe   = useAnalyticsTimeframe()
+  const summaryData = useInstitutionalSummary().data
+  const data        = summary ?? summaryData
+
+  if (!data) return null
 
   return (
     <section className={cn('flex flex-col gap-4', className)} aria-label="Institutional analytics">
@@ -68,12 +72,13 @@ export function InstitutionalAnalytics({ summary, className }: InstitutionalAnal
 // ─── Flow chart ─────────────────────────────────────────────────────────────
 
 function InstitutionalFlowChart({ height = 260 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useInstitutionalFlowHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getInstitutionalFlowHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), buy: p.buyVolume, sell: -p.sellVolume, net: p.netFlow,
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (
@@ -94,12 +99,13 @@ function InstitutionalFlowChart({ height = 260 }: { height?: number }) {
 // ─── Participation trend ────────────────────────────────────────────────────
 
 function ParticipationTrendChart({ height = 200 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useInstitutionalFlowHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getInstitutionalFlowHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), participation: Math.round(p.instParticipation * 100),
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (
@@ -124,12 +130,13 @@ function ParticipationTrendChart({ height = 200 }: { height?: number }) {
 // ─── Smart money divergence ─────────────────────────────────────────────────
 
 function SmartMoneyDivergenceChart({ height = 200 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useConsensusAccuracyHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getConsensusAccuracyHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), premium: Math.round((p.instAccuracy - p.retailAccuracy) * 1000) / 10,
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (
@@ -154,18 +161,22 @@ function SmartMoneyDivergenceChart({ height = 200 }: { height?: number }) {
 // ─── Top institutional markets ──────────────────────────────────────────────
 
 function TopInstitutionalMarkets() {
+  const consensusMap  = useConsensusMap().data ?? {}
+  const markets       = useMarkets().data?.data ?? []
+  const marketTitles  = Object.fromEntries(markets.map((m) => [m.id as string, m.title]))
+
   const rows = useMemo(() => {
-    return Object.entries(MOCK_CONSENSUS_MAP)
+    return Object.entries(consensusMap)
       .map(([id, c]) => ({
         id,
-        title: MOCK_MARKETS.find((m) => (m.id as string) === id)?.title ?? id,
+        title: marketTitles[id] ?? id,
         participation: c.institutionalParticipation,
         score: c.score,
         bias: c.bias,
       }))
       .sort((a, b) => b.participation - a.participation)
       .slice(0, 6)
-  }, [])
+  }, [consensusMap, marketTitles])
 
   return (
     <div className="overflow-x-auto">

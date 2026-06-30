@@ -20,21 +20,19 @@ import { MarketActivityFeed } from './MarketActivityFeed'
 import { MarketThesisPanel } from './MarketThesisPanel'
 import { RelatedMarkets } from './RelatedMarkets'
 import { TradingDrawer } from '@/components/trading/TradingDrawer'
-import { MOCK_MARKETS } from '@/mock/markets'
-import { MOCK_CONSENSUS_MAP } from '@/mock/consensus'
+import { services } from '@/lib/services'
 import { asMarketId } from '@/types/branded'
-import type { MarketId } from '@/types/branded'
 
 interface MarketDetailPageProps {
   marketId: string
 }
 
 export function MarketDetailPage({ marketId }: MarketDetailPageProps) {
-  const mid = asMarketId(marketId)
-  const market = MOCK_MARKETS.find((m) => m.id === mid)
-  const consensus = MOCK_CONSENSUS_MAP[mid as MarketId]!
+  const mid       = asMarketId(marketId)
+  const market    = services.markets.peekMarket?.(mid) ?? null
+  const consensus = services.consensus.peekConsensus?.(mid as string) ?? null
 
- // single subscription point for this market
+  // single subscription point for this market
   const liveView = useSingleMarketStream(mid)
 
   if (!market || !consensus) {
@@ -92,11 +90,12 @@ export function MarketDetailPage({ marketId }: MarketDetailPageProps) {
           />
         </aside>
 
-        {/* Center: Charts + Thesis + Activity + Related */}
+        {/* Center: Charts + Thesis + Activity + Related.
+            Block (not flex column) so children keep their natural height and the
+            column scrolls top-to-bottom — a flex column would shrink them to fit
+            and clip the lower sections. */}
         <main
           style={{
-            display: 'flex',
-            flexDirection: 'column',
             overflowY: 'auto',
           }}
         >

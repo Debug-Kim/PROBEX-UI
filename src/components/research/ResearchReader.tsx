@@ -2,12 +2,11 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useResearchStore } from '@/store'
-import { MOCK_RESEARCH_REPORTS } from '@/mock/research'
+import { useResearchReport, useMarkets } from '@/hooks/useServices'
 import { EmptyState } from '@/components/ui'
 import { MarkdownBody } from './MarkdownBody'
 import type { ResearchReport, ResearchSignal } from '@/types/research'
 import { ROUTES } from '@/config/constants'
-import { MOCK_MARKETS } from '@/mock/markets'
 
 // ─── Signal card ──────────────────────────────────────────────────────────────
 
@@ -247,9 +246,9 @@ export function ResearchReader() {
     }
   }, [activeReportId, markRead])
 
-  const report: ResearchReport | undefined = MOCK_RESEARCH_REPORTS.find(
-    (r) => r.id === activeReportId,
-  )
+  const report: ResearchReport | undefined = useResearchReport(activeReportId ?? '').data ?? undefined
+  const markets = useMarkets().data?.data ?? []
+  const marketTitles = Object.fromEntries(markets.map((m) => [m.id as string, m.title]))
 
   const isSaved = activeReportId ? savedReportIds.includes(activeReportId) : false
 
@@ -683,8 +682,8 @@ export function ResearchReader() {
               }}
             >
               {report.featuredMarkets.map((marketId) => {
-                const market = MOCK_MARKETS.find((m) => (m.id as string) === marketId)
-                if (!market) return null
+                const title = marketTitles[marketId]
+                if (!title) return null
                 return (
                 <a
                   key={marketId}
@@ -716,7 +715,7 @@ export function ResearchReader() {
                       color: 'var(--probex-text-primary)',
                     }}
                   >
-                    {market.title}
+                    {title}
                   </span>
                   <svg
                     width="14"

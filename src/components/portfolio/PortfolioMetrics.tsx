@@ -2,21 +2,15 @@
 
 import { cn, formatCurrency } from '@/lib/utils'
 import { StatCard }           from '@/components/ui/StatCard'
-import { computePortfolioSummary } from '@/mock/portfolio'
+import { usePortfolioSummary } from '@/hooks/useServices'
 
 interface PortfolioMetricsProps {
   className?: string
 }
 
-/**
- * PortfolioMetrics
- * ────────────────
- * Six-stat grid summarizing the portfolio's headline numbers.
- * Uses the shared StatCard component for visual consistency
- * with the dashboard and market detail pages.
- */
 export function PortfolioMetrics({ className }: PortfolioMetricsProps) {
-  const summary = computePortfolioSummary()
+  const summary = usePortfolioSummary().data
+  if (!summary) return null
 
   const isProfit = summary.unrealizedPnl >= 0
   const isRealizedProfit = summary.realizedPnl >= 0

@@ -2,9 +2,40 @@
 
 import { useState, useEffect } from 'react'
 import { cn }       from '@/lib/utils'
-import { MOCK_WALLET_PROVIDERS } from '@/mock/connectedWallets'
-import { useIsConnectModalOpen, useWalletStore } from '@/store/walletStore'
 import type { WalletProvider } from '@/types/wallet'
+
+interface WalletProviderMeta {
+  id:          WalletProvider
+  name:        string
+  description: string
+  iconLabel:   string
+  isInstalled: boolean
+}
+
+const MOCK_WALLET_PROVIDERS: WalletProviderMeta[] = [
+  {
+    id:          'metamask',
+    name:        'MetaMask',
+    description: 'Connect using the MetaMask browser extension or mobile app.',
+    iconLabel:   '🦊',
+    isInstalled: true,
+  },
+  {
+    id:          'walletconnect',
+    name:        'WalletConnect',
+    description: 'Scan a QR code to connect with any WalletConnect-compatible wallet.',
+    iconLabel:   '🔗',
+    isInstalled: false,
+  },
+  {
+    id:          'coinbase',
+    name:        'Coinbase Wallet',
+    description: 'Connect using the Coinbase Wallet browser extension or mobile app.',
+    iconLabel:   '🔵',
+    isInstalled: false,
+  },
+]
+import { useIsConnectModalOpen, useWalletStore } from '@/store/walletStore'
 
 /**
  * ConnectWalletModal

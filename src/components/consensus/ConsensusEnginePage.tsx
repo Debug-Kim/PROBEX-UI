@@ -18,7 +18,7 @@ import { services }            from '@/lib/services'
 import { useMarketStore }      from '@/store/marketStore'
 import { useSingleMarketStream } from '@/hooks/useMarketStream'
 import { asMarketId }          from '@/types/branded'
-import { getIntelligenceSummary, getExplainabilityDrivers } from '@/mock/intelligence'
+import { getIntelligenceSummary, getExplainabilityDrivers } from '@/lib/consensus/intelligence'
 
 import { ConfidenceMeter }     from '@/components/markets/ConfidenceMeter'
 import { AnalyticsCard }       from '@/components/analytics/shared'

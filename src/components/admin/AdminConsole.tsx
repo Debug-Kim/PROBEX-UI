@@ -9,7 +9,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import { ADMIN_KPIS } from '@/mock/admin'
+import { useAdminKPIs } from '@/hooks/useServices'
 import { AdminKpi } from './shared'
 import { UserManagement }   from './UserManagement'
 import { MarketManagement } from './MarketManagement'
@@ -44,6 +44,7 @@ function renderPanel(id: TabId) {
 
 export function AdminConsole() {
   const [active, setActive] = useState<TabId>('users')
+  const kpis = useAdminKPIs().data
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '') as TabId
@@ -72,10 +73,10 @@ export function AdminConsole() {
 
       {/* KPI strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-        <AdminKpi label="Total Users"      value={ADMIN_KPIS.totalUsers.toLocaleString()} tone="info"     icon={<UsersIcon />} />
-        <AdminKpi label="Active Markets"   value={String(ADMIN_KPIS.activeMarkets)}        tone="positive" icon={<ChartIcon />} />
-        <AdminKpi label="Pending KYC"      value={String(ADMIN_KPIS.pendingKyc)}           tone="warning"  icon={<ShieldIcon />} />
-        <AdminKpi label="Open Risk Alerts" value={String(ADMIN_KPIS.openRiskAlerts)}       tone="negative" icon={<AlertIcon />} />
+        <AdminKpi label="Total Users"      value={kpis ? kpis.totalUsers.toLocaleString() : '–'} tone="info"     icon={<UsersIcon />} />
+        <AdminKpi label="Active Markets"   value={kpis ? String(kpis.activeMarkets) : '–'}       tone="positive" icon={<ChartIcon />} />
+        <AdminKpi label="Pending KYC"      value={kpis ? String(kpis.pendingKyc) : '–'}          tone="warning"  icon={<ShieldIcon />} />
+        <AdminKpi label="Open Risk Alerts" value={kpis ? String(kpis.openRiskAlerts) : '–'}      tone="negative" icon={<AlertIcon />} />
       </div>
 
       {/* Tab bar */}

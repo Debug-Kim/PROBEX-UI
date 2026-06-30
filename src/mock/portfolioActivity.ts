@@ -4,28 +4,10 @@
 //
 // replace with IPortfolioService.getActivity.
 
-import type { MarketId, PositionId } from '@/types/branded'
 import { asMarketId, asPositionId }  from '@/types/branded'
 
-export type PortfolioEventType =
-  | 'position-opened'
-  | 'position-closed'
-  | 'settlement-win'
-  | 'settlement-loss'
-  | 'payout-received'
-  | 'watchlist-added'
-  | 'consensus-alert'
-
-export interface PortfolioActivityEvent {
-  id:           string
-  type:         PortfolioEventType
-  marketId:     MarketId
-  positionId?:  PositionId
-  marketTitle:  string
-  description:  string
-  amount?:      number    // USD
-  timestamp:    number     // Unix ms
-}
+export type { PortfolioEventType, PortfolioActivityEvent } from '@/types/portfolio'
+import type { PortfolioEventType, PortfolioActivityEvent } from '@/types/portfolio'
 
 const now = Date.now()
 

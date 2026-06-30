@@ -2,7 +2,7 @@
 
 import Link                      from 'next/link'
 import { cn }                    from '@/lib/utils'
-import { MOCK_OPEN_POSITIONS, MOCK_SETTLED_POSITIONS } from '@/mock/positions'
+import { usePositions }          from '@/hooks/useServices'
 import { PortfolioOverview }     from './PortfolioOverview'
 import { PortfolioAllocation }   from './PortfolioAllocation'
 import { PortfolioInsights }     from './PortfolioInsights'
@@ -41,7 +41,9 @@ interface PortfolioPageProps {
  * EmptyState directing them to Markets.
  */
 export function PortfolioPage({ className }: PortfolioPageProps) {
-  const hasAnyPositions = MOCK_OPEN_POSITIONS.length > 0 || MOCK_SETTLED_POSITIONS.length > 0
+  const openPositions    = usePositions('open').data ?? []
+  const settledPositions = usePositions('settled').data ?? []
+  const hasAnyPositions  = openPositions.length > 0 || settledPositions.length > 0
 
   return (
     <div className={cn('page-container flex flex-col gap-5 pb-8', className)}>

@@ -4,7 +4,7 @@
 
 import { cn, formatPercent, formatDelta, formatCompact } from '@/lib/utils'
 import { useAnalyticsStore, useAnalyticsViewMode } from '@/store/analyticsStore'
-import { ANALYTICS_DASHBOARD, SEGMENT_ANALYTICS } from '@/mock/analytics'
+import { useAnalyticsDashboard, useSegmentAnalytics } from '@/hooks/useServices'
 import { getSegmentMeta } from '@/config/marketSegments'
 import { StatCard } from '@/components/ui/StatCard'
 import { AnalyticsCard } from './shared'
@@ -18,7 +18,6 @@ import { PortfolioAnalytics } from './PortfolioAnalytics'
 import type { AnalyticsDashboard, SegmentPerformanceRecord } from '@/types/analytics'
 
 interface AnalyticsOverviewProps {
-  data?:      AnalyticsDashboard
   className?: string
 }
 
@@ -32,10 +31,13 @@ const TABS = [
   { id: 'portfolio',     label: 'Portfolio'      },
 ] as const
 
-export function AnalyticsOverview({ data, className }: AnalyticsOverviewProps) {
+export function AnalyticsOverview({ className }: AnalyticsOverviewProps) {
   const { activeTab, setTab } = useAnalyticsStore()
   const viewMode = useAnalyticsViewMode()
-  const dash     = data ?? ANALYTICS_DASHBOARD
+  const dash     = useAnalyticsDashboard().data
+  const segments = useSegmentAnalytics().data ?? []
+
+  if (!dash) return null
 
   return (
     <div className={cn('page-container flex flex-col gap-4 pb-8', className)}>
@@ -81,12 +83,12 @@ export function AnalyticsOverview({ data, className }: AnalyticsOverviewProps) {
 
       {/* Tab panels */}
       <div role="tabpanel">
-        {activeTab === 'overview'      && <OverviewTab dash={dash} />}
+        {activeTab === 'overview'      && <OverviewTab dash={dash} segments={segments} />}
         {activeTab === 'consensus'     && <ConsensusAnalytics     summary={dash.consensusSummary} />}
         {activeTab === 'institutional' && <InstitutionalAnalytics summary={dash.institutionalSummary} />}
         {activeTab === 'etf'           && <ETFAnalytics           summary={dash.etfSummary} />}
         {activeTab === 'on-chain'      && <OnChainAnalytics       summary={dash.onChainSummary} />}
-        {activeTab === 'market'        && <MarketAnalytics        segments={SEGMENT_ANALYTICS} />}
+        {activeTab === 'market'        && <MarketAnalytics        segments={segments} />}
         {activeTab === 'portfolio'     && <PortfolioAnalytics     summary={dash.portfolioSummary} />}
       </div>
     </div>
@@ -95,7 +97,7 @@ export function AnalyticsOverview({ data, className }: AnalyticsOverviewProps) {
 
 // ─── Overview tab ───────────────────────────────────────────────────────────
 
-function OverviewTab({ dash }: { dash: AnalyticsDashboard }) {
+function OverviewTab({ dash, segments }: { dash: AnalyticsDashboard; segments: SegmentPerformanceRecord[] }) {
   const c = dash.consensusSummary
   const e = dash.etfSummary
   const i = dash.institutionalSummary
@@ -127,7 +129,7 @@ function OverviewTab({ dash }: { dash: AnalyticsDashboard }) {
       {/* Segment heatmap + signal table */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <AnalyticsCard title="Segment Performance" subtitle="Consensus accuracy across all 8 segments">
-          <SegmentHeatmap segments={SEGMENT_ANALYTICS} />
+          <SegmentHeatmap segments={segments} />
         </AnalyticsCard>
         <AnalyticsCard title="Signal Performance" subtitle="Win rate and return by signal level">
           <SignalPerformanceTable />

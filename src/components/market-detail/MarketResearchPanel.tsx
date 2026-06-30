@@ -2,8 +2,8 @@
 
 import { useState }              from 'react'
 import { cn }                    from '@/lib/utils'
-import { getResearch }           from '@/mock/marketDetails'
-import type { KeyDriver }        from '@/mock/marketDetails'
+import { useMarketResearch }     from '@/hooks/useServices'
+import type { KeyDriver }        from '@/types/marketDetail'
 import type { ReactNode } from 'react'
 
 interface MarketResearchPanelProps {
@@ -11,17 +11,9 @@ interface MarketResearchPanelProps {
   className?: string
 }
 
-/**
- * MarketResearchPanel
- * ───────────────────
- * Research content section on the market detail page.
- * Displays AI/analyst-generated intelligence about the market.
- *
- * replace mock data with IMarketService.getResearch.
- */
 export function MarketResearchPanel({ marketId, className }: MarketResearchPanelProps) {
   const [expandedDriver, setExpandedDriver] = useState<number | null>(null)
-  const research = getResearch(marketId)
+  const research = useMarketResearch(marketId).data
 
   if (!research) return null
 

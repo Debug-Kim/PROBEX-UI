@@ -5,7 +5,7 @@
 // plain-English reading and verdict.
 
 import { ConsensusScoreCard } from './ConsensusScoreCard'
-import type { IntelligenceSummary as Summary } from '@/mock/intelligence'
+import type { IntelligenceSummary as Summary } from '@/types/intelligence'
 import type { ConsensusState, Bias } from '@/types/consensus'
 
 const DIR_COLOR: Record<Bias, string> = {

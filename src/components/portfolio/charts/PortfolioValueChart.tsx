@@ -1,10 +1,10 @@
 'use client'
 
-import {useMemo}                 from 'react'
-import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from 'recharts'
-import {cn, formatCurrency, formatCompact} from '@/lib/utils'
-import {getRecentPerformance}    from '@/mock/performance'
-import {useChartTimeframe}       from '@/store/portfolioStore'
+import { useMemo }                                              from 'react'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { cn, formatCurrency, formatCompact }                   from '@/lib/utils'
+import { usePortfolioPerformance }                             from '@/hooks/useServices'
+import { useChartTimeframe }                                   from '@/store/portfolioStore'
 
 interface PortfolioValueChartProps {
   className?: string
@@ -24,9 +24,9 @@ const DAYS_MAP: Record<string, number> = {
 export function PortfolioValueChart({ className, height = 200 }: PortfolioValueChartProps) {
   const timeframe = useChartTimeframe()
   const days      = DAYS_MAP[timeframe] ?? 30
+  const pts       = usePortfolioPerformance(days).data ?? []
 
   const data = useMemo(() => {
-    const pts  = getRecentPerformance(days)
     const step = Math.max(1, Math.floor(pts.length / 60))  // max 60 points
     return pts.filter((_, i) => i % step === 0).map((p) => ({
       ts:       p.timestamp,
@@ -35,7 +35,7 @@ export function PortfolioValueChart({ className, height = 200 }: PortfolioValueC
       cash:     Math.round(p.cashBalance),
       label:    formatAxisLabel(p.timestamp, days),
     }))
-  }, [days])
+  }, [pts, days])
 
   const first = data[0]?.total ?? 10000
   const last  = data.at(-1)?.total ?? 10000

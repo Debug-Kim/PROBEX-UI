@@ -2,7 +2,8 @@
 
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatCompact } from '@/lib/utils'
-import { SERVICE_STATUS, SYSTEM_METRICS, THROUGHPUT_SERIES, type ServiceState, type ServiceStatus } from '@/mock/admin'
+import { useSystemHealth } from '@/hooks/useServices'
+import type { ServiceState, ServiceStatus } from '@/types/admin'
 import { AdminCard, StatusPill, AdminKpi, type Tone } from './shared'
 
 const STATE_TONE: Record<ServiceState, Tone> = {
@@ -14,8 +15,13 @@ const STATE_LABEL: Record<ServiceState, string> = {
 }
 
 export function SystemHealth() {
-  const down     = SERVICE_STATUS.filter((s) => s.state === 'down').length
-  const degraded = SERVICE_STATUS.filter((s) => s.state === 'degraded').length
+  const health       = useSystemHealth().data
+  const services     = health?.services     ?? []
+  const metrics      = health?.metrics      ?? []
+  const throughput   = health?.throughput   ?? []
+
+  const down     = services.filter((s) => s.state === 'down').length
+  const degraded = services.filter((s) => s.state === 'degraded').length
   const overallTone: Tone = down > 0 ? 'negative' : degraded > 0 ? 'warning' : 'positive'
   const overallLabel = down > 0 ? 'Partial outage' : degraded > 0 ? 'Degraded performance' : 'All systems operational'
 
@@ -36,7 +42,7 @@ export function SystemHealth() {
 
       {/* Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {SYSTEM_METRICS.map((m) => (
+        {metrics.map((m) => (
           <AdminKpi key={m.label} label={m.label} value={m.value} delta={m.delta} tone="info" />
         ))}
       </div>
@@ -46,7 +52,7 @@ export function SystemHealth() {
         <AdminCard title="Request Throughput" subtitle="Requests / min · trailing 2 hours">
           <div style={{ height: 200 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={THROUGHPUT_SERIES} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
+              <LineChart data={throughput} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
                 <XAxis dataKey="t" tick={{ fontSize: 10, fill: 'var(--probex-text-disabled)' }} tickLine={false} axisLine={false} interval={5} />
                 <YAxis tick={{ fontSize: 10, fill: 'var(--probex-text-disabled)' }} tickLine={false} axisLine={false} width={44} tickFormatter={(v: number) => formatCompact(v)} />
                 <Tooltip
@@ -61,9 +67,9 @@ export function SystemHealth() {
         </AdminCard>
 
         {/* Services */}
-        <AdminCard title="Service Status" subtitle={`${SERVICE_STATUS.length} services monitored`} noPadding>
+        <AdminCard title="Service Status" subtitle={`${services.length} services monitored`} noPadding>
           <ul>
-            {SERVICE_STATUS.map((s, i) => (
+            {services.map((s, i) => (
               <ServiceRow key={s.name} svc={s} first={i === 0} />
             ))}
           </ul>

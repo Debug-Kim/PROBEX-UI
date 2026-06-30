@@ -21,7 +21,7 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { useMarketStore } from '@/store'
-import { getProbabilityHistory, getConsensusHistory, getVolumeHistory } from '@/mock/marketHistory'
+import { useMarketHistory, useConsensusBreakdownHistory, useVolumeHistory } from '@/hooks/useServices'
 import { LiveIndicator } from '@/components/live/LiveIndicator'
 import { TimeframeSelector } from '@/components/charts/TimeframeSelector'
 import type { Market } from '@/types/market'
@@ -90,19 +90,10 @@ export function MarketCharts({ market, liveView }: MarketChartsProps) {
   const timeframe = useMarketStore((s) => s.activeTimeframe)
   const isLiveActive = liveView?.isLive ?? false
 
-  // ── Historical series (memoised; only changes with timeframe) ─────────────
-  const historicalProb = useMemo(
-    () => getProbabilityHistory(market.id, timeframe),
-    [market.id, timeframe],
-  )
-  const historicalConsensus = useMemo(
-    () => getConsensusHistory(market.id, timeframe),
-    [market.id, timeframe],
-  )
-  const historicalVolume = useMemo(
-    () => getVolumeHistory(market.id, timeframe),
-    [market.id, timeframe],
-  )
+  // ── Historical series (seeded synchronously in mock mode via peek*) ────────
+  const historicalProb      = useMarketHistory(market.id, timeframe).data ?? []
+  const historicalConsensus = useConsensusBreakdownHistory(market.id, timeframe).data ?? []
+  const historicalVolume    = useVolumeHistory(market.id, timeframe).data ?? []
 
  // ── Live point buffers ──────────────────────────────────────────
   const [livePoints, setLivePoints] = useState<LiveDataPoint[]>([])

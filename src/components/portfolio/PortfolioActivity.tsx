@@ -1,30 +1,46 @@
 'use client'
 
 import { cn, formatCurrency } from '@/lib/utils'
-import {
-  getPortfolioActivity,
-  PORTFOLIO_EVENT_LABELS,
-  PORTFOLIO_EVENT_COLORS,
-  PORTFOLIO_EVENT_ICONS,
-  type PortfolioActivityEvent,
-} from '@/mock/portfolioActivity'
+import { usePortfolioActivity } from '@/hooks/useServices'
+import type { PortfolioActivityEvent, PortfolioEventType } from '@/types/portfolio'
+
+const PORTFOLIO_EVENT_LABELS: Record<PortfolioEventType, string> = {
+  'position-opened': 'Position Opened',
+  'position-closed': 'Position Closed',
+  'settlement-win':  'Settled — Win',
+  'settlement-loss': 'Settled — Loss',
+  'payout-received': 'Payout',
+  'watchlist-added': 'Watchlist',
+  'consensus-alert': 'Consensus Alert',
+}
+
+const PORTFOLIO_EVENT_COLORS: Record<PortfolioEventType, string> = {
+  'position-opened': 'var(--probex-primary)',
+  'position-closed': 'var(--probex-text-muted)',
+  'settlement-win':  'var(--probex-positive)',
+  'settlement-loss': 'var(--probex-negative)',
+  'payout-received': 'var(--probex-positive)',
+  'watchlist-added': 'var(--probex-warning)',
+  'consensus-alert': 'var(--probex-primary)',
+}
+
+const PORTFOLIO_EVENT_ICONS: Record<PortfolioEventType, string> = {
+  'position-opened': '+',
+  'position-closed': '×',
+  'settlement-win':  '✓',
+  'settlement-loss': '✗',
+  'payout-received': '$',
+  'watchlist-added': '★',
+  'consensus-alert': '⚡',
+}
 
 interface PortfolioActivityProps {
   className?: string
   maxItems?:  number
 }
 
-/**
- * PortfolioActivity
- * ──────────────────
- * Scrollable account-level activity feed.
- * Shows position opens/closes, settlements, payouts, watchlist actions,
- * and consensus signal alerts relevant to the user's holdings.
- *
- * replace getPortfolioActivity with live event subscription.
- */
 export function PortfolioActivity({ className, maxItems = 12 }: PortfolioActivityProps) {
-  const events = getPortfolioActivity(maxItems)
+  const events = usePortfolioActivity(maxItems).data ?? []
 
   return (
     <div

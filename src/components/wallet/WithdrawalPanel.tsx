@@ -2,10 +2,9 @@
 
 import { useState }              from 'react'
 import { cn, formatCurrency }    from '@/lib/utils'
-import { getFundingMethod, getFundingMethodsByCategory } from '@/mock/fundingMethods'
-import { getMockWalletBalance }  from '@/mock/wallet'
+import { getFundingMethod, getFundingMethodsByCategory } from '@/lib/wallet/fundingMethods'
+import { useWalletBalance, useWalletConnection } from '@/hooks/useServices'
 import { formatAddress }         from '@/lib/web3/utils/formatAddress'
-import { MOCK_CONNECTED_WALLET } from '@/mock/connectedWallets'
 import { useWalletStore, useSelectedFundingMethod } from '@/store/walletStore'
 import { SummaryRow, Spinner }   from './DepositPanel'
 import type { CSSProperties } from 'react'
@@ -24,10 +23,11 @@ export function WithdrawalPanel({ className, hideHeader = false, style }: { clas
   const [submitted, setSubmitted]       = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const balance     = getMockWalletBalance()
+  const balance     = useWalletBalance().data
+  const connection  = useWalletConnection().data
   const method      = selectedMethodId ? getFundingMethod(selectedMethodId) : undefined
   const amount      = parseFloat(withdrawalAmount) || 0
-  const available   = balance.usdcBalance
+  const available   = balance?.usdcBalance ?? 0
 
   const feeAmount   = method?.feeLabel.includes('%')
     ? amount * (parseFloat(method.feeLabel) / 100)
@@ -106,7 +106,7 @@ export function WithdrawalPanel({ className, hideHeader = false, style }: { clas
           >
             <option value="" disabled>Select a destination…</option>
             {getFundingMethodsByCategory('crypto').map((m) => (
-              <option key={m.id} value={m.id}>{m.name} · {formatAddress(MOCK_CONNECTED_WALLET.address)}</option>
+              <option key={m.id} value={m.id}>{m.name}{connection ? ` · ${formatAddress(connection.address)}` : ''}</option>
             ))}
             {getFundingMethodsByCategory('fiat').map((m) => (
               <option key={m.id} value={m.id}>{m.name} · {m.feeLabel}</option>

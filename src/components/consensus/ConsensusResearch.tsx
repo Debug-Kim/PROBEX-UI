@@ -8,20 +8,21 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { AnalyticsCard } from '@/components/analytics/shared'
 import { ResearchReportCard } from '@/components/research/ResearchReportCard'
-import { MOCK_RESEARCH_REPORTS } from '@/mock/research'
+import { useResearchReports } from '@/hooks/useServices'
 import { getSegmentMeta } from '@/config/marketSegments'
 import { ROUTES } from '@/config/constants'
 import type { BitcoinSegment } from '@/types/market'
 
 export function ConsensusResearch({ marketId, segment }: { marketId: string; segment: BitcoinSegment }) {
   const router = useRouter()
+  const allReports = useResearchReports().data?.data ?? []
 
   const reports = useMemo(() => {
-    const matches = MOCK_RESEARCH_REPORTS.filter(
+    const matches = allReports.filter(
       (r) => r.featuredMarkets.includes(marketId) || r.relevantSegments.includes(segment),
     )
-    return (matches.length > 0 ? matches : MOCK_RESEARCH_REPORTS).slice(0, 4)
-  }, [marketId, segment])
+    return (matches.length > 0 ? matches : allReports).slice(0, 4)
+  }, [allReports, marketId, segment])
 
   return (
     <AnalyticsCard

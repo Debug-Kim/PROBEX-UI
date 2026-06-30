@@ -1,30 +1,12 @@
 // Platform-wide activity events for the dashboard feed.
 // Deterministic base data + time-relative display.
 
-import type { MarketId } from '@/types/branded'
 import { asMarketId } from '@/types/branded'
+import type { ActivityType, ActivityItem } from '@/types/activity'
 
-// ─── Types ────────────────────────────────────────────────────────────────
+// ─── Types (canonical definitions live in @/types/activity) ───────────────
 
-export type ActivityType =
-  | 'new-position-yes'
-  | 'new-position-no'
-  | 'market-resolved'
-  | 'consensus-shift'
-  | 'probability-spike'
-  | 'large-position'
-
-export interface ActivityItem {
-  id:          string
-  type:        ActivityType
-  marketId:    MarketId
-  marketTitle: string
-  segment:     string
-  description: string
-  amount?:     number     // USD
-  probability?: number    // current probability
-  timestamp:   number     // Unix ms
-}
+export type { ActivityType, ActivityItem } from '@/types/activity'
 
 // ─── Base activity data ────────────────────────────────────────────────────
 

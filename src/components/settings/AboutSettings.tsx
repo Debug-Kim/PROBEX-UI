@@ -1,6 +1,6 @@
 'use client'
 
-import { APP_META } from '@/mock/settings'
+import { APP_META } from '@/lib/settings/appMeta'
 import { SettingsSection, SettingRow, ReadOnlyValue } from './controls'
 
 const LINKS = [

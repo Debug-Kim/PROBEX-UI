@@ -1,7 +1,7 @@
 'use client'
 
 import { cn }                from '@/lib/utils'
-import { MOCK_FUNDING_METHODS, type FundingMethod } from '@/mock/fundingMethods'
+import { FUNDING_METHODS, type FundingMethod } from '@/lib/wallet/fundingMethods'
 import { useSelectedFundingMethod, useWalletStore } from '@/store/walletStore'
 
 interface FundingMethodsProps {
@@ -39,7 +39,7 @@ export function FundingMethods({ className, selectable = true }: FundingMethodsP
       </div>
 
       <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {MOCK_FUNDING_METHODS.map((method) => {
+        {FUNDING_METHODS.map((method) => {
           const isSelected = selected === method.id
           return (
             <button

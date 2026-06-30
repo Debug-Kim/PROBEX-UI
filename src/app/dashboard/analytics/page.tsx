@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { AnalyticsOverview } from '@/components/analytics'
-import { ANALYTICS_DASHBOARD } from '@/mock/analytics'
 
 export const metadata: Metadata = {
   title: 'Analytics — Probex',
@@ -8,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function AnalyticsPage() {
-  return <AnalyticsOverview data={ANALYTICS_DASHBOARD} />
+  return <AnalyticsOverview />
 }

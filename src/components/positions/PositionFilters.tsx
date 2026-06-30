@@ -3,7 +3,7 @@
 import { cn }                from '@/lib/utils'
 import { usePortfolioStore } from '@/store/portfolioStore'
 import { ORDERED_SEGMENTS }  from '@/config/marketSegments'
-import type { AlignmentType } from '@/mock/positionConsensus'
+import type { AlignmentType } from '@/lib/positions/alignment'
 
 export type PnlState = 'profit' | 'loss' | null
 

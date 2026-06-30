@@ -7,11 +7,9 @@
 // Design: prediction market terminal, not a marketing banner.
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useRouter }                                           from 'next/navigation'
-import { getFeaturedMarkets }                                  from '@/mock/markets'
-import { MOCK_CONSENSUS_MAP }                                  from '@/mock/consensus'
-import { getProbabilityHistory }                               from '@/mock/marketHistory'
-import { ROUTES }                                             from '@/config/constants'
+import { useRouter }                                  from 'next/navigation'
+import { useMarkets, useConsensusMap, useMarketHistory } from '@/hooks/useServices'
+import { ROUTES }                                     from '@/config/constants'
 import { formatCompact, probabilityColorVar }                 from '@/lib/utils'
 import type { Market }                                         from '@/types/market'
 import type { ConsensusState }                                 from '@/types/consensus'
@@ -168,16 +166,15 @@ function StatPill({ label, value }: { label: string; value: string }) {
 function HeroSlide({
   market,
   consensus,
-  history,
   isActive,
   onClick,
 }: {
   market:    Market
   consensus: ConsensusState
-  history:   Array<{ probability: number }>
   isActive:  boolean
   onClick:   () => void
 }) {
+  const history = useMarketHistory(market.id as string, '7d').data ?? []
   const first = history[0]
   const last  = history[history.length - 1]
   const move  = (first && last) ? last.probability - first.probability : 0
@@ -296,19 +293,20 @@ function HeroSlide({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function HeroCarousel() {
-  const router   = useRouter()
-  const markets  = useMemo(() => getFeaturedMarkets(6), [])
+  const router         = useRouter()
+  const allMarketsData = useMarkets().data?.data ?? []
+  const consensusMap   = useConsensusMap().data ?? {}
+  const markets        = useMemo(() => [...allMarketsData].sort((a, b) => b.liquidity - a.liquidity).slice(0, 6), [allMarketsData])
   const [current, setCurrent]   = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const DURATION    = 7000
 
   const slides = useMemo(() =>
-    markets.map(m => ({
-      market:    m,
-      consensus: MOCK_CONSENSUS_MAP[m.id as string]!,
-      history:   getProbabilityHistory(m.id as string),
-    })),
-    [markets],
+    markets.flatMap(m => {
+      const consensus = consensusMap[m.id as string]
+      return consensus ? [{ market: m, consensus }] : []
+    }),
+    [markets, consensusMap],
   )
 
   useEffect(() => {
@@ -362,7 +360,6 @@ export function HeroCarousel() {
             key={s.market.id as string}
             market={s.market}
             consensus={s.consensus}
-            history={s.history}
             isActive={i === current}
             onClick={handleClick}
           />

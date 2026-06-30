@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DEFAULT_SECURITY_PREFS, type SecurityPrefs } from '@/mock/settings'
+import { DEFAULT_SECURITY_PREFS } from '@/lib/settings/defaults'
+import type { SecurityPrefs } from '@/types/settings'
 import { SettingsSection, SettingRow, Toggle, SelectField, SaveBar } from './controls'
 
 const TIMEOUT_OPTIONS = [

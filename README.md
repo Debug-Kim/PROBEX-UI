@@ -138,7 +138,7 @@ All variables are optional in mock mode. They are read where the app integrates 
 | Variable | Purpose |
 |---|---|
 | `NEXT_PUBLIC_API_MODE` | `mock` (default) or `live` — selects mock vs. live service implementations |
-| `NEXT_PUBLIC_API_BASE_URL` | REST API base URL (live mode) |
+| `NEXT_PUBLIC_API_BASE_URL` | **Canonical** backend base URL (single source of truth). Includes the `/api` prefix; consumed by the shared API client and endpoint registry. |
 | `NEXT_PUBLIC_CONSENSUS_API_URL` | Consensus Engine endpoint |
 | `NEXT_PUBLIC_WS_URL` | Real-time stream (WebSocket) URL |
 | `NEXT_PUBLIC_APP_URL` | Canonical app URL (Open Graph / metadata) |

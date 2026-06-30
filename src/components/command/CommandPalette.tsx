@@ -14,7 +14,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUIStore } from '@/store/uiStore'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
-import { MOCK_MARKETS } from '@/mock/markets'
+import { useMarkets } from '@/hooks/useServices'
 import { getSegmentMeta } from '@/config/marketSegments'
 import { ROUTES, MARKET_DETAIL_PATH } from '@/config/constants'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -52,6 +52,8 @@ export function CommandPalette() {
   const openActivity  = useUIStore((s) => s.openActivity)
   const router        = useRouter()
 
+  const allMarkets = useMarkets().data?.data ?? []
+
   const [query, setQuery] = useState('')
   const [sel, setSel]     = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -65,7 +67,7 @@ export function CommandPalette() {
       id: `nav-${p.href}`, label: p.label, sublabel: p.href, group: 'Navigation',
       run: () => { router.push(p.href); close() },
     }))
-    const markets: Cmd[] = MOCK_MARKETS.map((m) => ({
+    const markets: Cmd[] = allMarkets.map((m) => ({
       id: `mkt-${m.id as string}`, label: m.title, sublabel: getSegmentMeta(m.segment).label, group: 'Markets',
       run: () => { router.push(MARKET_DETAIL_PATH(m.id as string)); close() },
     }))
@@ -76,7 +78,7 @@ export function CommandPalette() {
     const all = [...nav, ...markets, ...actions]
     if (!q) return [...nav.slice(0, 5), ...markets.slice(0, 5), ...actions]
     return all.filter((c) => c.label.toLowerCase().includes(q) || (c.sublabel?.toLowerCase().includes(q) ?? false)).slice(0, 24)
-  }, [query, router, close, openActivity])
+  }, [query, router, close, openActivity, allMarkets])
 
   // Reset state when opened.
   useEffect(() => {

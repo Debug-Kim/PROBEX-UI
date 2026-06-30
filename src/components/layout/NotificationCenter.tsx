@@ -3,7 +3,15 @@
 // Dropdown panel rendered by NotificationBell. Presentational — state lives in
 // the bell so the unread badge stays in sync.
 
-import { NOTIFICATION_META, type NotificationItem } from '@/mock/notifications'
+import type { NotificationItem, NotificationKind } from '@/types/notifications'
+
+const NOTIFICATION_META: Record<NotificationKind, { icon: string; color: string }> = {
+  consensus:  { icon: '◈', color: 'var(--probex-primary)'  },
+  resolution: { icon: '✓', color: 'var(--probex-positive)' },
+  price:      { icon: '⚡', color: 'var(--probex-warning)'  },
+  research:   { icon: '✦', color: 'var(--probex-chart-secondary)' },
+  system:     { icon: '⚙', color: 'var(--probex-text-muted)' },
+}
 
 function formatAge(ts: number): string {
   const s = Math.floor((Date.now() - ts) / 1000)

@@ -1,27 +1,33 @@
 'use client'
 
-import { cn, formatCurrency } from '@/lib/utils'
-import { StatCard }           from '@/components/ui/StatCard'
-import { StatCardSkeleton }   from '@/components/ui/LoadingState'
-import { getMockWalletBalance, MOCK_PENDING_FUNDS, MOCK_FUNDING_STATUS, FUNDING_STATUS_LABELS, FUNDING_STATUS_COLORS } from '@/mock/wallet'
+import { cn, formatCurrency }                         from '@/lib/utils'
+import { StatCard }                                    from '@/components/ui/StatCard'
+import { StatCardSkeleton }                            from '@/components/ui/LoadingState'
+import { useWalletBalance, useWalletPendingFunds }     from '@/hooks/useServices'
+import type { FundingStatus }                          from '@/types/wallet'
+
+const FUNDING_STATUS_LABELS: Record<FundingStatus, string> = {
+  active:                 'Active',
+  'pending-verification': 'Pending Verification',
+  restricted:             'Restricted',
+}
+
+const FUNDING_STATUS_COLORS: Record<FundingStatus, string> = {
+  active:                 'var(--probex-positive)',
+  'pending-verification': 'var(--probex-warning)',
+  restricted:             'var(--probex-negative)',
+}
 
 interface WalletOverviewProps {
   className?: string
   isLoading?: boolean
 }
 
-/**
- * WalletOverview
- * ──────────────
- * Five-stat grid summarizing wallet headline numbers:
- * Total Balance, Available Balance, Pending Deposits,
- * Pending Withdrawals, Funding Status.
- *
- * Mirrors the visual pattern of PortfolioMetrics for consistency
- * across the two financial workflows.
- */
 export function WalletOverview({ className, isLoading }: WalletOverviewProps) {
-  if (isLoading) {
+  const balance = useWalletBalance().data
+  const pending = useWalletPendingFunds().data
+
+  if (isLoading || !balance || !pending) {
     return (
       <div className={cn('grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3', className)}>
         {Array.from({ length: 5 }).map((_, i) => <StatCardSkeleton key={i} />)}
@@ -29,8 +35,7 @@ export function WalletOverview({ className, isLoading }: WalletOverviewProps) {
     )
   }
 
-  const balance = getMockWalletBalance()
-  const pending = MOCK_PENDING_FUNDS
+  const fundingStatus: FundingStatus = 'active'
 
   return (
     <div className={cn('grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3', className)}>
@@ -64,8 +69,8 @@ export function WalletOverview({ className, isLoading }: WalletOverviewProps) {
 
       <StatCard
         label="Funding Status"
-        value={FUNDING_STATUS_LABELS[MOCK_FUNDING_STATUS]}
-        valueColor={FUNDING_STATUS_COLORS[MOCK_FUNDING_STATUS]}
+        value={FUNDING_STATUS_LABELS[fundingStatus]}
+        valueColor={FUNDING_STATUS_COLORS[fundingStatus]}
         deltaLabel="KYC verified"
       />
 

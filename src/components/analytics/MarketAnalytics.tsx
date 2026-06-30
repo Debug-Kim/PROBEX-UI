@@ -11,7 +11,7 @@ import { cn, formatCompact, formatPercent } from '@/lib/utils'
 import { StatCard } from '@/components/ui/StatCard'
 import { useAnalyticsTimeframe, useAnalyticsSegment, useAnalyticsStore } from '@/store/analyticsStore'
 import { ORDERED_SEGMENTS, getSegmentMeta } from '@/config/marketSegments'
-import { getMarketActivityHistory, SEGMENT_ANALYTICS } from '@/mock/analytics'
+import { useMarketActivityHistory, useSegmentAnalytics } from '@/hooks/useServices'
 import {
   AnalyticsCard, SectionHeader, SeriesTooltip, Th, Td,
   sliceByTimeframe, axisDateLabel, CHART, AXIS_TICK,
@@ -25,19 +25,21 @@ interface MarketAnalyticsProps {
 }
 
 export function MarketAnalytics({ segments, className }: MarketAnalyticsProps) {
-  const timeframe      = useAnalyticsTimeframe()
-  const activeSegment  = useAnalyticsSegment()
-  const { setSegment } = useAnalyticsStore()
-  const segs           = segments && segments.length >= ORDERED_SEGMENTS.length ? segments : SEGMENT_ANALYTICS
+  const timeframe       = useAnalyticsTimeframe()
+  const activeSegment   = useAnalyticsSegment()
+  const { setSegment }  = useAnalyticsStore()
+  const segmentData     = useSegmentAnalytics().data ?? []
+  const activityPts     = useMarketActivityHistory().data ?? []
+  const segs            = segments && segments.length >= ORDERED_SEGMENTS.length ? segments : segmentData
 
   const stats = useMemo(() => {
-    const hist = sliceByTimeframe(getMarketActivityHistory(), timeframe)
+    const hist = sliceByTimeframe(activityPts, timeframe)
     const activeMarkets = hist.at(-1)?.activeMarkets ?? 0
     const totalVolume   = hist.reduce((s, p) => s + p.totalVolume, 0)
     const resolved      = hist.reduce((s, p) => s + p.resolvedCount, 0)
     const top = [...segs].sort((a, b) => b.totalVolume - a.totalVolume)[0]
     return { activeMarkets, totalVolume, resolved, topSegment: top ? getSegmentMeta(top.segment).label : '—' }
-  }, [timeframe, segs])
+  }, [activityPts, timeframe, segs])
 
   return (
     <section className={cn('flex flex-col gap-4', className)} aria-label="Market analytics">
@@ -77,12 +79,13 @@ export function MarketAnalytics({ segments, className }: MarketAnalyticsProps) {
 // ─── Activity chart ─────────────────────────────────────────────────────────
 
 function MarketActivityChart({ height = 240 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useMarketActivityHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getMarketActivityHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), volume: p.totalVolume, markets: p.activeMarkets,
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (

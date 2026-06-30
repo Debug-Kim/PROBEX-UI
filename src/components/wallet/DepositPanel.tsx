@@ -1,8 +1,8 @@
 'use client'
 
-import {useState}              from 'react'
-import {cn, formatCurrency}    from '@/lib/utils'
-import {getFundingMethod, MOCK_FUNDING_METHODS}  from '@/mock/fundingMethods'
+import { useState }             from 'react'
+import { cn, formatCurrency }  from '@/lib/utils'
+import { getFundingMethod, FUNDING_METHODS } from '@/lib/wallet/fundingMethods'
 
 import {useWalletStore, useSelectedFundingMethod} from '@/store/walletStore'
 import type { CSSProperties } from 'react'
@@ -93,7 +93,7 @@ export function DepositPanel({ className, hideHeader = false, style }: { classNa
             aria-label="Select funding source"
           >
             <option value="" disabled>Select a funding method…</option>
-            {MOCK_FUNDING_METHODS.map((m) => (
+            {FUNDING_METHODS.map((m) => (
               <option key={m.id} value={m.id}>{m.name} · {m.feeLabel}</option>
             ))}
           </select>

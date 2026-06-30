@@ -10,7 +10,6 @@
  */
 
 import { useGlobalStream } from '@/hooks/useGlobalStream'
-import { MOCK_GLOBAL_CONSENSUS } from '@/mock/consensus'
 import { LiveIndicator } from '@/components/live/LiveIndicator'
 
 export function GlobalConsensusBar() {
@@ -21,8 +20,8 @@ export function GlobalConsensusBar() {
   const bullishPct =
     totalCount > 0 ? Math.round((bullishCount / totalCount) * 100) : 50
 
-  // Use live data when available, static when not
-  const displayScore = isLive ? consensusScore : MOCK_GLOBAL_CONSENSUS.score
+  // useGlobalStream already falls back to the mock score when not live
+  const displayScore = consensusScore
 
   return (
     <div

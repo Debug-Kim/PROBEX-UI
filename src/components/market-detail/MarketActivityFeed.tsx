@@ -16,7 +16,7 @@
 
 import { useMemo } from 'react'
 import { useLiveStore } from '@/store/liveStore'
-import { getMarketActivity } from '@/mock/marketActivity'
+import { useMarketActivity } from '@/hooks/useServices'
 import { FEATURES } from '@/config/features'
 import { LiveIndicator } from '@/components/live/LiveIndicator'
 import type { MarketId } from '@/types/branded'
@@ -125,11 +125,11 @@ function ActivityRow({ item }: { item: ActivityItem }) {
 
 export function MarketActivityFeed({ marketId }: MarketActivityFeedProps) {
   const liveActivity = useLiveStore((s) => s.liveActivity)
+  const rawActivity  = useMarketActivity(marketId as string, MAX_STATIC_EVENTS).data ?? []
 
- // Static activity from mock ( baseline)
   const staticActivity = useMemo(
-    () => getMarketActivity(marketId).slice(0, MAX_STATIC_EVENTS),
-    [marketId],
+    () => rawActivity.slice(0, MAX_STATIC_EVENTS),
+    [rawActivity],
   )
 
  // Live events filtered to this market

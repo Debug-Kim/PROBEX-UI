@@ -2,18 +2,11 @@
 // Shapes mirror platform events (consensus shifts, resolutions, research).
 
 import { ROUTES, MARKET_DETAIL_PATH } from '@/config/constants'
+import type { NotificationKind, NotificationItem } from '@/types/notifications'
 
-export type NotificationKind = 'consensus' | 'resolution' | 'price' | 'research' | 'system'
+// ─── Types (canonical definitions live in @/types/notifications) ──────────
 
-export interface NotificationItem {
-  id:        string
-  kind:      NotificationKind
-  title:     string
-  body:      string
-  timestamp: number
-  read:      boolean
-  href:      string
-}
+export type { NotificationKind, NotificationItem } from '@/types/notifications'
 
 const now = Date.now()
 

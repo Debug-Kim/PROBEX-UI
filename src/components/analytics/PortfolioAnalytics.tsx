@@ -10,7 +10,7 @@ import { cn, formatCurrency, formatDelta, formatPercent } from '@/lib/utils'
 import { StatCard } from '@/components/ui/StatCard'
 import { useAnalyticsTimeframe } from '@/store/analyticsStore'
 import { getSegmentMeta } from '@/config/marketSegments'
-import { SEGMENT_ANALYTICS, PORTFOLIO_ANALYTICS_SUMMARY } from '@/mock/analytics'
+import { useSegmentAnalytics, usePortfolioAnalyticsSummary } from '@/hooks/useServices'
 import { AnalyticsCard, SectionHeader, SeriesTooltip, CHART, AXIS_TICK } from './shared'
 import type { PortfolioAnalyticsSummary } from '@/types/analytics'
 
@@ -20,11 +20,15 @@ interface PortfolioAnalyticsProps {
 }
 
 export function PortfolioAnalytics({ summary, className }: PortfolioAnalyticsProps) {
-  const timeframe = useAnalyticsTimeframe()
-  const data      = summary ?? PORTFOLIO_ANALYTICS_SUMMARY
+  const timeframe     = useAnalyticsTimeframe()
+  const summaryData   = usePortfolioAnalyticsSummary().data
+  const data          = summary ?? summaryData
+  const segments      = useSegmentAnalytics().data ?? []
 
-  const bestWinRate  = SEGMENT_ANALYTICS.find((s) => s.segment === data.bestSegment)?.winRate ?? 0
-  const worstWinRate = SEGMENT_ANALYTICS.find((s) => s.segment === data.worstSegment)?.winRate ?? 0
+  if (!data) return null
+
+  const bestWinRate  = segments.find((s) => s.segment === data.bestSegment)?.winRate ?? 0
+  const worstWinRate = segments.find((s) => s.segment === data.worstSegment)?.winRate ?? 0
 
   const premiumData = useMemo(() => ([
     { name: 'Consensus-Aligned', value: Math.round(data.totalReturnPct * 1000) / 10, key: 'aligned' },
@@ -32,10 +36,10 @@ export function PortfolioAnalytics({ summary, className }: PortfolioAnalyticsPro
   ]), [data])
 
   const winRateData = useMemo(
-    () => [...SEGMENT_ANALYTICS]
+    () => [...segments]
       .sort((a, b) => b.winRate - a.winRate)
       .map((s) => ({ name: getSegmentMeta(s.segment).shortLabel, winRate: Math.round(s.winRate * 100), segment: s.segment })),
-    [],
+    [segments],
   )
 
   return (

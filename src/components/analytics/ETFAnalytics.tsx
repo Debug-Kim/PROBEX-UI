@@ -10,7 +10,7 @@ import {
 import { cn, formatPercent } from '@/lib/utils'
 import { StatCard } from '@/components/ui/StatCard'
 import { useAnalyticsTimeframe } from '@/store/analyticsStore'
-import { getETFFlowHistory, ETF_ANALYTICS_SUMMARY } from '@/mock/analytics'
+import { useETFFlowHistory, useETFSummary } from '@/hooks/useServices'
 import {
   AnalyticsCard, SectionHeader, SeriesTooltip, Th, Td,
   sliceByTimeframe, axisDateLabel, CHART, AXIS_TICK,
@@ -28,16 +28,18 @@ function fmtUsdM(v: number): string {
 }
 
 export function ETFAnalytics({ summary, className }: ETFAnalyticsProps) {
-  const timeframe = useAnalyticsTimeframe()
-  const data      = summary ?? ETF_ANALYTICS_SUMMARY
+  const timeframe  = useAnalyticsTimeframe()
+  const summaryData = useETFSummary().data
+  const data        = summary ?? summaryData
+  const hist        = useETFFlowHistory().data ?? []
 
-  // IBIT share of flows across the full series.
   const ibitShare = useMemo(() => {
-    const hist = getETFFlowHistory()
     const ibit  = hist.reduce((s, p) => s + Math.max(0, p.ibitFlow), 0)
     const other = hist.reduce((s, p) => s + Math.max(0, p.otherFlow), 0)
     return ibit + other > 0 ? ibit / (ibit + other) : 0
-  }, [])
+  }, [hist])
+
+  if (!data) return null
 
   return (
     <section className={cn('flex flex-col gap-4', className)} aria-label="ETF analytics">
@@ -72,12 +74,13 @@ export function ETFAnalytics({ summary, className }: ETFAnalyticsProps) {
 // ─── Flow + AUM chart (reused, compact, on the Overview tab) ────────────────
 
 export function ETFFlowChart({ height = 260 }: { height?: number }) {
-  const tf = useAnalyticsTimeframe()
+  const tf  = useAnalyticsTimeframe()
+  const pts = useETFFlowHistory().data ?? []
   const data = useMemo(
-    () => sliceByTimeframe(getETFFlowHistory(), tf).map((p) => ({
+    () => sliceByTimeframe(pts, tf).map((p) => ({
       label: axisDateLabel(p.timestamp), ibit: p.ibitFlow, other: p.otherFlow, aum: p.cumulativeAum,
     })),
-    [tf],
+    [pts, tf],
   )
 
   return (

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useResearchStore } from '@/store'
-import { MOCK_RESEARCH_REPORTS, getLatestReport } from '@/mock/research'
+import { useResearchReports } from '@/hooks/useServices'
 import { EmptyState, PageHeader } from '@/components/ui'
 import { ResearchFilters } from './ResearchFilters'
 import { ResearchSidebar } from './ResearchSidebar'
@@ -320,7 +320,8 @@ export function ResearchOverview() {
   } = useResearchStore()
   const [mobileDrawer, setMobileDrawer] = useState<DrawerPanel>(null)
 
-  // Compute whether any filter is active (for featured card suppression)
+  const allReports = useResearchReports().data?.data ?? []
+
   const hasActiveFilter =
     !!searchQuery ||
     !!activeCategory ||
@@ -329,8 +330,7 @@ export function ResearchOverview() {
     !!confidenceFilter ||
     !!segmentFilter
 
-  // Apply filter + sort
-  const filteredReports = filterReports(MOCK_RESEARCH_REPORTS, {
+  const filteredReports = filterReports(allReports, {
     searchQuery,
     activeCategory,
     formatFilter,
@@ -341,8 +341,9 @@ export function ResearchOverview() {
     sortDir: sortDir as 'asc' | 'desc',
   })
 
-  // Featured report — latest, only shown when no filters are active
-  const latestReport = getLatestReport()
+  const latestReport = [...allReports].sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+  )[0]
   const showFeatured =
     !hasActiveFilter && !isDetailOpen && latestReport !== undefined
 

@@ -3,7 +3,8 @@
 import { useRouter }          from 'next/navigation'
 import { cn, formatCurrency } from '@/lib/utils'
 import type { Position }      from '@/types/wallet'
-import { getPositionConsensus, ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/mock/positionConsensus'
+import { ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/lib/positions/alignment'
+import { usePositionConsensus } from '@/hooks/useServices'
 import { ConsensusBadge }     from '@/components/markets/ConsensusBadge'
 import { ROUTES }             from '@/config/constants'
 
@@ -27,7 +28,8 @@ interface PositionCardProps {
  */
 export function PositionCard({ position, className }: PositionCardProps) {
   const router = useRouter()
-  const { consensus, alignment } = getPositionConsensus(position)
+  const positionConsensus = usePositionConsensus()
+  const { consensus, alignment } = positionConsensus(position)
 
   const isYes      = position.side === 'yes'
   const sideColor  = isYes ? 'var(--probex-yes)' : 'var(--probex-no)'

@@ -23,7 +23,7 @@ import { LivePauseControl } from './LivePauseControl'
 import { LiveMarketRow } from './LiveMarketRow'
 import { useMarketStream } from '@/hooks/useMarketStream'
 import { useGlobalStream } from '@/hooks/useGlobalStream'
-import { MOCK_MARKETS } from '@/mock/markets'
+import { useMarkets } from '@/hooks/useServices'
 import { ROUTES } from '@/config/constants'
 import type { MarketId } from '@/types/branded'
 import type { MergedMarketView } from '@/lib/realtime/types'
@@ -63,14 +63,13 @@ function sortViews(
   })
 }
 
-const ALL_MARKET_IDS = MOCK_MARKETS.map((m) => m.id as MarketId)
-
 export function LiveMarketsView() {
   const router = useRouter()
   const [sortKey, setSortKey] = useState<SortKey>('consensus')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
-  const mergedMap = useMarketStream(ALL_MARKET_IDS)
+  const allMarketIds = (useMarkets().data?.data ?? []).map((m) => m.id as MarketId)
+  const mergedMap = useMarketStream(allMarketIds)
   const { consensusScore, participation, isLive } = useGlobalStream()
 
   const sortedViews = useMemo(() => {

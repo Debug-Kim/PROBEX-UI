@@ -14,9 +14,9 @@
 //   unsaveReport    → called by each card's save button
 //   openReport      → opens the report in ResearchReader
 
-import { cn }                 from '@/lib/utils'
-import { useResearchStore }   from '@/store/researchStore'
-import { MOCK_RESEARCH_REPORTS } from '@/mock/research'
+import { cn }               from '@/lib/utils'
+import { useResearchStore } from '@/store/researchStore'
+import { useResearchReports } from '@/hooks/useServices'
 import { ResearchReportCard } from './ResearchReportCard'
 
 interface ResearchBookmarksProps {
@@ -25,10 +25,11 @@ interface ResearchBookmarksProps {
 
 export function ResearchBookmarks({ className }: ResearchBookmarksProps) {
   const { savedReportIds, readReportIds, openReport } = useResearchStore()
+  const reports = useResearchReports().data?.data ?? []
 
-  const savedReports = MOCK_RESEARCH_REPORTS.filter((r) => savedReportIds.includes(r.id))
-  const readCount    = MOCK_RESEARCH_REPORTS.filter((r) => readReportIds.includes(r.id)).length
-  const totalCount   = MOCK_RESEARCH_REPORTS.length
+  const savedReports = reports.filter((r) => savedReportIds.includes(r.id))
+  const readCount    = reports.filter((r) => readReportIds.includes(r.id)).length
+  const totalCount   = reports.length
   const readPct      = totalCount > 0 ? (readCount / totalCount) * 100 : 0
 
   return (

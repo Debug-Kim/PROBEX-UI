@@ -3,7 +3,7 @@
 import {useMemo}           from 'react'
 import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, } from 'recharts'
 import {cn}    from '@/lib/utils'
-import {generatePriceHistory} from '@/mock/marketHistory'
+import { useMarketHistory } from '@/hooks/useServices'
 import {useActiveTimeframe}  from '@/store/marketStore'
 import type { TimeRange }      from '@/types/market'
 
@@ -30,14 +30,15 @@ export function ProbabilityChart({
   height = 180,
 }: ProbabilityChartProps) {
   const timeframe = useActiveTimeframe()
+  const { data: historyPoints } = useMarketHistory(marketId, timeframe)
 
   const data = useMemo(
-    () => generatePriceHistory(marketId, probability, timeframe).map((p) => ({
-      ts:    p.timestamp,
+    () => (historyPoints ?? []).map((p) => ({
+      ts:    p.ts,
       prob:  Math.round(p.probability * 100),
-      label: formatAxisLabel(p.timestamp, timeframe),
+      label: formatAxisLabel(p.ts, timeframe),
     })),
-    [marketId, probability, timeframe],
+    [historyPoints, timeframe],
   )
 
   const current = Math.round(probability * 100)

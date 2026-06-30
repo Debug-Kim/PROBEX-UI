@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DEFAULT_TRADING_PREFS, type TradingPrefs } from '@/mock/settings'
+import { DEFAULT_TRADING_PREFS } from '@/lib/settings/defaults'
+import type { TradingPrefs } from '@/types/settings'
 import { SettingsSection, SettingRow, Toggle, TextField, SelectField, SegmentedControl, SaveBar } from './controls'
 
 const OUTCOME_OPTIONS = [

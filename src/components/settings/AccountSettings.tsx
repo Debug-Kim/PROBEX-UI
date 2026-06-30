@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { cn, formatDate } from '@/lib/utils'
 import { useCurrentUser } from '@/store/authStore'
-import { LANGUAGE_OPTIONS } from '@/mock/settings'
+import { LANGUAGE_OPTIONS } from '@/lib/settings/options'
 import { SettingsSection, SettingRow, SelectField, SegmentedControl, SaveBar, ReadOnlyValue } from './controls'
 import type { UserPreferences } from '@/types/user'
 

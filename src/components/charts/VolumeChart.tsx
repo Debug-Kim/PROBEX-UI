@@ -6,33 +6,32 @@ import {
   Tooltip, ResponsiveContainer,
 } from 'recharts'
 import { cn, formatCompact }   from '@/lib/utils'
-import { generateVolumeHistory } from '@/mock/marketHistory'
-import { useActiveTimeframe }    from '@/store/marketStore'
-import type { TimeRange }        from '@/types/market'
+import { useVolumeHistory }    from '@/hooks/useServices'
+import { useActiveTimeframe }  from '@/store/marketStore'
+import type { TimeRange }      from '@/types/market'
 
 interface VolumeChartProps {
   marketId:   string
-  baseVol:    number
   className?: string
   height?:    number
 }
 
 export function VolumeChart({
   marketId,
-  baseVol,
   className,
   height = 120,
 }: VolumeChartProps) {
   const timeframe = useActiveTimeframe()
+  const { data: volumePoints } = useVolumeHistory(marketId, timeframe)
 
   const data = useMemo(
-    () => generateVolumeHistory(marketId, baseVol, timeframe).map((p) => ({
-      ts:     p.timestamp,
-      yes:    Math.round(p.yesVol),
-      no:     Math.round(p.noVol),
-      label:  formatAxisLabel(p.timestamp, timeframe),
+    () => (volumePoints ?? []).map((p) => ({
+      ts:    p.ts,
+      yes:   Math.round(p.yesVol),
+      no:    Math.round(p.noVol),
+      label: formatAxisLabel(p.ts, timeframe),
     })),
-    [marketId, baseVol, timeframe],
+    [volumePoints, timeframe],
   )
 
   return (

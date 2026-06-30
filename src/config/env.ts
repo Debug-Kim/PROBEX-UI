@@ -11,7 +11,11 @@ export const env = {
   /** 'mock' | 'live' — controls which service implementation is used */
   API_MODE: (process.env.NEXT_PUBLIC_API_MODE ?? 'mock') as 'mock' | 'live',
 
-  /** Base URL for the Probex backend API */
+  /**
+   * Single source of truth for the backend base URL (shared API client + live
+   * services). Already includes the `/api` prefix, e.g. `https://<host>:<port>/api`
+   * — set only via env (see .env.example), never hardcoded.
+   */
   API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL ?? '',
 
   /** Base URL for the Consensus Engine API */

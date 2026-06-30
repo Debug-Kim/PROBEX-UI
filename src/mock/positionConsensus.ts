@@ -1,59 +1,16 @@
-// Computes whether a position's side (YES/NO) aligns with the
-// Probex Consensus Engine's institutional bias for that market.
-//
-// This is the bridge between mock/positions.ts and mock/consensus.ts.
-// replace with IConsensusService cross-reference at the API layer.
+// Mock convenience wrapper around the pure alignment logic in
+// @/lib/positions/alignment, binding the mock consensus map. The canonical logic,
+// types, and display constants live in the lib module; this re-exports them so
+// non-migrated consumers keep working. Migrated components use the lib module +
+// useConsensusMap() instead.
 
 import type { Position } from '@/types/wallet'
-import type { ConsensusState } from '@/types/consensus'
 import { MOCK_CONSENSUS_MAP } from './consensus'
+import { getPositionAlignment, type PositionConsensus } from '@/lib/positions/alignment'
 
-export type AlignmentType = 'aligned' | 'divergent' | 'neutral' | 'unknown'
+export type { AlignmentType, PositionConsensus } from '@/lib/positions/alignment'
+export { ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/lib/positions/alignment'
 
-export interface PositionConsensus {
-  consensus:  ConsensusState | undefined
-  alignment:  AlignmentType
-}
-
-/**
- * Returns the consensus state and alignment classification for a position.
- *
- * Alignment logic mirrors components/trading/TradeSummary.tsx:
- *   - 'aligned'   — position side agrees with institutional bias
- *   - 'divergent' — position side contradicts institutional bias
- *   - 'neutral'   — institutional bias is neutral / ambiguous
- *   - 'unknown'   — no consensus data available for this market
- */
 export function getPositionConsensus(position: Position): PositionConsensus {
-  const consensus = MOCK_CONSENSUS_MAP[position.marketId as string]
-  if (!consensus) return { consensus: undefined, alignment: 'unknown' }
-
-  const isYes    = position.side === 'yes'
-  const bullish  = consensus.institutionalBias === 'bullish' && consensus.score > 0.6
-  const bearish  = consensus.institutionalBias === 'bearish' || consensus.score < 0.4
-
-  let alignment: AlignmentType
-  if      (isYes  && bullish) alignment = 'aligned'
-  else if (!isYes && bearish) alignment = 'aligned'
-  else if (isYes  && bearish) alignment = 'divergent'
-  else if (!isYes && bullish) alignment = 'divergent'
-  else alignment = 'neutral'
-
-  return { consensus, alignment }
-}
-
-// ─── Display helpers ────────────────────────────────────────────────────
-
-export const ALIGNMENT_LABELS: Record<AlignmentType, string> = {
-  aligned:   '⚡ Aligned',
-  divergent: '⚠ Contrarian',
-  neutral:   '→ Neutral',
-  unknown:   '— N/A',
-}
-
-export const ALIGNMENT_COLORS: Record<AlignmentType, string> = {
-  aligned:   'var(--probex-positive)',
-  divergent: 'var(--probex-warning)',
-  neutral:   'var(--probex-text-muted)',
-  unknown:   'var(--probex-text-disabled)',
+  return getPositionAlignment(position, MOCK_CONSENSUS_MAP)
 }

@@ -8,20 +8,12 @@
  * Respects prefers-reduced-motion by stopping scroll animation.
  */
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import { useLiveStore } from '@/store/liveStore'
 import { useConnectionStatus } from '@/hooks/useConnectionStatus'
+import { useMarkets } from '@/hooks/useServices'
 import { FEATURES } from '@/config/features'
-import { MOCK_MARKETS } from '@/mock/markets'
 import type { LiveActivityEntry } from '@/lib/realtime/types'
-
-function formatEntry(entry: LiveActivityEntry): string {
-  const market = MOCK_MARKETS.find((m) => m.id === entry.marketId)
-  const label = market
-    ? market.question.slice(0, 40) + (market.question.length > 40 ? '…' : '')
-    : entry.marketId
-  return `${entry.type === 'trade' ? '⬆' : '●'} ${label} · ${entry.summary}`
-}
 
 interface LiveTickerProps {
   className?: string
@@ -33,7 +25,22 @@ export function LiveTicker({ className = '' }: LiveTickerProps) {
     tickerEnabled: useLiveStore((s) => s.tickerEnabled),
   }
   const liveActivity = useLiveStore((s) => s.liveActivity)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const trackRef     = useRef<HTMLDivElement>(null)
+
+  const allMarkets   = useMarkets().data?.data ?? []
+  const marketTitles = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const m of allMarkets) map[m.id as string] = m.question
+    return map
+  }, [allMarkets])
+
+  function formatEntry(entry: LiveActivityEntry): string {
+    const question = marketTitles[entry.marketId as string]
+    const label = question
+      ? question.slice(0, 40) + (question.length > 40 ? '…' : '')
+      : entry.marketId
+    return `${entry.type === 'trade' ? '⬆' : '●'} ${label} · ${entry.summary}`
+}
 
   const isActive =
     isEnabled &&

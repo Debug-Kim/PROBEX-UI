@@ -2,32 +2,19 @@
 
 import { useMemo }              from 'react'
 import { cn, formatCurrency }   from '@/lib/utils'
-import { ALL_POSITIONS, MOCK_SETTLED_POSITIONS } from '@/mock/positions'
-import { getPositionConsensus } from '@/mock/positionConsensus'
+import { usePositions, usePositionConsensus } from '@/hooks/useServices'
 
 interface ConsensusPerformanceProps {
   className?: string
 }
 
-/**
- * ConsensusPerformance
- * ─────────────────────
- * The headline Probex differentiator panel: "How well has the
- * Consensus Engine performed for this portfolio?"
- *
- * Metrics:
- *   1. Consensus Accuracy        — % of settled positions where alignment
- *                                    with the engine predicted the outcome
- *   2. Consensus Win Rate         — win rate ONLY for aligned positions
- *   3. Consensus-Aligned P&L      — total P&L from aligned positions vs
- *                                    contrarian positions
- *   4. Confidence Success Rate    — win rate filtered to 'high' confidence
- *                                    consensus readings
- */
 export function ConsensusPerformance({ className }: ConsensusPerformanceProps) {
+  const allPositions = usePositions('all').data ?? []
+  const settled      = usePositions('settled').data ?? []
+  const getConsensus = usePositionConsensus()
+
   const metrics = useMemo(() => {
-    const settled = MOCK_SETTLED_POSITIONS
-    const withConsensus = ALL_POSITIONS.map((p) => ({ pos: p, ...getPositionConsensus(p) }))
+    const withConsensus = allPositions.map((p) => ({ pos: p, ...getConsensus(p) }))
     const settledWithConsensus = withConsensus.filter((x) => settled.includes(x.pos))
 
     // Accuracy: aligned positions that won / total aligned settled positions
@@ -53,7 +40,7 @@ export function ConsensusPerformance({ className }: ConsensusPerformanceProps) {
       accuracy, contrarianRate, alignedPnl, divergentPnl, confidenceRate,
       alignedCount: aligned.length, divergentCount: divergent.length, highConfidenceCount: highConfidence.length,
     }
-  }, [])
+  }, [allPositions, settled, getConsensus])
 
   return (
     <div className={cn('rounded-xl overflow-hidden', className)} style={{ background: 'var(--probex-surface)', border: '1px solid var(--probex-border)' }}>
@@ -67,7 +54,7 @@ export function ConsensusPerformance({ className }: ConsensusPerformanceProps) {
           </h2>
         </div>
         <span className="text-2xs" style={{ color: 'var(--probex-text-muted)' }}>
-          Based on {MOCK_SETTLED_POSITIONS.length} settled positions
+          Based on {settled.length} settled positions
         </span>
       </div>
 

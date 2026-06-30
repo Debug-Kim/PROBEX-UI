@@ -3,25 +3,16 @@
 import { useMemo }              from 'react'
 import { cn, formatCurrency }   from '@/lib/utils'
 import { ExposureChart }        from './charts/ExposureChart'
-import { MOCK_OPEN_POSITIONS }  from '@/mock/positions'
-import { getPositionConsensus, ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/mock/positionConsensus'
+import { usePositions, usePositionConsensus } from '@/hooks/useServices'
+import { ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/lib/positions/alignment'
 
 interface PortfolioAllocationProps {
   className?: string
 }
 
-/**
- * PortfolioAllocation
- * ────────────────────
- * Three-way allocation breakdown:
- *   1. By Segment    — ExposureChart donut (existing)
- *   2. By Side       — YES vs NO exposure
- *   3. By Consensus Category — aligned / neutral / divergent
- *
- * This is where "where is risk concentrated?" is answered.
- */
 export function PortfolioAllocation({ className }: PortfolioAllocationProps) {
-  const positions = MOCK_OPEN_POSITIONS
+  const positions   = usePositions('open').data ?? []
+  const getConsensus = usePositionConsensus()
   const total      = positions.reduce((s, p) => s + p.currentValue, 0)
 
   // ── By side ──────────────────────────────────────────────────────────
@@ -44,7 +35,7 @@ export function PortfolioAllocation({ className }: PortfolioAllocationProps) {
       unknown: { count: 0, value: 0, pnl: 0 },
     }
     for (const pos of positions) {
-      const { alignment } = getPositionConsensus(pos)
+      const { alignment } = getConsensus(pos)
       const bucket = buckets[alignment]
       if (bucket) {
         bucket.count += 1

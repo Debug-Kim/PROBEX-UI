@@ -5,7 +5,8 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { ConfirmDialog } from '@/components/ui/Dialog'
 import { Tooltip } from '@/components/ui/Tooltip'
 import { formatCurrency, formatRelativeTime } from '@/lib/utils'
-import { ADMIN_USERS, type AdminUser, type AdminUserStatus } from '@/mock/admin'
+import { useAdminUsers } from '@/hooks/useServices'
+import type { AdminUser, AdminUserStatus } from '@/types/admin'
 import { AdminCard, StatusPill, TableWrap, SearchField, FilterPills, MiniButton, type Tone } from './shared'
 
 const STATUS_TONE: Record<AdminUserStatus, Tone> = {
@@ -28,28 +29,29 @@ const ACTION_COPY: Record<ActionKind, { verb: string; tone: 'default' | 'danger'
 export function UserManagement() {
   const [query, setQuery]     = useState('')
   const [status, setStatus]   = useState<StatusFilter>('all')
-  // Local status overrides so operator actions feel live (mock).
   const [overrides, setOverrides] = useState<Record<string, AdminUserStatus>>({})
   const [pending, setPending] = useState<{ user: AdminUser; action: ActionKind } | null>(null)
   const [applying, setApplying] = useState(false)
+
+  const allUsers = useAdminUsers().data ?? []
 
   const effectiveStatus = (u: AdminUser): AdminUserStatus => overrides[u.id] ?? u.status
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return ADMIN_USERS.filter((u) => {
+    return allUsers.filter((u) => {
       if (status !== 'all' && effectiveStatus(u) !== status) return false
       if (!q) return true
       return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.id.includes(q)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, status, overrides])
+  }, [allUsers, query, status, overrides])
 
   const counts = useMemo(() => {
-    const by = (s: AdminUserStatus) => ADMIN_USERS.filter((u) => effectiveStatus(u) === s).length
-    return { all: ADMIN_USERS.length, active: by('active'), pending: by('pending'), suspended: by('suspended'), banned: by('banned') }
+    const by = (s: AdminUserStatus) => allUsers.filter((u) => effectiveStatus(u) === s).length
+    return { all: allUsers.length, active: by('active'), pending: by('pending'), suspended: by('suspended'), banned: by('banned') }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [overrides])
+  }, [allUsers, overrides])
 
   const confirmAction = async () => {
     if (!pending) return
@@ -64,7 +66,7 @@ export function UserManagement() {
     <>
       <AdminCard
         title="User Management"
-        subtitle={`${ADMIN_USERS.length} of 28,412 accounts · sample page`}
+        subtitle={`${allUsers.length} of 28,412 accounts · sample page`}
         right={<SearchField value={query} onChange={setQuery} placeholder="Search name, email, ID…" />}
         noPadding
       >

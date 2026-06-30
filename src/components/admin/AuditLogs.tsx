@@ -3,7 +3,8 @@
 import { useMemo, useState } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { formatDateTime } from '@/lib/utils'
-import { AUDIT_LOG, type AuditEntry, type AuditSeverity } from '@/mock/admin'
+import { useAuditLog } from '@/hooks/useServices'
+import type { AuditEntry, AuditSeverity } from '@/types/admin'
 import { AdminCard, StatusPill, TableWrap, SearchField, FilterPills, type Tone } from './shared'
 
 const SEVERITY_TONE: Record<AuditSeverity, Tone> = {
@@ -16,14 +17,16 @@ export function AuditLogs() {
   const [query, setQuery]       = useState('')
   const [severity, setSeverity] = useState<SeverityFilter>('all')
 
+  const allLogs = useAuditLog().data ?? []
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return AUDIT_LOG.filter((e) => {
+    return allLogs.filter((e) => {
       if (severity !== 'all' && e.severity !== severity) return false
       if (!q) return true
       return e.action.toLowerCase().includes(q) || e.actor.toLowerCase().includes(q) || e.target.toLowerCase().includes(q)
     })
-  }, [query, severity])
+  }, [allLogs, query, severity])
 
   return (
     <AdminCard

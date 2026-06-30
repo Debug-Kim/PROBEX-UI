@@ -3,7 +3,8 @@
 import { useRouter }           from 'next/navigation'
 import { cn, formatCurrency, formatRelativeTime } from '@/lib/utils'
 import type { Position, PositionStatus } from '@/types/wallet'
-import { getPositionConsensus, ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/mock/positionConsensus'
+import { ALIGNMENT_LABELS, ALIGNMENT_COLORS, type PositionConsensus } from '@/lib/positions/alignment'
+import { usePositionConsensus } from '@/hooks/useServices'
 import { ConsensusBadge }      from '@/components/markets/ConsensusBadge'
 import { usePortfolioStore, type PositionSortField } from '@/store/portfolioStore'
 import { ROUTES }              from '@/config/constants'
@@ -56,6 +57,7 @@ const SETTLED_COLUMNS: ColumnDef[] = [
 export function PositionTable({ positions, isSettled = false, className }: PositionTableProps) {
   const router = useRouter()
   const { sortBy, sortDir, setSort, selectedPositionId, openDetailPanel } = usePortfolioStore()
+  const positionConsensus = usePositionConsensus()
   const columns = isSettled ? SETTLED_COLUMNS : OPEN_COLUMNS
 
   if (positions.length === 0) {
@@ -106,6 +108,7 @@ export function PositionTable({ positions, isSettled = false, className }: Posit
             <PositionRow
               key={pos.id as string}
               position={pos}
+              consensusFor={positionConsensus}
               isSettled={isSettled}
               isLast={idx === positions.length - 1}
               isSelected={selectedPositionId === (pos.id as string)}
@@ -122,16 +125,17 @@ export function PositionTable({ positions, isSettled = false, className }: Posit
 // ─── Row ──────────────────────────────────────────────────────────────────
 
 function PositionRow({
-  position, isSettled, isLast, isSelected, onClick, onNavigate,
+  position, consensusFor, isSettled, isLast, isSelected, onClick, onNavigate,
 }: {
-  position:   Position
-  isSettled:  boolean
-  isLast:     boolean
-  isSelected: boolean
-  onClick:    () => void
-  onNavigate: () => void
+  position:     Position
+  consensusFor: (position: Position) => PositionConsensus
+  isSettled:    boolean
+  isLast:       boolean
+  isSelected:   boolean
+  onClick:      () => void
+  onNavigate:   () => void
 }) {
-  const { consensus, alignment } = getPositionConsensus(position)
+  const { consensus, alignment } = consensusFor(position)
   const isYes     = position.side === 'yes'
   const sideColor = isYes ? 'var(--probex-yes)' : 'var(--probex-no)'
   const isProfit  = position.unrealizedPnl >= 0

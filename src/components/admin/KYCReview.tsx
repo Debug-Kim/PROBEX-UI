@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { formatRelativeTime } from '@/lib/utils'
-import { KYC_QUEUE, type KYCApplication } from '@/mock/admin'
+import { useKYCQueue } from '@/hooks/useServices'
+import type { KYCApplication } from '@/types/admin'
 import { AdminCard, StatusPill, MiniButton } from './shared'
 
 type Decision = 'approved' | 'rejected'
@@ -19,10 +20,10 @@ const DOC_LABEL: Record<KYCApplication['documentType'], string> = {
 }
 
 export function KYCReview() {
-  // Track resolved applications locally so approve/reject feels live (mock).
   const [resolved, setResolved] = useState<Record<string, Decision>>({})
 
-  const pending = KYC_QUEUE.filter((a) => !resolved[a.id])
+  const queue   = useKYCQueue().data ?? []
+  const pending = queue.filter((a) => !resolved[a.id])
 
   return (
     <AdminCard

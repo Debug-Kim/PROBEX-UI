@@ -1,7 +1,7 @@
 'use client'
 
-import { cn, formatCurrency } from '@/lib/utils'
-import { getMockWalletBalance } from '@/mock/wallet'
+import { cn, formatCurrency }  from '@/lib/utils'
+import { useWalletBalance }     from '@/hooks/useServices'
 import { useHideSmallBalances } from '@/store/walletStore'
 import { Skeleton } from '@/components/ui/LoadingState'
 
@@ -21,11 +21,9 @@ interface WalletBalanceCardProps {
  */
 export function WalletBalanceCard({ className, isLoading }: WalletBalanceCardProps) {
   const hideSmall = useHideSmallBalances()
+  const balance   = useWalletBalance().data
 
-  // Hook called unconditionally before any early return (React rules of hooks)
-  const balance = getMockWalletBalance()
-
-  if (isLoading) {
+  if (isLoading || !balance) {
     return (
       <div className={cn('rounded-xl p-5 flex flex-col gap-4', className)}
         style={{ background: 'var(--probex-surface)', border: '1px solid var(--probex-border-default)' }}>

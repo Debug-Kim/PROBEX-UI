@@ -8,7 +8,7 @@ import {
   ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
 import { AnalyticsCard, SeriesTooltip, CHART, AXIS_TICK, axisDateLabel } from '@/components/analytics/shared'
-import { getConfidenceEvolution } from '@/mock/intelligence'
+import { getConfidenceEvolution } from '@/lib/consensus/intelligence'
 
 export function ConfidenceEvolution({ marketId, baseConfidence }: { marketId: string; baseConfidence: number }) {
   const data = useMemo(

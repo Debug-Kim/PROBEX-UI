@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { MOCK_NOTIFICATIONS, type NotificationItem } from '@/mock/notifications'
+import { useNotificationItems } from '@/hooks/useServices'
+import type { NotificationItem } from '@/types/notifications'
 import { NotificationCenter } from './NotificationCenter'
 
 /**
@@ -15,13 +16,19 @@ import { NotificationCenter } from './NotificationCenter'
 export function NotificationBell() {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const [items, setItems] = useState<NotificationItem[]>(MOCK_NOTIFICATIONS)
+  const { data: notifData } = useNotificationItems()
+  const [readIds, setReadIds] = useState<Set<string>>(() => new Set<string>())
+
+  const items = useMemo(
+    () => (notifData ?? []).map(n => ({ ...n, read: n.read || readIds.has(n.id) })),
+    [notifData, readIds],
+  )
 
   const unreadCount = items.filter((n) => !n.read).length
 
-  const markAll = () => setItems((prev) => prev.map((n) => ({ ...n, read: true })))
+  const markAll = () => setReadIds(new Set((notifData ?? []).map(n => n.id)))
   const openItem = (n: NotificationItem) => {
-    setItems((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)))
+    setReadIds(prev => new Set([...prev, n.id]))
     setIsOpen(false)
     router.push(n.href)
   }

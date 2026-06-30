@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DEFAULT_WALLET_PREFS, type WalletPrefs } from '@/mock/settings'
+import { DEFAULT_WALLET_PREFS } from '@/lib/settings/defaults'
+import type { WalletPrefs } from '@/types/settings'
 import { SettingsSection, SettingRow, Toggle, SelectField, SaveBar, ReadOnlyValue } from './controls'
 
 const CURRENCY_OPTIONS = [

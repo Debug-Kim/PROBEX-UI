@@ -2,8 +2,8 @@
 
 import { useMemo }              from 'react'
 import { cn, formatCurrency }   from '@/lib/utils'
-import { MOCK_TRANSACTIONS }    from '@/mock/transactions'
-import { Skeleton }             from '@/components/ui/LoadingState'
+import { useTransactions }       from '@/hooks/useServices'
+import { Skeleton }              from '@/components/ui/LoadingState'
 
 /**
  * WalletInsights
@@ -19,26 +19,26 @@ import { Skeleton }             from '@/components/ui/LoadingState'
  *     since all mock deposits are USDC/Polygon)
  */
 export function WalletInsights({ className, isLoading }: { className?: string; isLoading?: boolean }) {
+  const transactions = useTransactions().data ?? []
+
   const metrics = useMemo(() => {
-    const deposits     = MOCK_TRANSACTIONS.filter((t) => t.type === 'deposit' && t.status === 'confirmed')
-    const withdrawals  = MOCK_TRANSACTIONS.filter((t) => t.type === 'withdrawal' && t.status !== 'failed')
-    const settlements  = MOCK_TRANSACTIONS.filter((t) => t.type === 'settlement-win' || t.type === 'settlement-loss')
+    const deposits     = transactions.filter((t) => t.type === 'deposit' && t.status === 'confirmed')
+    const withdrawals  = transactions.filter((t) => t.type === 'withdrawal' && t.status !== 'failed')
+    const settlements  = transactions.filter((t) => t.type === 'settlement-win' || t.type === 'settlement-loss')
 
     const largestDeposit    = deposits.length    ? Math.max(...deposits.map((t) => t.amount)) : 0
     const largestWithdrawal = withdrawals.length ? Math.max(...withdrawals.map((t) => Math.abs(t.amount))) : 0
 
     const totalDeposits    = deposits.reduce((s, t) => s + t.amount, 0)
     const totalWithdrawals = withdrawals.reduce((s, t) => s + Math.abs(t.amount), 0)
-    const netInflow         = totalDeposits - totalWithdrawals
+    const netInflow        = totalDeposits - totalWithdrawals
 
-    // Funding velocity: net inflow over observed transaction window (days)
-    const timestamps = MOCK_TRANSACTIONS.map((t) => new Date(t.createdAt).getTime())
-    const spanDays   = Math.max(1, (Math.max(...timestamps) - Math.min(...timestamps)) / 86_400_000)
+    const timestamps = transactions.map((t) => new Date(t.createdAt).getTime())
+    const spanDays   = timestamps.length >= 2 ? Math.max(1, (Math.max(...timestamps) - Math.min(...timestamps)) / 86_400_000) : 1
     const velocity   = netInflow / spanDays
 
-    // Average balance approximation: total deposits minus half of net trading flow
     const settlementPnl = settlements.reduce((s, t) => s + t.amount, 0)
-    const avgBalance     = totalDeposits - totalWithdrawals / 2 + settlementPnl / 2
+    const avgBalance    = totalDeposits - totalWithdrawals / 2 + settlementPnl / 2
 
     const wins   = settlements.filter((t) => t.type === 'settlement-win')
     const losses = settlements.filter((t) => t.type === 'settlement-loss')
@@ -48,7 +48,7 @@ export function WalletInsights({ className, isLoading }: { className?: string; i
       settlementCount: settlements.length, settlementPnl,
       winCount: wins.length, lossCount: losses.length,
     }
-  }, [])
+  }, [transactions])
 
   // Funding source distribution — all mock deposits are USDC/Polygon
   const sources = [

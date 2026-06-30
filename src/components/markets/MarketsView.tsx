@@ -13,10 +13,9 @@
  */
 
 import { useEffect, useMemo } from 'react'
+import { useMarkets, useConsensusMap } from '@/hooks/useServices'
 import { useMarketStore } from '@/store'
 import { useLiveStore } from '@/store/liveStore'
-import { MOCK_MARKETS } from '@/mock/markets'
-import { MOCK_CONSENSUS_MAP } from '@/mock/consensus'
 import { MarketCard } from './MarketCard'
 import { MarketTable } from './MarketTable'
 import { MarketFilterBar } from './MarketFilterBar'
@@ -31,9 +30,13 @@ export function MarketsView() {
   const sortDir       = useMarketStore((s) => s.sortDir)
   const viewMode      = useMarketStore((s) => s.viewMode)
 
+  // Data via the service registry (mock mode seeds synchronously via peek*).
+  const allMarkets   = useMarkets().data?.data ?? []
+  const consensusMap = useConsensusMap().data ?? {}
+
   // ── Filter + sort markets ─────────────────────────────────────────────────
   const filteredMarkets = useMemo(() => {
-    let list = MOCK_MARKETS
+    let list = allMarkets
 
     if (activeSegment) {
       list = list.filter((m) => m.segment === activeSegment)
@@ -52,8 +55,8 @@ export function MarketsView() {
         case 'volume24h':
           return mult * (a.volume - b.volume)
         case 'consensus': {
-          const ca = MOCK_CONSENSUS_MAP[a.id as MarketId]?.score ?? 0
-          const cb = MOCK_CONSENSUS_MAP[b.id as MarketId]?.score ?? 0
+          const ca = consensusMap[a.id as MarketId]?.score ?? 0
+          const cb = consensusMap[b.id as MarketId]?.score ?? 0
           return mult * (ca - cb)
         }
         default:
@@ -62,7 +65,7 @@ export function MarketsView() {
     })
 
     return list
-  }, [activeSegment, searchQuery, sortBy, sortDir])
+  }, [allMarkets, consensusMap, activeSegment, searchQuery, sortBy, sortDir])
 
  // ── Subscribe visible market IDs ─────────────────────────────────
   const liveByMarket = useLiveStore((s) => s.liveByMarket)
@@ -132,11 +135,7 @@ export function MarketsView() {
         <div style={{ padding: '0 24px 24px' }}>
           <MarketTable
             markets={filteredMarkets}
-            consensusMap={
-              Object.fromEntries(
-                Object.entries(MOCK_CONSENSUS_MAP).map(([k, v]) => [k, v]),
-              ) as Record<string, import('@/types/consensus').ConsensusState>
-            }
+            consensusMap={consensusMap}
           />
         </div>
       ) : (
@@ -149,7 +148,7 @@ export function MarketsView() {
           }}
         >
           {filteredMarkets.map((market) => {
-            const consensus = MOCK_CONSENSUS_MAP[market.id as MarketId]
+            const consensus = consensusMap[market.id as MarketId]
             if (!consensus) return null
             return (
               <MarketCard

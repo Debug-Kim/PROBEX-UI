@@ -1,14 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { MOCK_SESSIONS, type DeviceSession } from '@/mock/settings'
+import { useSessions } from '@/hooks/useServices'
 import { SettingsSection, SettingRow } from './controls'
 
 export function SessionsSettings() {
-  const [sessions, setSessions] = useState<DeviceSession[]>(MOCK_SESSIONS)
+  const allSessions = useSessions().data ?? []
+  const [revoked, setRevoked] = useState<ReadonlySet<string>>(() => new Set())
 
-  const revoke = (id: string) => setSessions((prev) => prev.filter((s) => s.current || s.id !== id))
-  const signOutOthers = () => setSessions((prev) => prev.filter((s) => s.current))
+  const sessions   = allSessions.filter((s) => s.current || !revoked.has(s.id))
+  const revoke     = (id: string) => setRevoked((prev) => new Set([...prev, id]))
+  const signOutOthers = () => setRevoked((prev) => new Set([...prev, ...allSessions.filter((s) => !s.current).map((s) => s.id)]))
   const otherCount = sessions.filter((s) => !s.current).length
 
   return (

@@ -4,7 +4,7 @@
 // that was previously missing. Keyboard accessible (combobox pattern).
 
 import { useState } from 'react'
-import { MOCK_CONSENSUS_MAP } from '@/mock/consensus'
+import { useConsensusMap } from '@/hooks/useServices'
 import { getSegmentMeta } from '@/config/marketSegments'
 import type { Market } from '@/types/market'
 
@@ -17,6 +17,7 @@ interface MarketSelectorProps {
 export function MarketSelector({ markets, value, onSelect }: MarketSelectorProps) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const consensusMap = useConsensusMap().data ?? {}
 
   const current  = markets.find((m) => (m.id as string) === value)
   const filtered = markets
@@ -67,7 +68,7 @@ export function MarketSelector({ markets, value, onSelect }: MarketSelectorProps
                 <p className="text-xs text-center py-6" style={{ color: 'var(--probex-text-muted)' }}>No markets found</p>
               ) : filtered.map((m) => {
                 const id = m.id as string
-                const c  = MOCK_CONSENSUS_MAP[id]
+                const c  = consensusMap[id]
                 const isActive = id === value
                 return (
                   <button

@@ -1,10 +1,9 @@
 'use client'
 
-import Link                    from 'next/link'
-import { cn, formatCurrency }  from '@/lib/utils'
-import { computePortfolioSummary } from '@/mock/portfolio'
-import { getMockWalletBalance } from '@/mock/wallet'
-import { ROUTES }               from '@/config/constants'
+import Link                       from 'next/link'
+import { cn, formatCurrency }     from '@/lib/utils'
+import { usePortfolioSummary, useWalletBalance } from '@/hooks/useServices'
+import { ROUTES }                 from '@/config/constants'
 
 /**
  * PortfolioCrossLink
@@ -18,8 +17,10 @@ import { ROUTES }               from '@/config/constants'
  *   - Recent Settlement Activity (links to Portfolio settled positions)
  */
 export function PortfolioCrossLink({ className }: { className?: string }) {
-  const portfolio = computePortfolioSummary()
-  const balance   = getMockWalletBalance()
+  const portfolio = usePortfolioSummary().data
+  const balance   = useWalletBalance().data
+
+  if (!portfolio || !balance) return null
 
   return (
     <div className={cn('grid grid-cols-1 sm:grid-cols-3 gap-3', className)}>

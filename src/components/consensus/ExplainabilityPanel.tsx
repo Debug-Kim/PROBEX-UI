@@ -4,7 +4,7 @@
 // *why* the engine reads the market the way it does.
 
 import { AnalyticsCard } from '@/components/analytics/shared'
-import type { ExplainDriver } from '@/mock/intelligence'
+import type { ExplainDriver } from '@/types/intelligence'
 import type { Bias } from '@/types/consensus'
 
 const DIR: Record<Bias, { color: string; arrow: string }> = {

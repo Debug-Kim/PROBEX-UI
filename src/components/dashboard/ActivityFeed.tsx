@@ -5,8 +5,17 @@
 
 import { useMemo }                                      from 'react'
 import { cn, formatCompact }                            from '@/lib/utils'
-import { MOCK_ACTIVITY, ACTIVITY_COLORS }               from '@/mock/activity'
-import type { ActivityItem, ActivityType }               from '@/mock/activity'
+import { useActivity }                                   from '@/hooks/useServices'
+import type { ActivityItem, ActivityType }               from '@/types/activity'
+
+const ACTIVITY_COLORS: Record<ActivityType, string> = {
+  'new-position-yes':  'var(--probex-yes)',
+  'new-position-no':   'var(--probex-no)',
+  'market-resolved':   'var(--probex-positive)',
+  'consensus-shift':   'var(--probex-primary)',
+  'probability-spike': 'var(--probex-warning)',
+  'large-position':    'var(--probex-positive)',
+}
 
 // ─── Event config: icon + label + importance weight ──────────────────────────
 
@@ -114,9 +123,9 @@ function ActivityRow({ item }: { item: ActivityItem }) {
 
 // ─── Feed Header ─────────────────────────────────────────────────────────────
 
-function FeedHeader({ count }: { count: number }) {
-  const whales = MOCK_ACTIVITY.filter(a => a.type === 'large-position').length
-  const shifts = MOCK_ACTIVITY.filter(a => a.type === 'consensus-shift').length
+function FeedHeader({ count, activity }: { count: number; activity: ActivityItem[] }) {
+  const whales = activity.filter(a => a.type === 'large-position').length
+  const shifts = activity.filter(a => a.type === 'consensus-shift').length
   return (
     <div
       style={{
@@ -154,15 +163,16 @@ function FeedHeader({ count }: { count: number }) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export function ActivityFeed({ className }: { className?: string }) {
+  const activity = useActivity().data ?? []
   // Sort: important events first, then by recency
   const sorted = useMemo(() =>
-    [...MOCK_ACTIVITY].sort((a, b) => {
+    [...activity].sort((a, b) => {
       const ai = EVENT_CONFIG[a.type]?.important ? 1 : 0
       const bi = EVENT_CONFIG[b.type]?.important ? 1 : 0
       if (ai !== bi) return bi - ai
       return b.timestamp - a.timestamp
     }),
-    [],
+    [activity],
   )
 
   return (
@@ -176,7 +186,7 @@ export function ActivityFeed({ className }: { className?: string }) {
         WebkitBackdropFilter: 'blur(6px)',
       }}
     >
-      <FeedHeader count={sorted.length} />
+      <FeedHeader count={sorted.length} activity={activity} />
       <div style={{ overflowY: 'auto', flex: 1 }}>
         {sorted.map(item => (
           <ActivityRow key={item.id} item={item} />

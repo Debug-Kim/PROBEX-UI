@@ -2,8 +2,8 @@
 
 import { useRouter }            from 'next/navigation'
 import { cn, formatCurrency, formatRelativeTime, formatBias } from '@/lib/utils'
-import { getPositionById }      from '@/mock/positions'
-import { getPositionConsensus, ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/mock/positionConsensus'
+import { ALIGNMENT_LABELS, ALIGNMENT_COLORS } from '@/lib/positions/alignment'
+import { usePositions, usePositionConsensus } from '@/hooks/useServices'
 import { usePortfolioStore, useSelectedPositionId, useIsDetailPanelOpen } from '@/store/portfolioStore'
 import { ConsensusBadge }        from '@/components/markets/ConsensusBadge'
 import { ConfidenceMeter }       from '@/components/markets/ConfidenceMeter'
@@ -28,13 +28,15 @@ export function PositionDetails({ className }: { className?: string }) {
   const selectedId         = useSelectedPositionId()
   const isOpen             = useIsDetailPanelOpen()
   const closeDetailPanel   = usePortfolioStore((s) => s.closeDetailPanel)
+  const allPositions       = usePositions('all').data ?? []
+  const positionConsensus  = usePositionConsensus()
 
   if (!isOpen || !selectedId) return null
 
-  const position = getPositionById(selectedId)
+  const position = allPositions.find((p) => (p.id as string) === selectedId)
   if (!position) return null
 
-  const { consensus, alignment } = getPositionConsensus(position)
+  const { consensus, alignment } = positionConsensus(position)
   const isYes      = position.side === 'yes'
   const sideColor  = isYes ? 'var(--probex-yes)' : 'var(--probex-no)'
   const isProfit   = position.unrealizedPnl >= 0
