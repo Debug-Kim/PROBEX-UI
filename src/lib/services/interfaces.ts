@@ -1,4 +1,4 @@
-// Eight domain services. Each method is async (the backend contract); each
+// Domain service interfaces. Each method is async (the backend contract); each
 // read also exposes an optional synchronous `peek*` that returns an immediate
 // snapshot when one is available (the mock returns data; a live impl returns
 // cached-or-null, which drives the loading state). Real-time streaming is NOT
@@ -6,6 +6,11 @@
 
 import type { ApiResult, PaginatedResponse } from './response'
 
+import type {
+  EngineHealth, EngineRuntime, EngineStats, EngineConfig,
+  SurvivalStatus, PriceHistory,
+  EngineMarkets, EnginePositions, EngineEvents, EngineEdges,
+} from '@/types/engine'
 import type { Market, MarketFilters, BitcoinSegment, TimeRange } from '@/types/market'
 import type { ConsensusState, GlobalConsensusState, ConsensusHistoryPoint } from '@/types/consensus'
 import type { Position, WalletBalance, WalletConnection, Transaction, PendingFunds } from '@/types/wallet'
@@ -207,6 +212,34 @@ export interface ISettingsService {
   peekSessions?(): DeviceSession[] | null
 }
 
+// ─── Engine ────────────────────────────────────────────────────────────────────
+// Operational endpoints confirmed against the Postman collection.
+// /health is served at the host root (not under /api) — its live implementation
+// uses apiGetHost(); all others use apiGet() against the /api base.
+
+export interface IEngineService {
+  getHealth():          Promise<ApiResult<EngineHealth>>
+  getRuntime():         Promise<ApiResult<EngineRuntime>>
+  getStats():           Promise<ApiResult<EngineStats>>
+  getConfig():          Promise<ApiResult<EngineConfig>>
+  getSurvival():        Promise<ApiResult<SurvivalStatus>>
+  getPriceHistory():    Promise<ApiResult<PriceHistory>>
+  getMarkets():         Promise<ApiResult<EngineMarkets>>
+  getPositions():       Promise<ApiResult<EnginePositions>>
+  getEvents():          Promise<ApiResult<EngineEvents>>
+  getEdges():           Promise<ApiResult<EngineEdges>>
+  peekHealth?():        EngineHealth | null
+  peekRuntime?():       EngineRuntime | null
+  peekStats?():         EngineStats | null
+  peekConfig?():        EngineConfig | null
+  peekSurvival?():      SurvivalStatus | null
+  peekPriceHistory?():  PriceHistory | null
+  peekMarkets?():       EngineMarkets | null
+  peekPositions?():     EnginePositions | null
+  peekEvents?():        EngineEvents | null
+  peekEdges?():         EngineEdges | null
+}
+
 // ─── Registry shape ────────────────────────────────────────────────────────────
 
 export interface ServiceRegistry {
@@ -220,4 +253,5 @@ export interface ServiceRegistry {
   activity:      IActivityService
   admin:         IAdminService
   settings:      ISettingsService
+  engine:        IEngineService
 }

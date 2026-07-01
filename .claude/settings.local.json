@@ -28,7 +28,8 @@
       "Bash(grep -rn \"http://\\\\|136\\\\.171\\\\|127\\\\.0\\\\.0\\\\.1\" src/lib --include=\"*.ts\")",
       "Bash(node -e \"const ax=require\\('axios'\\); const c=ax.create\\({baseURL:'http://136.171.119.6:8000/api'}\\); console.log\\('execution/status =>', c.getUri\\({url:'/execution/status'}\\)\\); console.log\\('with params     =>', c.getUri\\({url:'/execution/status', params:{a:1,b:'x y'}}\\)\\);\")",
       "Bash(grep -rnE \"\\\\bfetch\\\\\\(|axios|apiClient|apiGet|apiPost\" src/hooks)",
-      "Bash(grep -rnE \"from '@/lib/services'|from '@/store/|from '@/mock/|from '@/lib/realtime\" src/hooks)"
+      "Bash(grep -rnE \"from '@/lib/services'|from '@/store/|from '@/mock/|from '@/lib/realtime\" src/hooks)",
+      "PowerShell(cd C:\\\\Dev\\\\QUBO\\\\PROBEX; npm run type-check 2>&1; Write-Host \"EXIT:$LASTEXITCODE\")"
     ]
   }
 }

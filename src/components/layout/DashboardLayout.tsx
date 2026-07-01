@@ -4,7 +4,8 @@ import type { ReactNode } from 'react'
 import { Sidebar }       from './Sidebar'
 import { TopNavigation } from './TopNavigation'
 import { ActivityDrawer } from './ActivityDrawer'
-import { CommandPalette } from '@/components/command/CommandPalette'
+import { CommandPalette }        from '@/components/command/CommandPalette'
+import { ApplicationStateLoader } from '@/components/providers/ApplicationStateLoader'
 import { cn }            from '@/lib/utils'
 import { useMobileOpen, useSidebarStore } from '@/store/sidebarStore'
 
@@ -104,6 +105,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* ── Global overlays (mounted once) ────────────────────────────── */}
       <CommandPalette />
       <ActivityDrawer />
+      {/* ApplicationStateLoader fetches all engine endpoints once and writes
+          to the ApplicationStore — no rendering, no HTTP duplication. */}
+      <ApplicationStateLoader />
     </div>
   )
 }

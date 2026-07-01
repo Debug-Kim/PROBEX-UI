@@ -44,29 +44,31 @@ const def = (
 export const ENDPOINTS = {
   // ── Engine (present in the backend Postman collection) ──────────────────────
   engine: {
-    executionStatus:  def('GET',  '/execution/status', 'confirmed',   'Engine execution status', 'Execution Status'),
-    health:           def('GET',  null, 'placeholder',      'Engine health probe',      'Health'), // NOTE: served at root /health, OUTSIDE the /api base
-    apiRoot:          def('GET',  null, 'placeholder',      'API root / info',          'Api Root'),
-    stats:            def('GET',  null, 'placeholder',      'Dashboard / analytics stats', 'Stats'),
-    updateStats:      def('POST', null, 'placeholder',      'Engine stats write',       'Update Stats'),
-    runtime:          def('GET',  null, 'placeholder',      'Engine runtime status',    'Engine Runtime'),
-    variableConfig:   def('GET',  null, 'placeholder',      'Engine variable config',   'Variable Config'),
-    survivalStrategy: def('GET',  null, 'placeholder',      'Survival strategy engine', 'Survival Strategy Engine'),
-    events:           def('GET',  null, 'placeholder',      'Activity feed / events',   'Events'),
+    executionStatus:  def('GET',  '/execution/status', 'confirmed', 'Engine execution status',     'Execution Status'),
+    // NOTE: /health is at the host root, NOT under the /api base prefix.
+    // Use apiGetHost() from lib/api/client instead of the normal apiGet().
+    health:           def('GET',  '/health',    'confirmed', 'Engine health probe',             'Health'),
+    apiRoot:          def('GET',  null,         'placeholder', 'API root / info',               'Api Root'),
+    stats:            def('GET',  '/stats',     'confirmed', 'Dashboard / analytics stats',     'Stats'),
+    updateStats:      def('POST', null,         'placeholder', 'Engine stats write',            'Update Stats'),
+    runtime:          def('GET',  '/runtime',   'confirmed', 'Engine runtime status',           'Engine Runtime'),
+    variableConfig:   def('GET',  '/config',    'confirmed', 'Engine variable config',          'Variable Config'),
+    survivalStrategy: def('GET',  '/survival',  'confirmed', 'Survival strategy engine',        'Survival Strategy Engine'),
+    events:           def('GET',  '/events',    'confirmed', 'Activity feed / events',          'Events'),
   },
 
-  // ── Markets / positions (present in Postman; paths unconfirmed) ─────────────
+  // ── Markets / positions ──────────────────────────────────────────────────────
   markets: {
-    list:     def('GET', null, 'placeholder',      'Markets page / MarketsView',        'Active Markets'),
-    history:  def('GET', null, 'placeholder',      'Market detail price chart',         'Price History'),
+    list:     def('GET', '/markets',       'confirmed', 'Markets page / MarketsView',    'Active Markets'),
+    history:  def('GET', '/price-history', 'confirmed', 'BTC price feed (global)',       'Price History'),
     volume:   def('GET', null, 'placeholder',      'Market detail volume chart',        'Volume History'),
-    edges:    def('GET', null, 'placeholder',      'Live edge / recommendation',        'Active Edges'),
+    edges:    def('GET', '/edges',         'confirmed', 'Live edge / recommendation',    'Active Edges'),
     related:  def('GET', null, 'awaiting-backend', 'Market detail – related markets'),
     research: def('GET', null, 'awaiting-backend', 'Market detail – research panel'),
     activity: def('GET', null, 'awaiting-backend', 'Market detail – activity feed'),
   },
   positions: {
-    list: def('GET', null, 'placeholder', 'Positions / Portfolio', 'Active Positions'),
+    list: def('GET', '/positions', 'confirmed', 'Positions / Portfolio', 'Active Positions'),
   },
 
   // ── Frontend domains with NO backend endpoint yet ───────────────────────────

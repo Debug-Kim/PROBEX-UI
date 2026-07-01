@@ -16,6 +16,15 @@ import type {
   ConsensusState, Bias, SignalLevel, ConfidenceLevel, VolatilityLevel, MarketStructure,
 } from '@/types/consensus'
 import { asMarketId } from '@/types/branded'
+import type {
+  EngineHealthDTO, HealthComponentDTO, RuntimeComponentsDTO,
+  EngineRuntimeDTO, EngineStatsDTO, EngineConfigDTO, SurvivalDTO, PriceHistoryDTO,
+  EngineMarketsDTO, EnginePositionsDTO, EngineEventsDTO, EngineEdgesDTO,
+  EngineHealth, HealthComponent, RuntimeComponents, EngineRuntime, EngineStats,
+  EngineConfig, SurvivalStatus, PriceHistory,
+  EngineMarkets, EnginePositions, EngineEvents, EngineEdges,
+  EngineHealthStatus, SurvivalState, EngineMode,
+} from '@/types/engine'
 
 // ─── Normalization primitives ──────────────────────────────────────────────────
 
@@ -87,6 +96,180 @@ export function toMarket(dto: MarketDTO): Market {
     createdAt:          dto.createdAt,
     updatedAt:          dto.updatedAt,
   }
+}
+
+// ─── Engine shared helpers ────────────────────────────────────────────────────
+
+function toHealthComponent(dto: HealthComponentDTO): HealthComponent {
+  return {
+    name:      dto.name,
+    healthy:   dto.healthy,
+    message:   dto.message,
+    latencyMs: dto.latency_ms,
+    checkedAt: isoToMs(dto.checked_at),
+  }
+}
+
+function toRuntimeComponents(dto: RuntimeComponentsDTO): RuntimeComponents {
+  return {
+    bot:               dto.bot,
+    clobClient:        dto.clob_client,
+    executionEngine:   dto.execution_engine,
+    marketFetcher:     dto.market_fetcher,
+    resolutionTracker: dto.resolution_tracker,
+    pnlCalculator:     dto.pnl_calculator,
+    telegramAlerter:   dto.telegram_alerter,
+    healthMonitor:     dto.health_monitor,
+    survivalBrain:     dto.survival_brain,
+    paperTrader:       dto.paper_trader,
+  }
+}
+
+// ─── /health ─────────────────────────────────────────────────────────────────
+
+export function toEngineHealth(dto: EngineHealthDTO): EngineHealth {
+  return {
+    status:          dto.status as EngineHealthStatus,
+    components:      dto.components.map(toHealthComponent),
+    checkDurationMs: dto.check_duration_ms,
+    uptimeSeconds:   dto.uptime_seconds,
+    stats: {
+      healthChecks: dto.stats.health_checks,
+      warnings:     dto.stats.warnings,
+      errors:       dto.stats.errors,
+      restarts:     dto.stats.restarts,
+      lastWarning:  dto.stats.last_warning,
+      lastError:    dto.stats.last_error,
+    },
+    timestamp: isoToMs(dto.timestamp),
+  }
+}
+
+// ─── /api/runtime ─────────────────────────────────────────────────────────────
+
+export function toEngineRuntime(dto: EngineRuntimeDTO): EngineRuntime {
+  return {
+    mode:          dto.mode as EngineMode,
+    initializedAt: isoToMs(dto.initialized_at),
+    components:    toRuntimeComponents(dto.components),
+    stats: {
+      startedAt:      isoToMs(dto.stats.started_at),
+      edgesDetected:  dto.stats.edges_detected,
+      ordersExecuted: dto.stats.orders_executed,
+      totalPnl:       dto.stats.total_pnl,
+    },
+    timestamp: isoToMs(dto.timestamp),
+  }
+}
+
+// ─── /api/stats ───────────────────────────────────────────────────────────────
+
+export function toEngineStats(dto: EngineStatsDTO): EngineStats {
+  return {
+    currentPrice:       dto.current_price,
+    feedLatencyMs:      dto.feed_latency_ms,
+    feedConnected:      dto.feed_connected,
+    activePositions:    dto.active_positions,
+    edgesDetected:      dto.edges_detected,
+    ordersExecuted:     dto.orders_executed,
+    avgExecutionTimeMs: dto.avg_execution_time_ms,
+    uptimeSeconds:      dto.uptime_seconds,
+    unrealizedPnl:      dto.unrealized_pnl,
+    realizedPnl:        dto.realized_pnl,
+    totalPnl:           dto.total_pnl,
+    healthStatus:       dto.health_status as EngineHealthStatus,
+    healthComponents:   dto.health_components.map(toHealthComponent),
+    runtimeComponents:  toRuntimeComponents(dto.runtime_components),
+    timestamp:          isoToMs(dto.timestamp),
+  }
+}
+
+// ─── /api/config ──────────────────────────────────────────────────────────────
+
+export function toEngineConfig(dto: EngineConfigDTO): EngineConfig {
+  const c = dto.config
+  return {
+    environment:               c.environment as EngineMode,
+    anthropicApiKey:           c.anthropic_api_key,
+    polymarketApiUrl:          c.polymarket_api_url,
+    polygonChainId:            c.polygon_chain_id,
+    initialBankroll:           c.initial_bankroll,
+    maxBetPercent:             c.max_bet_percent,
+    maxConcurrentPositions:    c.max_concurrent_positions,
+    minEdge:                   c.min_edge,
+    kellyFraction:             c.kelly_fraction,
+    maxLatencyMs:              c.max_latency_ms,
+    dashboardUpdateIntervalMs: c.dashboard_update_interval_ms,
+    dashboardApiEnabled:       c.dashboard_api_enabled,
+    dashboardApiHost:          c.dashboard_api_host,
+    dashboardApiPort:          c.dashboard_api_port,
+    logLevel:                  c.log_level,
+  }
+}
+
+// ─── /api/survival ────────────────────────────────────────────────────────────
+
+export function toSurvivalStatus(dto: SurvivalDTO): SurvivalStatus {
+  return {
+    currentCapital:       dto.current_capital,
+    initialCapital:       dto.initial_capital,
+    capitalPct:           dto.capital_pct,
+    state:                dto.state as SurvivalState,
+    dailyBurnRate:        dto.daily_burn_rate,
+    daysOfRunway:         dto.days_of_runway,
+    recoveryTradesNeeded: dto.recovery_trades_needed,
+    avgWinSize:           dto.avg_win_size,
+    dailyTarget:          dto.daily_target,
+    weeklyTarget:         dto.weekly_target,
+    dailyPnl:             dto.daily_pnl,
+    weeklyPnl:            dto.weekly_pnl,
+    behindTargetPct:      dto.behind_target_pct,
+    kellyModifier:        dto.kelly_modifier,
+    minEdgeThreshold:     dto.min_edge_threshold,
+    totalPatterns:        dto.total_patterns,
+    filteredPatterns:     dto.filtered_patterns,
+    timestamp:            isoToMs(dto.timestamp),
+    patternsSummary:      dto.patterns_summary,
+  }
+}
+
+// ─── /api/price-history ───────────────────────────────────────────────────────
+
+export function toPriceHistory(dto: PriceHistoryDTO): PriceHistory {
+  return {
+    current:   dto.current,
+    history:   dto.history.map((p) => ({ ts: isoToMs(p.timestamp), price: p.price })),
+    timestamp: isoToMs(dto.timestamp),
+  }
+}
+
+// ─── /api/markets ─────────────────────────────────────────────────────────────
+
+export function toEngineMarkets(dto: EngineMarketsDTO): EngineMarkets {
+  return { markets: dto.markets, count: dto.count, timestamp: isoToMs(dto.timestamp) }
+}
+
+// ─── /api/positions ───────────────────────────────────────────────────────────
+
+export function toEnginePositions(dto: EnginePositionsDTO): EnginePositions {
+  return {
+    positions:          dto.positions,
+    count:              dto.count,
+    totalUnrealizedPnl: dto.total_unrealized_pnl,
+    timestamp:          isoToMs(dto.timestamp),
+  }
+}
+
+// ─── /api/events ──────────────────────────────────────────────────────────────
+
+export function toEngineEvents(dto: EngineEventsDTO): EngineEvents {
+  return { events: dto.events, count: dto.count, limit: dto.limit, types: dto.types, timestamp: isoToMs(dto.timestamp) }
+}
+
+// ─── /api/edges ───────────────────────────────────────────────────────────────
+
+export function toEngineEdges(dto: EngineEdgesDTO): EngineEdges {
+  return { edges: dto.edges, count: dto.count, limit: dto.limit, timestamp: isoToMs(dto.timestamp) }
 }
 
 // ─── Consensus DTO ───────────────────────────────────────────────────────────────

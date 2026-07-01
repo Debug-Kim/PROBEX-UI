@@ -17,6 +17,7 @@ import { AuditLogs }        from './AuditLogs'
 import { RiskDashboard }    from './RiskDashboard'
 import { KYCReview }        from './KYCReview'
 import { SystemHealth }     from './SystemHealth'
+import { EngineChainProbe } from '@/components/dev/EngineChainProbe'
 
 type TabId = 'users' | 'markets' | 'audit' | 'risk' | 'kyc' | 'health'
 
@@ -114,6 +115,9 @@ export function AdminConsole() {
       <section role="tabpanel" aria-live="polite" className="animate-fade-in-up">
         {renderPanel(active)}
       </section>
+
+      {/* Dev-only engine chain verification — eliminated in production builds */}
+      {process.env.NODE_ENV === 'development' && <EngineChainProbe />}
     </div>
   )
 }

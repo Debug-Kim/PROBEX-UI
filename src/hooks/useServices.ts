@@ -6,7 +6,7 @@
 // identically. When a live backend has no snapshot, the same hook surfaces
 // 'loading' → 'success' | 'empty' | 'error'.
 
-import { useCallback, useEffect, useState, type DependencyList } from 'react'
+import { useCallback, useEffect, useMemo, useState, type DependencyList } from 'react'
 import { services } from '@/lib/services'
 import {
   ok, toServiceState, loadingState, errorState, toServiceError,
@@ -17,6 +17,14 @@ import { getPositionAlignment, type PositionConsensus } from '@/lib/positions/al
 import type { MarketFilters, TimeRange } from '@/types/market'
 import type { ResearchFilters } from '@/types/research'
 import type { Position } from '@/types/wallet'
+import type { SystemHealth, RiskDashboard } from '@/types/admin'
+import { env } from '@/config/env'
+import { engineHealthToSystemHealth } from '@/lib/mappers/engine'
+import { survivalToRiskDashboard }    from '@/lib/mappers/admin'
+import { toBotPnLView, type BotPnLView }                        from '@/lib/mappers/analytics'
+import { toBtcPriceChart, type BtcPriceChartViewModel }           from '@/lib/mappers/priceHistory'
+import { toEnginePortfolio, type EnginePortfolioViewModel }        from '@/lib/mappers/portfolio'
+import { useApplicationStore } from '@/store/applicationStore'
 
 function useServiceQuery<T>(
   fetcher: () => Promise<ApiResult<T>>,
@@ -441,20 +449,43 @@ export function useKYCQueue() {
   )
 }
 
-export function useSystemHealth() {
-  return useServiceQuery(
+export function useSystemHealth(): ServiceState<SystemHealth> {
+  // Reads engine.health from ApplicationStore (populated by ApplicationStateLoader).
+  // The admin mock query still fires so mock mode works without any store data.
+  const healthSlice = useApplicationStore((s) => s.engine.health)
+  const adminState  = useServiceQuery(
     () => services.admin.getSystemHealth(),
     () => services.admin.peekSystemHealth?.() ?? null,
     [],
   )
+  return useMemo<ServiceState<SystemHealth>>(() => {
+    if (env.API_MODE !== 'live') return adminState
+    if (healthSlice.status !== 'success') return { status: healthSlice.status, data: null, error: healthSlice.error }
+    if (!healthSlice.data)                return { status: 'empty', data: null, error: null }
+    return { status: 'success', data: engineHealthToSystemHealth(healthSlice.data), error: null }
+  }, [healthSlice, adminState])
 }
 
-export function useRiskDashboard() {
-  return useServiceQuery(
+export function useRiskDashboard(): ServiceState<RiskDashboard> {
+  // Survival is primary; runtime adds the Total P&L metric row when available.
+  // Both read from ApplicationStore — no additional fetches.
+  const survivalSlice = useApplicationStore((s) => s.engine.survival)
+  const runtimeSlice  = useApplicationStore((s) => s.engine.runtime)
+  const adminState    = useServiceQuery(
     () => services.admin.getRiskDashboard(),
     () => services.admin.peekRiskDashboard?.() ?? null,
     [],
   )
+  return useMemo<ServiceState<RiskDashboard>>(() => {
+    if (env.API_MODE !== 'live') return adminState
+    if (survivalSlice.status !== 'success') return { status: survivalSlice.status, data: null, error: survivalSlice.error }
+    if (!survivalSlice.data)                return { status: 'empty', data: null, error: null }
+    return {
+      status: 'success',
+      data:   survivalToRiskDashboard(survivalSlice.data, runtimeSlice.data ?? null),
+      error:  null,
+    }
+  }, [survivalSlice, runtimeSlice, adminState])
 }
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
@@ -465,4 +496,143 @@ export function useSessions() {
     () => services.settings.peekSessions?.() ?? null,
     [],
   )
+}
+
+// ─── Engine ───────────────────────────────────────────────────────────────────
+// LiveEngineService has no peek* methods — live mode starts as 'loading' then
+// resolves to 'success'. MockEngineService returns peek* data synchronously so
+// the mock UI renders without a loading flash.
+
+export function useEngineHealth() {
+  return useServiceQuery(
+    () => services.engine.getHealth(),
+    () => services.engine.peekHealth?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineStats() {
+  return useServiceQuery(
+    () => services.engine.getStats(),
+    () => services.engine.peekStats?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineRuntime() {
+  return useServiceQuery(
+    () => services.engine.getRuntime(),
+    () => services.engine.peekRuntime?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineConfig() {
+  return useServiceQuery(
+    () => services.engine.getConfig(),
+    () => services.engine.peekConfig?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineSurvival() {
+  return useServiceQuery(
+    () => services.engine.getSurvival(),
+    () => services.engine.peekSurvival?.() ?? null,
+    [],
+  )
+}
+
+export function useEnginePriceHistory() {
+  return useServiceQuery(
+    () => services.engine.getPriceHistory(),
+    () => services.engine.peekPriceHistory?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineMarkets() {
+  return useServiceQuery(
+    () => services.engine.getMarkets(),
+    () => services.engine.peekMarkets?.() ?? null,
+    [],
+  )
+}
+
+export function useEnginePositions() {
+  return useServiceQuery(
+    () => services.engine.getPositions(),
+    () => services.engine.peekPositions?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineEvents() {
+  return useServiceQuery(
+    () => services.engine.getEvents(),
+    () => services.engine.peekEvents?.() ?? null,
+    [],
+  )
+}
+
+export function useEngineEdges() {
+  return useServiceQuery(
+    () => services.engine.getEdges(),
+    () => services.engine.peekEdges?.() ?? null,
+    [],
+  )
+}
+
+// ─── Engine composite hooks (mapped UI models) ────────────────────────────────
+
+/**
+ * Maps /api/price-history from ApplicationStore into a chart-ready ViewModel.
+ * Provides current price, OHLC-style range, change delta, and typed point array.
+ */
+export function useEnginePriceChart(): ServiceState<BtcPriceChartViewModel> {
+  const priceSlice = useApplicationStore((s) => s.engine.priceHistory)
+  return useMemo<ServiceState<BtcPriceChartViewModel>>(() => {
+    if (priceSlice.status !== 'success') return { status: priceSlice.status, data: null, error: priceSlice.error }
+    if (!priceSlice.data)               return { status: 'empty', data: null, error: null }
+    return { status: 'success', data: toBtcPriceChart(priceSlice.data), error: null }
+  }, [priceSlice])
+}
+
+/**
+ * Maps /api/survival + /api/runtime from ApplicationStore into a bot-centric
+ * portfolio ViewModel (capital, P&L, targets, risk state, trading activity).
+ * Distinct from the prediction-market PortfolioSummary — no win rate or
+ * consensus fields, because the engine does not provide them today.
+ */
+export function useEnginePortfolio(): ServiceState<EnginePortfolioViewModel> {
+  const survivalSlice = useApplicationStore((s) => s.engine.survival)
+  const runtimeSlice  = useApplicationStore((s) => s.engine.runtime)
+  return useMemo<ServiceState<EnginePortfolioViewModel>>(() => {
+    if (survivalSlice.status !== 'success') return { status: survivalSlice.status, data: null, error: survivalSlice.error }
+    if (!survivalSlice.data)               return { status: 'empty', data: null, error: null }
+    return {
+      status: 'success',
+      data:   toEnginePortfolio(survivalSlice.data, runtimeSlice.data ?? null),
+      error:  null,
+    }
+  }, [survivalSlice, runtimeSlice])
+}
+
+/**
+ * Combines survival + runtime slices from ApplicationStore into a BotPnLView
+ * ready for any component that displays bot performance (P&L, capital, state).
+ * Survival is primary; runtime adds order/edge counts and totalPnl.
+ */
+export function useEngineBotStatus(): ServiceState<BotPnLView> {
+  const survivalSlice = useApplicationStore((s) => s.engine.survival)
+  const runtimeSlice  = useApplicationStore((s) => s.engine.runtime)
+  return useMemo<ServiceState<BotPnLView>>(() => {
+    if (survivalSlice.status !== 'success') return { status: survivalSlice.status, data: null, error: survivalSlice.error }
+    if (!survivalSlice.data)                return { status: 'empty', data: null, error: null }
+    return {
+      status: 'success',
+      data:   toBotPnLView(survivalSlice.data, runtimeSlice.data ?? null),
+      error:  null,
+    }
+  }, [survivalSlice, runtimeSlice])
 }
